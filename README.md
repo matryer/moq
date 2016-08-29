@@ -15,3 +15,37 @@ moq InterfaceName -out mocks_test.go
 ```
 go install github.com/matryer/moq
 ```
+
+## How to use it
+
+Mocking interfaces is a nice way to write unit tests where you can easily control the behaviour of the mocked object.
+
+Moq creates a struct that has a function field for each method, which you can declare in your test code:
+
+```go
+func TestCompleteSignup(t *testing.T) {
+
+	called := false
+	var sentTo string 
+
+	mockedEmailSender = &SenderMock{
+		SendFunc: func(to, subject, body string) error {
+			called = true
+			sentTo = to
+			return nil
+		},
+	}
+
+	CompleteSignUp("me@email.com", mockedEmailSender)
+
+	if called == false {
+		t.Error("Sender.Send expected")
+	}
+	if sentTo != "me@email.com" {
+		t.Errorf("unexpected recipient: %s", sentTo)
+	}
+
+}
+```
+
+The mocked structure implements the interface, where each method calls the associated function field.
