@@ -13,6 +13,7 @@ import (
 	"strings"
 )
 
+// Mocker can generate mock structs.
 type Mocker struct {
 	src  string
 	tmpl *template.Template
@@ -20,6 +21,7 @@ type Mocker struct {
 	pkgs map[string]*ast.Package
 }
 
+// New makes a new Mocker for the specified package directory.
 func New(src string) (*Mocker, error) {
 	fset := token.NewFileSet()
 	noTestFiles := func(i os.FileInfo) bool {
