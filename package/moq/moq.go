@@ -161,6 +161,20 @@ package todo
 // github.com/matryer/moq
 {{ range .Objs }}
 // {{.Name}}Mock is a mock implementation of {{.Name}}.
+//
+//     func TestSomethingThatUses{{.Name}}(t *testing.T) {
+//
+//         // make and configure a mocked {{.Name}}
+//         mocked{{.Name}} := {{.Name}}Mock{
+//             {{ range .Methods }}{{.Name}}Func: func({{ .Arglist }}) {{.ReturnArglist}} {
+// 	               panic("TODO: mock out the {{.Name}} function")
+//             },
+//             {{end}}
+//         }
+//
+//         // TODO: use mocked{{.Name}} in code that requires {{.Name}}
+//     
+//     }
 type {{.Name}}Mock struct {
 {{ range .Methods }}
 	// {{.Name}}Func mocks the {{.Name}} function.
