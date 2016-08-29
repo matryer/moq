@@ -182,9 +182,9 @@ type {{.Name}}Mock struct {
 {{ end }}}
 {{ range .Methods }}
 // {{.Name}} calls the mocked {{.Name}}Func function.
-func (mock *{{.Name}}Mock) {{.Name}}({{ .Arglist }}) {{.ReturnArglist}} {
+func (mock {{.Name}}Mock) {{.Name}}({{ .Arglist }}) {{.ReturnArglist}} {
 	if mock.{{.Name}} == nil {
-		panic("moq: {{.Name}}Func is nil")
+		panic("moq: {{.Name}}Func is nil but was just called")
 	}
 	return mock.{{.Name}}Func({{ .ArgCallList }})
 }
