@@ -55,3 +55,9 @@ func CompleteSignUp(to string, sender EmailSender) {
 ```
 
 The mocked structure implements the interface, where each method calls the associated function field.
+
+## Tips
+
+* Keep mocked logic inside the test that is using it
+* Only mock the fields you need - it will panic if a nil function gets called
+* Use `go:generate` to invoke the `moq` command
