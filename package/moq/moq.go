@@ -181,7 +181,8 @@ type {{.Name}}Mock struct {
 	{{.Name}}Func func({{ .Arglist }}) {{.ReturnArglist}}
 {{ end }}}
 {{ range .Methods }}
-// {{.Name}} calls the mocked {{.Name}}Func function.
+// {{.Name}} calls the mocked {{.Name}}Func function or panics if it was
+// not set.
 func (mock {{.Name}}Mock) {{.Name}}({{ .Arglist }}) {{.ReturnArglist}} {
 	if mock.{{.Name}} == nil {
 		panic("moq: {{.Name}}Func is nil but was just called")
