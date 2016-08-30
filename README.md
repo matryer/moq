@@ -6,9 +6,26 @@ By [Mat Ryer](https://twitter.com/matryer) and [David Hernandez](https://github.
 
 ### Usage
 
+In a command line:
+
 ```
 moq InterfaceName -out mocks_test.go
 ```
+
+In code (for go generate):
+
+```go
+package my
+
+//go:generate moq MyInterface -out myinterface_moq_test.go
+
+type MyInterface interface {
+	Method1() error
+	Method2(i int)
+}
+```
+
+Then run `go generate` for your package.
 
 ### Install
 
