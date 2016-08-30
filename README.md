@@ -1,22 +1,24 @@
+![moq logo](moq-logo.png)
+
 # moq
 
 Interface mocking tool for go generate.
 
 By [Mat Ryer](https://twitter.com/matryer) and [David Hernandez](https://github.com/dahernan), with ideas lovingly stolen from [Ernesto Jimenez](https://github.com/ernesto-jimenez).
 
-## Usage
+### Usage
 
 ```
 moq InterfaceName -out mocks_test.go
 ```
 
-## Install
+### Install
 
 ```
 go install github.com/matryer/moq
 ```
 
-## How to use it
+### How to use it
 
 Mocking interfaces is a nice way to write unit tests where you can easily control the behaviour of the mocked object.
 
