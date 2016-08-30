@@ -1,4 +1,4 @@
-![moq logo](moq-logo.png)
+![moq logo](moq-logo-small.png)
 
 Interface mocking tool for go generate.
 
