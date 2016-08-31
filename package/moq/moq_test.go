@@ -1,16 +1,14 @@
-package moq_test
+package moq
 
 import (
 	"bytes"
 	"log"
 	"testing"
-
-	"github.com/matryer/moq/package/moq"
 )
 
 func TestMoq(t *testing.T) {
 
-	m, err := moq.New("../../example")
+	m, err := New("../../example")
 	if err != nil {
 		t.Errorf("moq.New: %s", err)
 	}

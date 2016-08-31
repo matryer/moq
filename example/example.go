@@ -2,6 +2,8 @@ package example
 
 import "context"
 
+//go:generate moq PersonStore -out mockpersonstore_test.go
+
 type Person struct {
 	ID      string
 	Name    string

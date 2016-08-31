@@ -78,9 +78,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 				method.Returns = extractArgs(sig.Results(), "out%d")
 			}
 			objs = append(objs, obj)
-
 		}
-
 	}
 	err := m.tmpl.Execute(w, struct{ Objs []*obj }{Objs: objs})
 	if err != nil {
