@@ -79,3 +79,9 @@ The mocked structure implements the interface, where each method calls the assoc
 * Only mock the fields you need - it will panic if a nil function gets called
 * Use closured variables inside your test function to capture details about the calls to the methods
 * Use `go:generate` to invoke the `moq` command
+
+## License
+
+The moq command (and all code) is licensed under the [MIT License](LICENSE).
+
+The moq logo was created by [Chris Ryer](http://chrisryer.co.uk) and is licensed under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/).
