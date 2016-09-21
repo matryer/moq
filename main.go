@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"flag"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"os"
 
 	"github.com/matryer/moq/package/moq"
@@ -34,17 +37,22 @@ func main() {
 	}
 	destination := args[0]
 	args = args[1:]
-	out := os.Stdout
+	var buf bytes.Buffer
+	var out io.Writer
+	out = os.Stdout
 	if len(*outFile) > 0 {
-		out, err = os.Create(*outFile)
-		if err != nil {
-			return
-		}
-		defer out.Close()
+		out = &buf
 	}
 	m, err := moq.New(destination, *pkgName)
 	if err != nil {
 		return
 	}
 	err = m.Mock(out, args...)
+	if err != nil {
+		return
+	}
+	// create the file
+	if len(*outFile) > 0 {
+		err = ioutil.WriteFile(*outFile, buf.Bytes(), 0777)
+	}
 }
