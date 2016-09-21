@@ -10,6 +10,14 @@ Moq is a tool that generates a struct from any interface. The struct can be used
 
 ### Usage
 
+```
+moq [flags] destination interface [interface2 [interface3 [...]]]
+  -out string
+    	output file (default stdout)
+  -pkg string
+    	package name (default will infer)
+```
+
 In a command line:
 
 ```
