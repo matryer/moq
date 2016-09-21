@@ -60,6 +60,9 @@ func New(src, packageName string) (*Mocker, error) {
 
 // Mock generates a mock for the specified interface name.
 func (m *Mocker) Mock(w io.Writer, name ...string) error {
+	if len(name) == 0 {
+		return errors.New("must specify one interface")
+	}
 	var objs []*obj
 	for _, pkg := range m.pkgs {
 		i := 0
@@ -75,6 +78,10 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 		}
 		for _, n := range name {
 			iface := tpkg.Scope().Lookup(n)
+			if iface == nil {
+				return fmt.Errorf("cannot find interface %s", n)
+				continue
+			}
 			if !types.IsInterface(iface.Type()) {
 				return fmt.Errorf("%s (%s) not an interface", n, iface.Type().String())
 			}
