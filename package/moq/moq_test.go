@@ -2,13 +2,11 @@ package moq
 
 import (
 	"bytes"
-	"log"
 	"strings"
 	"testing"
 )
 
 func TestMoq(t *testing.T) {
-
 	m, err := New("../../example", "")
 	if err != nil {
 		t.Errorf("moq.New: %s", err)
@@ -19,9 +17,6 @@ func TestMoq(t *testing.T) {
 		t.Errorf("m.Mock: %s", err)
 	}
 	s := buf.String()
-
-	log.Println(s)
-
 	// assertions of things that should be mentioned
 	var strs = []string{
 		"package example",
@@ -36,11 +31,9 @@ func TestMoq(t *testing.T) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
 	}
-
 }
 
 func TestMoqExplicitPackage(t *testing.T) {
-
 	m, err := New("../../example", "different")
 	if err != nil {
 		t.Errorf("moq.New: %s", err)
@@ -51,9 +44,6 @@ func TestMoqExplicitPackage(t *testing.T) {
 		t.Errorf("m.Mock: %s", err)
 	}
 	s := buf.String()
-
-	log.Println(s)
-
 	// assertions of things that should be mentioned
 	var strs = []string{
 		"package different",
@@ -68,5 +58,4 @@ func TestMoqExplicitPackage(t *testing.T) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
 	}
-
 }

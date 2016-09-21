@@ -13,7 +13,7 @@ func main() {
 	var err error
 	defer func() {
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 			flag.Usage()
 			os.Exit(1)
 		}
