@@ -4,6 +4,10 @@ Interface mocking tool for go generate.
 
 By [Mat Ryer](https://twitter.com/matryer) and [David Hernandez](https://github.com/dahernan), with ideas lovingly stolen from [Ernesto Jimenez](https://github.com/ernesto-jimenez).
 
+### What is moq?
+
+Moq is a tool that generates a struct from any interface. The struct can be used in test code as a mock of the interface.
+
 ### Usage
 
 In a command line:
