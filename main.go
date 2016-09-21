@@ -1,11 +1,9 @@
 package main
 
-import (
-	"github.com/matryer/moq/package/moq"
-)
-
 func main() {
-
-	m := moq.New()
-
+	// var (
+	// 	)
+	// out := os.Stdout
+	// m := moq.New(".")
+	// m.Mock(out, os.Args...)
 }
