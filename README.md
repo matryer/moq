@@ -13,7 +13,7 @@ Moq is a tool that generates a struct from any interface. The struct can be used
 In a command line:
 
 ```
-moq InterfaceName -out mocks_test.go
+moq -out mocks_test.go . MyInterface
 ```
 
 In code (for go generate):
@@ -21,7 +21,7 @@ In code (for go generate):
 ```go
 package my
 
-//go:generate moq MyInterface -out myinterface_moq_test.go
+//go:generate moq -out myinterface_moq_test.go . MyInterface
 
 type MyInterface interface {
 	Method1() error
@@ -76,23 +76,6 @@ func CompleteSignUp(to string, sender EmailSender) {
 ```
 
 The mocked structure implements the interface, where each method calls the associated function field.
-
-### Using go generate
-
-At the top of the file containing the interface you wish to mock, you can use
-`go generate` to specify the interface to mock:
-
-```
-package test
-
-//go:generate moq -out myface_test.go . MyFace
-
-type MyFace interface {
-	Method() string
-}
-```
-
-Then navigate to the directory in a shell, and run `go generate`.
 
 ## Tips
 
