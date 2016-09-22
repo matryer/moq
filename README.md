@@ -8,6 +8,14 @@ By [Mat Ryer](https://twitter.com/matryer) and [David Hernandez](https://github.
 
 Moq is a tool that generates a struct from any interface. The struct can be used in test code as a mock of the interface.
 
+
+### Installing
+
+To start using moq, just run go get:
+```
+$ go get github.com/matryer/moq
+```
+
 ### Usage
 
 ```
@@ -21,7 +29,7 @@ moq [flags] destination interface [interface2 [interface3 [...]]]
 In a command line:
 
 ```
-moq -out mocks_test.go . MyInterface
+$ moq -out mocks_test.go . MyInterface
 ```
 
 In code (for go generate):
