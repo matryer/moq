@@ -4,14 +4,14 @@ Interface mocking tool for go generate.
 
 By [Mat Ryer](https://twitter.com/matryer) and [David Hernandez](https://github.com/dahernan), with ideas lovingly stolen from [Ernesto Jimenez](https://github.com/ernesto-jimenez).
 
-### What is moq?
+### What is Moq?
 
 Moq is a tool that generates a struct from any interface. The struct can be used in test code as a mock of the interface.
 
 
 ### Installing
 
-To start using moq, just run go get:
+To start using Moq, just run go get:
 ```
 $ go get github.com/matryer/moq
 ```
@@ -96,6 +96,6 @@ The mocked structure implements the interface, where each method calls the assoc
 
 ## License
 
-The moq command (and all code) is licensed under the [MIT License](LICENSE).
+The Moq project (and all code) is licensed under the [MIT License](LICENSE).
 
-The moq logo was created by [Chris Ryer](http://chrisryer.co.uk) and is licensed under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/).
+The Moq logo was created by [Chris Ryer](http://chrisryer.co.uk) and is licensed under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/).
