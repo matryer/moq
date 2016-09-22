@@ -47,12 +47,6 @@ type MyInterface interface {
 
 Then run `go generate` for your package.
 
-### Install
-
-```
-go install github.com/matryer/moq
-```
-
 ### How to use it
 
 Mocking interfaces is a nice way to write unit tests where you can easily control the behaviour of the mocked object.
