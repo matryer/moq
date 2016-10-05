@@ -217,7 +217,7 @@ type {{.InterfaceName}}Mock struct {
 {{ range .Methods }}
 // {{.Name}} calls {{.Name}}Func.
 func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist}} {
-	if mock.{{.Name}} == nil {
+	if mock.{{.Name}}Func == nil {
 		panic("moq: {{.Name}}Func is nil but was just called")
 	}
 	return mock.{{.Name}}Func({{.ArgCallList}})
