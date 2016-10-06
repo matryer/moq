@@ -1,4 +1,4 @@
-![moq logo](moq-logo-small.png)
+![moq logo](moq-logo-small.png) [![Build Status](https://travis-ci.org/matryer/moq.svg?branch=master)](https://travis-ci.org/matryer/moq)
 
 Interface mocking tool for go generate.
 
