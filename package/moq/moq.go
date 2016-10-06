@@ -132,12 +132,11 @@ func (m *Mocker) extractArgs(sig *types.Signature, list *types.Tuple, nameFormat
 		}
 		typename := types.TypeString(p.Type(), m.packageQualifier)
 		// check for final variadic argument
-		if sig.Variadic() && ii == listLen-1 && typename[0:2] == "[]" {
-			typename = "..." + typename[2:]
-		}
+		variadic := sig.Variadic() && ii == listLen-1 && typename[0:2] == "[]"
 		param := &param{
-			Name: name,
-			Type: typename,
+			Name:     name,
+			Type:     typename,
+			Variadic: variadic,
 		}
 		params = append(params, param)
 	}
@@ -165,7 +164,7 @@ func (m *method) Arglist() string {
 func (m *method) ArgCallList() string {
 	params := make([]string, len(m.Params))
 	for i, p := range m.Params {
-		params[i] = p.Name
+		params[i] = p.CallName()
 	}
 	return strings.Join(params, ", ")
 }
@@ -182,15 +181,26 @@ func (m *method) ReturnArglist() string {
 }
 
 type param struct {
-	Name string
-	Type string
+	Name     string
+	Type     string
+	Variadic bool
 }
 
 func (p param) String() string {
 	return fmt.Sprintf("%s %s", p.Name, p.TypeString())
 }
 
+func (p param) CallName() string {
+	if p.Variadic {
+		return p.Name + "..."
+	}
+	return p.Name
+}
+
 func (p param) TypeString() string {
+	if p.Variadic {
+		return "..." + p.Type[2:]
+	}
 	return p.Type
 }
 

@@ -79,6 +79,7 @@ func TestVariadicArguments(t *testing.T) {
 		"package variadic",
 		"type GreeterMock struct",
 		"GreetFunc func(ctx context.Context, names ...string) string",
+		"return mock.GreetFunc(ctx, names...)",
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
