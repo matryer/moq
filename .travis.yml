@@ -5,6 +5,7 @@ sudo: false
 go:
   - 1.5.4
   - 1.6.2
+  - 1.7.1
   - tip
 
 before_install:
