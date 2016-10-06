@@ -95,8 +95,8 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 					Name: meth.Name(),
 				}
 				obj.Methods = append(obj.Methods, method)
-				method.Params = m.extractArgs(sig.Params(), "in%d")
-				method.Returns = m.extractArgs(sig.Results(), "out%d")
+				method.Params = m.extractArgs(sig, sig.Params(), "in%d")
+				method.Returns = m.extractArgs(sig, sig.Results(), "out%d")
 			}
 			objs = append(objs, obj)
 		}
@@ -121,15 +121,20 @@ func (m *Mocker) packageQualifier(pkg *types.Package) string {
 	return pkg.Name()
 }
 
-func (m *Mocker) extractArgs(list *types.Tuple, nameFormat string) []*param {
+func (m *Mocker) extractArgs(sig *types.Signature, list *types.Tuple, nameFormat string) []*param {
 	var params []*param
-	for ii := 0; ii < list.Len(); ii++ {
+	listLen := list.Len()
+	for ii := 0; ii < listLen; ii++ {
 		p := list.At(ii)
 		name := p.Name()
 		if name == "" {
 			name = fmt.Sprintf(nameFormat, ii+1)
 		}
 		typename := types.TypeString(p.Type(), m.packageQualifier)
+		// check for final variadic argument
+		if sig.Variadic() && ii == listLen-1 && typename[0:2] == "[]" {
+			typename = "..." + typename[2:]
+		}
 		param := &param{
 			Name: name,
 			Type: typename,
