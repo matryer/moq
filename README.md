@@ -12,6 +12,8 @@ Moq is a tool that generates a struct from any interface. The struct can be used
 
 above: Moq generates the code on the right.
 
+You can read more in the [Meet Moq blog post](http://bit.ly/meetmoq).
+
 ### Installing
 
 To start using Moq, just run go get:
