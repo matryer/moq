@@ -8,6 +8,9 @@ By [Mat Ryer](https://twitter.com/matryer) and [David Hernandez](https://github.
 
 Moq is a tool that generates a struct from any interface. The struct can be used in test code as a mock of the interface.
 
+![Preview](preview.png)
+
+above: Moq generates the code on the right.
 
 ### Installing
 
