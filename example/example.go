@@ -2,7 +2,7 @@ package example
 
 import "context"
 
-//go:generate moq -out mockpersonstore_test.go PersonStore
+//go:generate moq -out mockpersonstore_test.go . PersonStore
 
 type Person struct {
 	ID      string

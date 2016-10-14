@@ -19,6 +19,7 @@ func main() {
 			fmt.Fprintln(os.Stderr, err)
 			flag.Usage()
 			os.Exit(1)
+
 		}
 	}()
 	var (
