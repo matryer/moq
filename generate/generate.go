@@ -5,6 +5,7 @@ package generate
 
 //go:generate moq -out generated.go . MyInterface
 
+// MyInterface is a test interface.
 type MyInterface interface {
 	One() bool
 	Two() int
