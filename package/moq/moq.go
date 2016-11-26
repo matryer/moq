@@ -229,7 +229,6 @@ type {{.InterfaceName}}Mock struct {
 	{{.Name}}Func func({{ .Arglist }}) {{.ReturnArglist}}
 {{- end }}
 }
-
 {{ range .Methods }}
 // {{.Name}} calls {{.Name}}Func.
 func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist}} {
