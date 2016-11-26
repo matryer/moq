@@ -25,6 +25,8 @@ func TestMoq(t *testing.T) {
 		"GetFunc func(ctx context.Context, id string) (*Person, error)",
 		"func (mock *PersonStoreMock) Create(ctx context.Context, person *Person, confirm bool) error",
 		"func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error)",
+		"panic(\"moq: PersonStoreMock.CreateFunc is nil but was just called\")",
+		"panic(\"moq: PersonStoreMock.GetFunc is nil but was just called\")",
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
