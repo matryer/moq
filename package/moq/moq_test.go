@@ -115,7 +115,7 @@ func TestNothingToReturn(t *testing.T) {
 	}
 }
 
-func TestChannelsName(t *testing.T) {
+func TestChannelNames(t *testing.T) {
 	m, err := New("testdata/channels", "")
 	if err != nil {
 		t.Errorf("moq.New: %s", err)
