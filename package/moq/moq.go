@@ -235,7 +235,11 @@ func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist
 	if mock.{{.Name}}Func == nil {
 		panic("moq: {{$obj.InterfaceName}}Mock.{{.Name}}Func is nil but was just called")
 	}
+	{{ if .ReturnArglist }}
 	return mock.{{.Name}}Func({{.ArgCallList}})
+	{{ else }}
+	mock.{{.Name}}Func({{.ArgCallList}})
+	{{ end }}
 }
 {{ end -}}
 {{ end -}}`

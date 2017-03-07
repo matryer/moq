@@ -89,3 +89,28 @@ func TestVariadicArguments(t *testing.T) {
 		}
 	}
 }
+
+func TestNothingToReturn(t *testing.T) {
+	m, err := New("testdata/example", "")
+	if err != nil {
+		t.Errorf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "PersonStore")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	if strings.Contains(s, `return mock.ClearCacheFunc(id)`) {
+		t.Errorf("should not have return for items that have no return arguments")
+	}
+	// assertions of things that should be mentioned
+	var strs = []string{
+		"mock.ClearCacheFunc(id)",
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}
