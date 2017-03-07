@@ -114,3 +114,24 @@ func TestNothingToReturn(t *testing.T) {
 		}
 	}
 }
+
+func TestChannelNames(t *testing.T) {
+	m, err := New("testdata/channels", "")
+	if err != nil {
+		t.Errorf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Queuer")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	var strs = []string{
+		"func (mock *QueuerMock) Sub(topic string) (<-chan Queue, error)",
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected by missing: \"%s\"", str)
+		}
+	}
+}

@@ -8,10 +8,10 @@ import (
 	"go/parser"
 	"go/token"
 	"go/types"
-	"html/template"
 	"io"
 	"os"
 	"strings"
+	"text/template"
 )
 
 // Mocker can generate mock structs.
