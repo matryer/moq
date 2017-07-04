@@ -216,7 +216,7 @@ var moqTemplate = `package {{.PackageName}}
 //         // make and configure a mocked {{.InterfaceName}}
 //         mocked{{.InterfaceName}} := &{{.InterfaceName}}Mock{ {{ range .Methods }}
 //             {{.Name}}Func: func({{ .Arglist }}) {{.ReturnArglist}} {
-// 	               panic("TODO: mock out the {{.Name}} function")
+// 	               panic("TODO: mock out the {{.Name}} method")
 //             },{{- end }}
 //         }
 //
@@ -225,7 +225,7 @@ var moqTemplate = `package {{.PackageName}}
 //     }
 type {{.InterfaceName}}Mock struct {
 {{- range .Methods }}
-	// {{.Name}}Func mocks the {{.Name}} function.
+	// {{.Name}}Func mocks the {{.Name}} method.
 	{{.Name}}Func func({{ .Arglist }}) {{.ReturnArglist}}
 {{- end }}
 }
@@ -235,11 +235,11 @@ func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist
 	if mock.{{.Name}}Func == nil {
 		panic("moq: {{$obj.InterfaceName}}Mock.{{.Name}}Func is nil but was just called")
 	}
-	{{ if .ReturnArglist }}
+{{- if .ReturnArglist }}
 	return mock.{{.Name}}Func({{.ArgCallList}})
-	{{ else }}
+{{- else }}
 	mock.{{.Name}}Func({{.ArgCallList}})
-	{{ end }}
+{{- end }}
 }
 {{ end -}}
 {{ end -}}`
