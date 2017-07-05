@@ -27,6 +27,9 @@ func TestMoq(t *testing.T) {
 		"func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error)",
 		"panic(\"moq: PersonStoreMock.CreateFunc is nil but was just called\")",
 		"panic(\"moq: PersonStoreMock.GetFunc is nil but was just called\")",
+		"CallsTo struct {",
+		"atomic.AddUint64(&mock.CallsTo.Get, 1)",
+		"ClearCache uint64",
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {

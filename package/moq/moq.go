@@ -221,13 +221,22 @@ var moqTemplate = `package {{.PackageName}}
 //         }
 //
 //         // TODO: use mocked{{.InterfaceName}} in code that requires {{.InterfaceName}}
-//     
+//         //       and then make assertions.
+//         
 //     }
 type {{.InterfaceName}}Mock struct {
 {{- range .Methods }}
 	// {{.Name}}Func mocks the {{.Name}} method.
 	{{.Name}}Func func({{ .Arglist }}) {{.ReturnArglist}}
+{{ end }}
+	// CallsTo gets counters for each of the methods indicating
+	// how many times each one was called.
+	CallsTo struct {
+{{- range .Methods }}
+		// {{ .Name }} holds the number of calls to the {{.Name}} method.
+		{{ .Name }} uint64
 {{- end }}
+	}
 }
 {{ range .Methods }}
 // {{.Name}} calls {{.Name}}Func.
@@ -235,6 +244,7 @@ func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist
 	if mock.{{.Name}}Func == nil {
 		panic("moq: {{$obj.InterfaceName}}Mock.{{.Name}}Func is nil but was just called")
 	}
+	atomic.AddUint64(&mock.CallsTo.{{.Name}}, 1) // count this
 {{- if .ReturnArglist }}
 	return mock.{{.Name}}Func({{.ArgCallList}})
 {{- else }}
