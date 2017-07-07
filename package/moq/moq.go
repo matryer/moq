@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"go/ast"
-	"go/importer"
 	"go/parser"
 	"go/token"
 	"go/types"
@@ -77,7 +76,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 			files[i] = file
 			i++
 		}
-		conf := types.Config{Importer: importer.Default()}
+		conf := types.Config{Importer: newImporter()}
 		tpkg, err := conf.Check(m.src, m.fset, files, nil)
 		if err != nil {
 			return err
