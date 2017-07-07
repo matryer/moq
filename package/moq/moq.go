@@ -264,12 +264,7 @@ type {{.InterfaceName}}Mock struct {
 	{{.Name}}Func func({{ .Arglist }}) {{.ReturnArglist}}
 {{ end }}
 	// CallsTo tracks calls to the methods.
-	CallsTo struct {
-		// Enabled indicates that calls will be tracked.
-		// 
-		//     // don't track calls
-		//     {{.InterfaceName}}Mock.CallsTo.Enabled = false
-		Enabled bool		
+	CallsTo struct {		
 {{ range .Methods }}
 		lock{{.Name}} sync.Mutex // protects {{ .Name }}
 		// {{ .Name }} holds details about calls to the {{.Name}} method.
@@ -288,19 +283,17 @@ func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist
 	if mock.{{.Name}}Func == nil {
 		panic("moq: {{$obj.InterfaceName}}Mock.{{.Name}}Func is nil but was just called")
 	}
-	if mock.CallsTo.Enabled {
-		mock.CallsTo.lock{{.Name}}.Lock()
-		mock.CallsTo.{{.Name}} = append(mock.CallsTo.{{.Name}}, struct{
-			{{- range .Params }}
-			{{ .Name | Exported }} {{ .Type }}
-			{{- end }}
-		}{
-			{{- range .Params }}
-			{{ .Name | Exported }}: {{ .Name }},
-			{{- end }}
-		})
-		mock.CallsTo.lock{{.Name}}.Unlock()
-	}
+	mock.CallsTo.lock{{.Name}}.Lock()
+	mock.CallsTo.{{.Name}} = append(mock.CallsTo.{{.Name}}, struct{
+		{{- range .Params }}
+		{{ .Name | Exported }} {{ .Type }}
+		{{- end }}
+	}{
+		{{- range .Params }}
+		{{ .Name | Exported }}: {{ .Name }},
+		{{- end }}
+	})
+	mock.CallsTo.lock{{.Name}}.Unlock()
 {{- if .ReturnArglist }}
 	return mock.{{.Name}}Func({{.ArgCallList}})
 {{- else }}
