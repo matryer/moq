@@ -265,7 +265,7 @@ type {{.InterfaceName}}Mock struct {
 {{ end }}
 	// CallsTo tracks calls to the methods.
 	CallsTo struct {		
-{{ range .Methods }}
+{{- range .Methods }}
 		lock{{.Name}} sync.Mutex // protects {{ .Name }}
 		// {{ .Name }} holds details about calls to the {{.Name}} method.
 		{{ .Name }} []struct {
