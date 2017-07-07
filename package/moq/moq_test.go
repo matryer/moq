@@ -135,3 +135,29 @@ func TestChannelNames(t *testing.T) {
 		}
 	}
 }
+
+// see bug https://github.com/matryer/moq/issues/5
+func TestMultiPackage(t *testing.T) {
+	m, err := New("testdata/multipackage", "")
+	if err != nil {
+		t.Errorf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "MyInterface")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		"package multipackage",
+		"type MyInterfaceMock struct",
+		"Method1Func func() subpackage.Something",
+		"github.com/matryer/moq/package/moq/testdata/multipackage/subpackage",
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}
