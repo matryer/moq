@@ -63,12 +63,10 @@ This this example, Moq generated the `EmailSenderMock` type:
 ```go
 func TestCompleteSignup(t *testing.T) {
 
-	called := false
 	var sentTo string 
 
 	mockedEmailSender = &EmailSenderMock{
 		SendFunc: func(to, subject, body string) error {
-			called = true
 			sentTo = to
 			return nil
 		},
@@ -76,8 +74,8 @@ func TestCompleteSignup(t *testing.T) {
 
 	CompleteSignUp("me@email.com", mockedEmailSender)
 
-	if called == false {
-		t.Error("Sender.Send expected")
+	if mockedEmailSender.CallsTo.Send != 1 {
+		t.Errorf("Send was called %d times", mockedEmailSender.CallsTo.Send)
 	}
 	if sentTo != "me@email.com" {
 		t.Errorf("unexpected recipient: %s", sentTo)
@@ -95,8 +93,10 @@ The mocked structure implements the interface, where each method calls the assoc
 ## Tips
 
 * Keep mocked logic inside the test that is using it
-* Only mock the fields you need - it will panic if a nil function gets called
+* Only mock the fields you need
+* It will panic if a nil function gets called
 * Use closured variables inside your test function to capture details about the calls to the methods
+* Use `.CallsTo.Method` to track the calls
 * Use `go:generate` to invoke the `moq` command
 
 ## License
