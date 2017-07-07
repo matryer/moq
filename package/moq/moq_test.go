@@ -160,5 +160,8 @@ func TestImports(t *testing.T) {
 		if !strings.Contains(s, str) {
 			t.Errorf("expected by missing: \"%s\"", str)
 		}
+		if len(strings.Split(s, str)) > 2 {
+			t.Errorf("more than one: \"%s\"", str)
+		}
 	}
 }

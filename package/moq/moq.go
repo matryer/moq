@@ -22,7 +22,7 @@ type Mocker struct {
 	pkgs    map[string]*ast.Package
 	pkgName string
 
-	imports []string
+	imports map[string]bool
 }
 
 // New makes a new Mocker for the specified package directory.
@@ -57,6 +57,7 @@ func New(src, packageName string) (*Mocker, error) {
 		fset:    fset,
 		pkgs:    pkgs,
 		pkgName: packageName,
+		imports: make(map[string]bool),
 	}, nil
 }
 
@@ -106,7 +107,9 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 			doc.Objects = append(doc.Objects, obj)
 		}
 	}
-	doc.Imports = append(doc.Imports, m.imports...)
+	for pkgToImport := range m.imports {
+		doc.Imports = append(doc.Imports, pkgToImport)
+	}
 	err := m.tmpl.Execute(w, doc)
 	if err != nil {
 		return err
@@ -118,7 +121,7 @@ func (m *Mocker) packageQualifier(pkg *types.Package) string {
 	if m.pkgName == pkg.Name() {
 		return ""
 	}
-	m.imports = append(m.imports, pkg.Path())
+	m.imports[pkg.Path()] = true
 	return pkg.Name()
 }
 
