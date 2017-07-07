@@ -2,6 +2,7 @@ package moq
 
 import (
 	"bytes"
+	"log"
 	"strings"
 	"testing"
 )
@@ -36,6 +37,7 @@ func TestMoq(t *testing.T) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
 	}
+	log.Println(s)
 }
 
 func TestMoqExplicitPackage(t *testing.T) {
@@ -131,6 +133,28 @@ func TestChannelNames(t *testing.T) {
 	s := buf.String()
 	var strs = []string{
 		"func (mock *QueuerMock) Sub(topic string) (<-chan Queue, error)",
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected by missing: \"%s\"", str)
+		}
+	}
+}
+
+func TestImports(t *testing.T) {
+	m, err := New("testdata/imports/two", "")
+	if err != nil {
+		t.Errorf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "DoSomething")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	var strs = []string{
+		`	"sync"`,
+		`	"github.com/matryer/moq/package/moq/testdata/imports/one"`,
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
