@@ -227,7 +227,7 @@ import (
 {{- range .Imports }}
 	"{{.}}"
 {{- end }}
-}
+)
 {{ range $i, $obj := .Objects }}
 // {{.InterfaceName}}Mock is a mock implementation of {{.InterfaceName}}.
 //
