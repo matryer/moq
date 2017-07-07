@@ -251,6 +251,12 @@ import (
 //
 //         // TODO: use mocked{{.InterfaceName}} in code that requires {{.InterfaceName}}
 //         //       and then make assertions.
+//         //
+//         // Use the CallsTo structure to access details about what calls were made:
+//         // 
+//         //     if len(mocked{{.InterfaceName}}.CallsTo.MethodFunc) != 1 {
+//	       //     	t.Errorf("expected 1 call there were %d", len(mocked{{.InterfaceName}}.CallsTo.MethodFunc))
+//         //     }
 //         
 //     }
 type {{.InterfaceName}}Mock struct {
@@ -258,10 +264,14 @@ type {{.InterfaceName}}Mock struct {
 	// {{.Name}}Func mocks the {{.Name}} method.
 	{{.Name}}Func func({{ .Arglist }}) {{.ReturnArglist}}
 {{ end }}
-	// CallsTo gets counters for each of the methods indicating
-	// how many times each one was called.
+	// CallsTo tracks calls to the methods.
 	CallsTo struct {
-{{- range .Methods }}
+		// Enabled indicates that calls will be tracked.
+		// 
+		//     // don't track calls
+		//     {{.InterfaceName}}Mock.CallsTo.Enabled = false
+		Enabled bool		
+{{ range .Methods }}
 		lock{{.Name}} sync.Mutex // protects {{ .Name }}
 		// {{ .Name }} holds details about calls to the {{.Name}} method.
 		{{ .Name }} []struct {
@@ -278,17 +288,19 @@ func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist
 	if mock.{{.Name}}Func == nil {
 		panic("moq: {{$obj.InterfaceName}}Mock.{{.Name}}Func is nil but was just called")
 	}
-	mock.CallsTo.lock{{.Name}}.Lock()
-	mock.CallsTo.{{.Name}} = append(mock.CallsTo.{{.Name}}, struct{
-		{{- range .Params }}
-		{{ .Name | Exported }} {{ .Type }}
-		{{- end }}
-	}{
-		{{- range .Params }}
-		{{ .Name | Exported }}: {{ .Name }},
-		{{- end }}
-	})
-	mock.CallsTo.lock{{.Name}}.Unlock()
+	if mock.CallsTo.Enabled {
+		mock.CallsTo.lock{{.Name}}.Lock()
+		mock.CallsTo.{{.Name}} = append(mock.CallsTo.{{.Name}}, struct{
+			{{- range .Params }}
+			{{ .Name | Exported }} {{ .Type }}
+			{{- end }}
+		}{
+			{{- range .Params }}
+			{{ .Name | Exported }}: {{ .Name }},
+			{{- end }}
+		})
+		mock.CallsTo.lock{{.Name}}.Unlock()
+	}
 {{- if .ReturnArglist }}
 	return mock.{{.Name}}Func({{.ArgCallList}})
 {{- else }}
