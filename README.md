@@ -95,6 +95,7 @@ The mocked structure implements the interface, where each method calls the assoc
 * Keep mocked logic inside the test that is using it
 * Only mock the fields you need
 * It will panic if a nil function gets called
+* Name arguments in the interface for a better experience
 * Use closured variables inside your test function to capture details about the calls to the methods
 * Use `.CallsTo.Method` to track the calls
 * Use `go:generate` to invoke the `moq` command

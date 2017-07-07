@@ -10,7 +10,7 @@ import (
 func TestMoq(t *testing.T) {
 	m, err := New("testdata/example", "")
 	if err != nil {
-		t.Errorf("moq.New: %s", err)
+		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
 	err = m.Mock(&buf, "PersonStore")
@@ -43,7 +43,7 @@ func TestMoq(t *testing.T) {
 func TestMoqExplicitPackage(t *testing.T) {
 	m, err := New("testdata/example", "different")
 	if err != nil {
-		t.Errorf("moq.New: %s", err)
+		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
 	err = m.Mock(&buf, "PersonStore")
@@ -73,7 +73,7 @@ func TestMoqExplicitPackage(t *testing.T) {
 func TestVariadicArguments(t *testing.T) {
 	m, err := New("testdata/variadic", "")
 	if err != nil {
-		t.Errorf("moq.New: %s", err)
+		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
 	err = m.Mock(&buf, "Greeter")
@@ -98,7 +98,7 @@ func TestVariadicArguments(t *testing.T) {
 func TestNothingToReturn(t *testing.T) {
 	m, err := New("testdata/example", "")
 	if err != nil {
-		t.Errorf("moq.New: %s", err)
+		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
 	err = m.Mock(&buf, "PersonStore")
@@ -123,7 +123,7 @@ func TestNothingToReturn(t *testing.T) {
 func TestChannelNames(t *testing.T) {
 	m, err := New("testdata/channels", "")
 	if err != nil {
-		t.Errorf("moq.New: %s", err)
+		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
 	err = m.Mock(&buf, "Queuer")
@@ -144,7 +144,7 @@ func TestChannelNames(t *testing.T) {
 func TestImports(t *testing.T) {
 	m, err := New("testdata/imports/two", "")
 	if err != nil {
-		t.Errorf("moq.New: %s", err)
+		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
 	err = m.Mock(&buf, "DoSomething")
@@ -163,5 +163,12 @@ func TestImports(t *testing.T) {
 		if len(strings.Split(s, str)) > 2 {
 			t.Errorf("more than one: \"%s\"", str)
 		}
+	}
+}
+
+func TestTemplateFuncs(t *testing.T) {
+	fn := templateFuncs["Exported"].(func(string) string)
+	if fn("var") != "Var" {
+		t.Errorf("exported didn't work: %s", fn("var"))
 	}
 }

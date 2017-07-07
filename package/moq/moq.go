@@ -47,7 +47,7 @@ func New(src, packageName string) (*Mocker, error) {
 	if len(packageName) == 0 {
 		return nil, errors.New("failed to determine package name")
 	}
-	tmpl, err := template.New("moq").Parse(moqTemplate)
+	tmpl, err := template.New("moq").Funcs(templateFuncs).Parse(moqTemplate)
 	if err != nil {
 		return nil, err
 	}
@@ -214,6 +214,15 @@ func (p param) TypeString() string {
 	return p.Type
 }
 
+var templateFuncs = template.FuncMap{
+	"Exported": func(s string) string {
+		if s == "" {
+			return ""
+		}
+		return strings.ToUpper(s[0:1]) + s[1:]
+	},
+}
+
 // moqImports are the imports all moq files get.
 var moqImports = []string{"sync"}
 
@@ -252,10 +261,14 @@ type {{.InterfaceName}}Mock struct {
 	// CallsTo gets counters for each of the methods indicating
 	// how many times each one was called.
 	CallsTo struct {
-		lock sync.Mutex
 {{- range .Methods }}
-		// {{ .Name }} holds the number of calls to the {{.Name}} method.
-		{{ .Name }} int
+		lock{{.Name}} sync.Mutex // protects {{ .Name }}
+		// {{ .Name }} holds details about calls to the {{.Name}} method.
+		{{ .Name }} []struct {
+			{{- range .Params }}
+			{{ .Name | Exported }} {{ .Type }}
+			{{- end }}
+		}
 {{- end }}
 	}
 }
@@ -265,9 +278,17 @@ func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist
 	if mock.{{.Name}}Func == nil {
 		panic("moq: {{$obj.InterfaceName}}Mock.{{.Name}}Func is nil but was just called")
 	}
-	mock.CallsTo.lock.Lock()
-	mock.CallsTo.{{.Name}}++
-	mock.CallsTo.lock.Unlock()
+	mock.CallsTo.lock{{.Name}}.Lock()
+	mock.CallsTo.{{.Name}} = append(mock.CallsTo.{{.Name}}, struct{
+		{{- range .Params }}
+		{{ .Name | Exported }} {{ .Type }}
+		{{- end }}
+	}{
+		{{- range .Params }}
+		{{ .Name | Exported }}: {{ .Name }},
+		{{- end }}
+	})
+	mock.CallsTo.lock{{.Name}}.Unlock()
 {{- if .ReturnArglist }}
 	return mock.{{.Name}}Func({{.ArgCallList}})
 {{- else }}
