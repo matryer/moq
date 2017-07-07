@@ -3,7 +3,9 @@ language: go
 sudo: false
 
 go:
-  - 1.7.1
+  - 1.6.x
+  - 1.7.x
+  - 1.8.x
   - tip
 
 before_install:
