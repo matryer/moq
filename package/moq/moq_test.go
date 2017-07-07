@@ -2,7 +2,6 @@ package moq
 
 import (
 	"bytes"
-	"log"
 	"strings"
 	"testing"
 )
@@ -28,16 +27,16 @@ func TestMoq(t *testing.T) {
 		"func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error)",
 		"panic(\"moq: PersonStoreMock.CreateFunc is nil but was just called\")",
 		"panic(\"moq: PersonStoreMock.GetFunc is nil but was just called\")",
-		"CallsTo struct {",
-		"atomic.AddUint64(&mock.CallsTo.Get, 1)",
-		"ClearCache uint64",
+		"mock.CallsTo.lockGet.Lock()",
+		"mock.CallsTo.Get = append(mock.CallsTo.Get, struct{",
+		"mock.CallsTo.lockGet.Unlock()",
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
 	}
-	log.Println(s)
+
 }
 
 func TestMoqExplicitPackage(t *testing.T) {
