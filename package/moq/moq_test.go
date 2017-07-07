@@ -9,7 +9,7 @@ import (
 func TestMoq(t *testing.T) {
 	m, err := New("testdata/example", "")
 	if err != nil {
-		t.Errorf("moq.New: %s", err)
+		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
 	err = m.Mock(&buf, "PersonStore")
@@ -27,18 +27,22 @@ func TestMoq(t *testing.T) {
 		"func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error)",
 		"panic(\"moq: PersonStoreMock.CreateFunc is nil but was just called\")",
 		"panic(\"moq: PersonStoreMock.GetFunc is nil but was just called\")",
+		"mock.CallsTo.lockGet.Lock()",
+		"mock.CallsTo.Get = append(mock.CallsTo.Get, struct{",
+		"mock.CallsTo.lockGet.Unlock()",
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
 	}
+
 }
 
 func TestMoqExplicitPackage(t *testing.T) {
 	m, err := New("testdata/example", "different")
 	if err != nil {
-		t.Errorf("moq.New: %s", err)
+		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
 	err = m.Mock(&buf, "PersonStore")
@@ -68,7 +72,7 @@ func TestMoqExplicitPackage(t *testing.T) {
 func TestVariadicArguments(t *testing.T) {
 	m, err := New("testdata/variadic", "")
 	if err != nil {
-		t.Errorf("moq.New: %s", err)
+		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
 	err = m.Mock(&buf, "Greeter")
@@ -93,7 +97,7 @@ func TestVariadicArguments(t *testing.T) {
 func TestNothingToReturn(t *testing.T) {
 	m, err := New("testdata/example", "")
 	if err != nil {
-		t.Errorf("moq.New: %s", err)
+		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
 	err = m.Mock(&buf, "PersonStore")
@@ -118,7 +122,7 @@ func TestNothingToReturn(t *testing.T) {
 func TestChannelNames(t *testing.T) {
 	m, err := New("testdata/channels", "")
 	if err != nil {
-		t.Errorf("moq.New: %s", err)
+		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
 	err = m.Mock(&buf, "Queuer")
@@ -131,7 +135,39 @@ func TestChannelNames(t *testing.T) {
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
-			t.Errorf("expected by missing: \"%s\"", str)
+			t.Errorf("expected but missing: \"%s\"", str)
 		}
+	}
+}
+
+func TestImports(t *testing.T) {
+	m, err := New("testdata/imports/two", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "DoSomething")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	var strs = []string{
+		`	"sync"`,
+		`	"github.com/matryer/moq/package/moq/testdata/imports/one"`,
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+		if len(strings.Split(s, str)) > 2 {
+			t.Errorf("more than one: \"%s\"", str)
+		}
+	}
+}
+
+func TestTemplateFuncs(t *testing.T) {
+	fn := templateFuncs["Exported"].(func(string) string)
+	if fn("var") != "Var" {
+		t.Errorf("exported didn't work: %s", fn("var"))
 	}
 }
