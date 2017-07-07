@@ -135,7 +135,7 @@ func TestChannelNames(t *testing.T) {
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
-			t.Errorf("expected by missing: \"%s\"", str)
+			t.Errorf("expected but missing: \"%s\"", str)
 		}
 	}
 }
@@ -157,7 +157,7 @@ func TestImports(t *testing.T) {
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
-			t.Errorf("expected by missing: \"%s\"", str)
+			t.Errorf("expected but missing: \"%s\"", str)
 		}
 		if len(strings.Split(s, str)) > 2 {
 			t.Errorf("more than one: \"%s\"", str)
