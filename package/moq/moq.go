@@ -276,6 +276,7 @@ type {{.InterfaceName}}Mock struct {
 		// {{ .Name }} holds details about calls to the {{.Name}} method.
 		{{ .Name }} []struct {
 			{{- range .Params }}
+			// {{ .Name | Exported }} is the {{ .Name }} argument value.
 			{{ .Name | Exported }} {{ .Type }}
 			{{- end }}
 		}
