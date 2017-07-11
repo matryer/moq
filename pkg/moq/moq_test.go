@@ -2,6 +2,7 @@ package moq
 
 import (
 	"bytes"
+	"log"
 	"strings"
 	"testing"
 )
@@ -27,9 +28,9 @@ func TestMoq(t *testing.T) {
 		"func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error)",
 		"panic(\"moq: PersonStoreMock.CreateFunc is nil but was just called\")",
 		"panic(\"moq: PersonStoreMock.GetFunc is nil but was just called\")",
-		"mock.CallsTo.lockGet.Lock()",
+		"lockPersonStoreMockGet.Lock()",
 		"mock.CallsTo.Get = append(mock.CallsTo.Get, struct{",
-		"mock.CallsTo.lockGet.Unlock()",
+		"lockPersonStoreMockGet.Unlock()",
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
@@ -64,6 +65,7 @@ func TestMoqExplicitPackage(t *testing.T) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
 	}
+	log.Println(s)
 }
 
 // TestVeradicArguments tests to ensure variadic work as
