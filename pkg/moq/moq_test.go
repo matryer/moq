@@ -2,7 +2,6 @@ package moq
 
 import (
 	"bytes"
-	"log"
 	"strings"
 	"testing"
 )
@@ -183,5 +182,14 @@ func TestVendoredPackages(t *testing.T) {
 	if err != nil {
 		t.Errorf("mock error: %s", err)
 	}
-	log.Println(buf.String())
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		`"github.com/matryer/somerepo"`,
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
 }
