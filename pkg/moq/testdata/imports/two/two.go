@@ -1,7 +1,7 @@
 package two
 
 import (
-	"github.com/matryer/moq/package/moq/testdata/imports/one"
+	"github.com/matryer/moq/pkg/moq/testdata/imports/one"
 )
 
 // DoSomething does something.

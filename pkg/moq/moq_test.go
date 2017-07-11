@@ -2,6 +2,7 @@ package moq
 
 import (
 	"bytes"
+	"log"
 	"strings"
 	"testing"
 )
@@ -153,7 +154,7 @@ func TestImports(t *testing.T) {
 	s := buf.String()
 	var strs = []string{
 		`	"sync"`,
-		`	"github.com/matryer/moq/package/moq/testdata/imports/one"`,
+		`	"github.com/matryer/moq/pkg/moq/testdata/imports/one"`,
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
@@ -170,4 +171,17 @@ func TestTemplateFuncs(t *testing.T) {
 	if fn("var") != "Var" {
 		t.Errorf("exported didn't work: %s", fn("var"))
 	}
+}
+
+func TestVendoredPackages(t *testing.T) {
+	m, err := New("testdata/vendoring/user", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Service")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	log.Println(buf.String())
 }
