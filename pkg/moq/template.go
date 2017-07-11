@@ -16,11 +16,9 @@ import (
 )
 
 {{ range $i, $obj := .Objects -}}
-// These locks allow you to use the mocks in a safe way
-// in concurrent code.
 var (
 {{- range .Methods }}
-	lock{{$obj.InterfaceName}}Mock{{.Name}}	sync.Mutex
+	lock{{$obj.InterfaceName}}Mock{{.Name}}	sync.RWMutex
 {{- end }}
 )
 
@@ -37,21 +35,15 @@ var (
 //
 //         // TODO: use mocked{{.InterfaceName}} in code that requires {{.InterfaceName}}
 //         //       and then make assertions.
-//         //
-//         // Use the CallsTo structure to access details about what calls were made:
-//         // 
-//         //     if len(mocked{{.InterfaceName}}.CallsTo.MethodFunc) != 1 {
-//         //     	t.Errorf("expected 1 call there were %d", len(mocked{{.InterfaceName}}.CallsTo.MethodFunc))
-//         //     }
-//         
+// 
 //     }
 type {{.InterfaceName}}Mock struct {
 {{- range .Methods }}
 	// {{.Name}}Func mocks the {{.Name}} method.
 	{{.Name}}Func func({{ .Arglist }}) {{.ReturnArglist}}
 {{ end }}
-	// CallsTo tracks calls to the methods.
-	CallsTo struct {		
+	// calls tracks calls to the methods.
+	calls struct {		
 {{- range .Methods }}
 		// {{ .Name }} holds details about calls to the {{.Name}} method.
 		{{ .Name }} []struct {
@@ -67,10 +59,9 @@ type {{.InterfaceName}}Mock struct {
 // {{.Name}} calls {{.Name}}Func.
 func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist}} {
 	if mock.{{.Name}}Func == nil {
-		panic("moq: {{$obj.InterfaceName}}Mock.{{.Name}}Func is nil but was just called")
+		panic("moq: {{$obj.InterfaceName}}Mock.{{.Name}}Func is nil but {{$obj.InterfaceName}}.{{.Name}} was just called")
 	}
-	lock{{$obj.InterfaceName}}Mock{{.Name}}.Lock()
-	mock.CallsTo.{{.Name}} = append(mock.CallsTo.{{.Name}}, struct{
+	callInfo := struct {
 		{{- range .Params }}
 		{{ .Name | Exported }} {{ .Type }}
 		{{- end }}
@@ -78,13 +69,34 @@ func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist
 		{{- range .Params }}
 		{{ .Name | Exported }}: {{ .Name }},
 		{{- end }}
-	})
+	}
+	lock{{$obj.InterfaceName}}Mock{{.Name}}.Lock()
+	mock.calls.{{.Name}} = append(mock.calls.{{.Name}}, callInfo)
 	lock{{$obj.InterfaceName}}Mock{{.Name}}.Unlock()
 {{- if .ReturnArglist }}
 	return mock.{{.Name}}Func({{.ArgCallList}})
 {{- else }}
 	mock.{{.Name}}Func({{.ArgCallList}})
 {{- end }}
+}
+
+// {{.Name}}Calls gets all the calls that were made to {{.Name}}.
+// Check the length with:
+//     len(mocked{{$obj.InterfaceName}}.{{.Name}}Calls())
+func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}Calls() []struct {
+		{{- range .Params }}
+		{{ .Name | Exported }} {{ .Type }}
+		{{- end }}
+	} {
+	var calls []struct {
+		{{- range .Params }}
+		{{ .Name | Exported }} {{ .Type }}
+		{{- end }}
+	}
+	lock{{$obj.InterfaceName}}Mock{{.Name}}.RLock()
+	calls = mock.calls.{{.Name}}
+	lock{{$obj.InterfaceName}}Mock{{.Name}}.RUnlock()
+	return calls
 }
 {{ end -}}
 {{ end -}}`

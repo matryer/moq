@@ -2,7 +2,6 @@ package moq
 
 import (
 	"bytes"
-	"log"
 	"strings"
 	"testing"
 )
@@ -26,10 +25,10 @@ func TestMoq(t *testing.T) {
 		"GetFunc func(ctx context.Context, id string) (*Person, error)",
 		"func (mock *PersonStoreMock) Create(ctx context.Context, person *Person, confirm bool) error",
 		"func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error)",
-		"panic(\"moq: PersonStoreMock.CreateFunc is nil but was just called\")",
-		"panic(\"moq: PersonStoreMock.GetFunc is nil but was just called\")",
+		"panic(\"moq: PersonStoreMock.CreateFunc is nil but PersonStore.Create was just called\")",
+		"panic(\"moq: PersonStoreMock.GetFunc is nil but PersonStore.Get was just called\")",
 		"lockPersonStoreMockGet.Lock()",
-		"mock.CallsTo.Get = append(mock.CallsTo.Get, struct{",
+		"mock.calls.Get = append(mock.calls.Get, callInfo)",
 		"lockPersonStoreMockGet.Unlock()",
 	}
 	for _, str := range strs {
@@ -37,7 +36,6 @@ func TestMoq(t *testing.T) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
 	}
-
 }
 
 func TestMoqExplicitPackage(t *testing.T) {
@@ -65,7 +63,6 @@ func TestMoqExplicitPackage(t *testing.T) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
 	}
-	log.Println(s)
 }
 
 // TestVeradicArguments tests to ensure variadic work as
