@@ -8,7 +8,7 @@ import (
 )
 
 func TestMoq(t *testing.T) {
-	m, err := New("testdata/example", "")
+	m, err := New("testpackages/example", "")
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -41,7 +41,7 @@ func TestMoq(t *testing.T) {
 }
 
 func TestMoqExplicitPackage(t *testing.T) {
-	m, err := New("testdata/example", "different")
+	m, err := New("testpackages/example", "different")
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -71,7 +71,7 @@ func TestMoqExplicitPackage(t *testing.T) {
 // expected.
 // see https://github.com/matryer/moq/issues/5
 func TestVariadicArguments(t *testing.T) {
-	m, err := New("testdata/variadic", "")
+	m, err := New("testpackages/variadic", "")
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -96,7 +96,7 @@ func TestVariadicArguments(t *testing.T) {
 }
 
 func TestNothingToReturn(t *testing.T) {
-	m, err := New("testdata/example", "")
+	m, err := New("testpackages/example", "")
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -121,7 +121,7 @@ func TestNothingToReturn(t *testing.T) {
 }
 
 func TestChannelNames(t *testing.T) {
-	m, err := New("testdata/channels", "")
+	m, err := New("testpackages/channels", "")
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -142,7 +142,7 @@ func TestChannelNames(t *testing.T) {
 }
 
 func TestImports(t *testing.T) {
-	m, err := New("testdata/imports/two", "")
+	m, err := New("testpackages/imports/two", "")
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -154,7 +154,7 @@ func TestImports(t *testing.T) {
 	s := buf.String()
 	var strs = []string{
 		`	"sync"`,
-		`	"github.com/matryer/moq/pkg/moq/testdata/imports/one"`,
+		`	"github.com/matryer/moq/pkg/moq/testpackages/imports/one"`,
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
@@ -174,7 +174,7 @@ func TestTemplateFuncs(t *testing.T) {
 }
 
 func TestVendoredPackages(t *testing.T) {
-	m, err := New("testdata/vendoring/user", "")
+	m, err := New("testpackages/vendoring/user", "")
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
