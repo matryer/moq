@@ -67,6 +67,11 @@ func vendorPath(source, pkg string) (string, bool) {
 		if isGopath(source) {
 			return "", false
 		}
+		var err error
+		source, err = filepath.Abs(source)
+		if err != nil {
+			return "", false
+		}
 		vendorPath, err := filepath.Abs(path.Join(source, "vendor", pkg))
 		if err != nil {
 			return "", false
@@ -75,9 +80,6 @@ func vendorPath(source, pkg string) (string, bool) {
 			return vendorPath, true
 		}
 		source = filepath.Dir(source)
-		if source == "." {
-			return "", false
-		}
 	}
 }
 
