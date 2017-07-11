@@ -76,7 +76,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 			files[i] = file
 			i++
 		}
-		conf := types.Config{Importer: newImporter()}
+		conf := types.Config{Importer: newImporter(m.src)}
 		tpkg, err := conf.Check(m.src, m.fset, files, nil)
 		if err != nil {
 			return err
