@@ -4,13 +4,13 @@ package example
 // github.com/matryer/moq
 
 import (
-	"sync"
 	"context"
+	"sync"
 )
 
 var (
-	lockPersonStoreMockCreate	sync.RWMutex
-	lockPersonStoreMockGet	sync.RWMutex
+	lockPersonStoreMockCreate sync.RWMutex
+	lockPersonStoreMockGet    sync.RWMutex
 )
 
 // PersonStoreMock is a mock implementation of PersonStore.
@@ -18,7 +18,7 @@ var (
 //     func TestSomethingThatUsesPersonStore(t *testing.T) {
 //
 //         // make and configure a mocked PersonStore
-//         mockedPersonStore := &PersonStoreMock{ 
+//         mockedPersonStore := &PersonStoreMock{
 //             CreateFunc: func(ctx context.Context, person *Person, confirm bool) error {
 // 	               panic("TODO: mock out the Create method")
 //             },
@@ -29,7 +29,7 @@ var (
 //
 //         // TODO: use mockedPersonStore in code that requires PersonStore
 //         //       and then make assertions.
-// 
+//
 //     }
 type PersonStoreMock struct {
 	// CreateFunc mocks the Create method.
@@ -65,12 +65,12 @@ func (mock *PersonStoreMock) Create(ctx context.Context, person *Person, confirm
 		panic("moq: PersonStoreMock.CreateFunc is nil but PersonStore.Create was just called")
 	}
 	callInfo := struct {
-		Ctx context.Context
-		Person *Person
+		Ctx     context.Context
+		Person  *Person
 		Confirm bool
 	}{
-		Ctx: ctx,
-		Person: person,
+		Ctx:     ctx,
+		Person:  person,
 		Confirm: confirm,
 	}
 	lockPersonStoreMockCreate.Lock()
@@ -83,13 +83,13 @@ func (mock *PersonStoreMock) Create(ctx context.Context, person *Person, confirm
 // Check the length with:
 //     len(mockedPersonStore.CreateCalls())
 func (mock *PersonStoreMock) CreateCalls() []struct {
-		Ctx context.Context
-		Person *Person
-		Confirm bool
-	} {
+	Ctx     context.Context
+	Person  *Person
+	Confirm bool
+} {
 	var calls []struct {
-		Ctx context.Context
-		Person *Person
+		Ctx     context.Context
+		Person  *Person
 		Confirm bool
 	}
 	lockPersonStoreMockCreate.RLock()
@@ -105,10 +105,10 @@ func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error
 	}
 	callInfo := struct {
 		Ctx context.Context
-		Id string
+		Id  string
 	}{
 		Ctx: ctx,
-		Id: id,
+		Id:  id,
 	}
 	lockPersonStoreMockGet.Lock()
 	mock.calls.Get = append(mock.calls.Get, callInfo)
@@ -120,12 +120,12 @@ func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error
 // Check the length with:
 //     len(mockedPersonStore.GetCalls())
 func (mock *PersonStoreMock) GetCalls() []struct {
-		Ctx context.Context
-		Id string
-	} {
+	Ctx context.Context
+	Id  string
+} {
 	var calls []struct {
 		Ctx context.Context
-		Id string
+		Id  string
 	}
 	lockPersonStoreMockGet.RLock()
 	calls = mock.calls.Get
