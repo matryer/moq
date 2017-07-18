@@ -196,7 +196,7 @@ func TestVendoredPackages(t *testing.T) {
 
 // TestDotImports tests for https://github.com/matryer/moq/issues/21.
 func TestDotImports(t *testing.T) {
-	err := os.Chdir("testpackages/issue-21")
+	err := os.Chdir("testpackages/dotimport")
 	if err != nil {
 		t.Errorf("Chdir: %s", err)
 	}
@@ -210,7 +210,7 @@ func TestDotImports(t *testing.T) {
 		t.Errorf("mock error: %s", err)
 	}
 	s := buf.String()
-	if strings.Contains(s, `"."`) {
+	if !strings.Contains(s, `"github.com/matryer/moq/pkg/moq/testpackages/dotimport"`) {
 		t.Error("contains invalid dot import")
 	}
 }

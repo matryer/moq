@@ -120,10 +120,14 @@ func (m *Mocker) packageQualifier(pkg *types.Package) string {
 	if m.pkgName == pkg.Name() {
 		return ""
 	}
+	path := pkg.Path()
 	if pkg.Path() == "." {
-		return ""
+		wd, err := os.Getwd()
+		if err == nil {
+			path = stripGopath(wd)
+		}
 	}
-	m.imports[pkg.Path()] = true
+	m.imports[path] = true
 	return pkg.Name()
 }
 

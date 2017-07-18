@@ -1,4 +1,4 @@
-package moqtest_test
+package dotimport_test
 
 import "testing"
 
