@@ -120,6 +120,9 @@ func (m *Mocker) packageQualifier(pkg *types.Package) string {
 	if m.pkgName == pkg.Name() {
 		return ""
 	}
+	if pkg.Path() == "." {
+		return ""
+	}
 	m.imports[pkg.Path()] = true
 	return pkg.Name()
 }

@@ -2,6 +2,7 @@ package moq
 
 import (
 	"bytes"
+	"os"
 	"strings"
 	"testing"
 )
@@ -190,5 +191,26 @@ func TestVendoredPackages(t *testing.T) {
 		if !strings.Contains(s, str) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
+	}
+}
+
+// TestDotImports tests for https://github.com/matryer/moq/issues/21.
+func TestDotImports(t *testing.T) {
+	err := os.Chdir("testpackages/issue-21")
+	if err != nil {
+		t.Errorf("Chdir: %s", err)
+	}
+	m, err := New(".", "moqtest_test")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Service")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	s := buf.String()
+	if strings.Contains(s, `"."`) {
+		t.Error("contains invalid dot import")
 	}
 }
