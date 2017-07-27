@@ -196,10 +196,20 @@ func TestVendoredPackages(t *testing.T) {
 
 // TestDotImports tests for https://github.com/matryer/moq/issues/21.
 func TestDotImports(t *testing.T) {
-	err := os.Chdir("testpackages/dotimport")
+	preDir, err := os.Getwd()
+	if err != nil {
+		t.Errorf("Getwd: %s", err)
+	}
+	err = os.Chdir("testpackages/dotimport")
 	if err != nil {
 		t.Errorf("Chdir: %s", err)
 	}
+	defer func() {
+		err := os.Chdir(preDir)
+		if err != nil {
+			t.Errorf("Chdir back: %s", err)
+		}
+	}()
 	m, err := New(".", "moqtest_test")
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
