@@ -177,7 +177,7 @@ func newImporter(source string) types.Importer {
 // }
 
 // stripGopath teks the directory to a package and remove the gopath to get the
-// cannonical package name
+// canonical package name.
 func stripGopath(p string) string {
 	for _, gopath := range gopaths() {
 		p = strings.TrimPrefix(p, path.Join(gopath, "src")+"/")
