@@ -1,9 +1,11 @@
 package moq
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"go/ast"
+	"go/format"
 	"go/parser"
 	"go/token"
 	"go/types"
@@ -114,8 +116,16 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 	for pkgToImport := range m.imports {
 		doc.Imports = append(doc.Imports, pkgToImport)
 	}
-	err := m.tmpl.Execute(w, doc)
+	var buf bytes.Buffer
+	err := m.tmpl.Execute(&buf, doc)
 	if err != nil {
+		return err
+	}
+	formatted, err := format.Source(buf.Bytes())
+	if err != nil {
+		return fmt.Errorf("go/format: %s", err)
+	}
+	if _, err := w.Write(formatted); err != nil {
 		return err
 	}
 	return nil
