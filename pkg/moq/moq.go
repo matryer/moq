@@ -71,6 +71,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 		PackageName: m.pkgName,
 		Imports:     moqImports,
 	}
+	mocksMethods := false
 	for _, pkg := range m.pkgs {
 		i := 0
 		files := make([]*ast.File, len(pkg.Files))
@@ -96,6 +97,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 				InterfaceName: n,
 			}
 			for i := 0; i < iiface.NumMethods(); i++ {
+				mocksMethods = true
 				meth := iiface.Method(i)
 				sig := meth.Type().(*types.Signature)
 				method := &method{
@@ -107,6 +109,9 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 			}
 			doc.Objects = append(doc.Objects, obj)
 		}
+	}
+	if mocksMethods {
+		doc.Imports = append(doc.Imports, "sync")
 	}
 	for pkgToImport := range m.imports {
 		doc.Imports = append(doc.Imports, pkgToImport)

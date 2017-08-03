@@ -224,3 +224,19 @@ func TestDotImports(t *testing.T) {
 		t.Error("contains invalid dot import")
 	}
 }
+
+func TestEmptyInterface(t *testing.T) {
+	m, err := New("testpackages/emptyinterface", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Empty")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	s := buf.String()
+	if strings.Contains(s, `"sync"`) {
+		t.Error("contains sync import, although this package isn't used")
+	}
+}
