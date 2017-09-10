@@ -74,8 +74,9 @@ func TestCompleteSignup(t *testing.T) {
 
 	CompleteSignUp("me@email.com", mockedEmailSender)
 
-	if mockedEmailSender.CallsTo.Send != 1 {
-		t.Errorf("Send was called %d times", mockedEmailSender.CallsTo.Send)
+	callsToSend := len(mockedEmailSender.SendCalls())
+	if callsToSend != 1 {
+		t.Errorf("Send was called %d times", callsToSend)
 	}
 	if sentTo != "me@email.com" {
 		t.Errorf("unexpected recipient: %s", sentTo)
