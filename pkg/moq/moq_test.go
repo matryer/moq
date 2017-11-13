@@ -31,6 +31,7 @@ func TestMoq(t *testing.T) {
 		"lockPersonStoreMockGet.Lock()",
 		"mock.calls.Get = append(mock.calls.Get, callInfo)",
 		"lockPersonStoreMockGet.Unlock()",
+		"// ID is the id argument value",
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
