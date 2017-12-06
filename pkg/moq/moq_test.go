@@ -2,7 +2,9 @@ package moq
 
 import (
 	"bytes"
+	"io"
 	"os"
+	"os/exec"
 	"strings"
 	"testing"
 )
@@ -238,5 +240,33 @@ func TestEmptyInterface(t *testing.T) {
 	s := buf.String()
 	if strings.Contains(s, `"sync"`) {
 		t.Error("contains sync import, although this package isn't used")
+	}
+}
+
+func TestGoGenerateVendoredPackages(t *testing.T) {
+	cmd := exec.Command("go", "generate", "./...")
+	cmd.Dir = "testpackages/gogenvendoring"
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		t.Errorf("StdoutPipe: %s", err)
+	}
+	defer stdout.Close()
+	err = cmd.Start()
+	if err != nil {
+		t.Errorf("Start: %s", err)
+	}
+	buf := bytes.NewBuffer(nil)
+	io.Copy(buf, stdout)
+	err = cmd.Wait()
+	if err != nil {
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			t.Errorf("Wait: %s %s", exitErr, string(exitErr.Stderr))
+		} else {
+			t.Errorf("Wait: %s", err)
+		}
+	}
+	s := buf.String()
+	if strings.Contains(s, `vendor/`) {
+		t.Error("contains vendor directory in import path")
 	}
 }
