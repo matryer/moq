@@ -59,7 +59,7 @@ type {{.InterfaceName}}Mock struct {
 // {{.Name}} calls {{.Name}}Func.
 func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist}} {
 	if mock.{{.Name}}Func == nil {
-		panic("moq: {{$obj.InterfaceName}}Mock.{{.Name}}Func is nil but {{$obj.InterfaceName}}.{{.Name}} was just called")
+		panic("{{$obj.InterfaceName}}Mock.{{.Name}}Func: method is nil but {{$obj.InterfaceName}}.{{.Name}} was just called")
 	}
 	callInfo := struct {
 		{{- range .Params }}
