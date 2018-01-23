@@ -70,7 +70,7 @@ type Mocker struct {
 }
 
 // New makes a new Mocker for the specified package directory.
-func New(src, packageName string) (*Mocker, error) {
+func New(src, packageName string, nopanic bool) (*Mocker, error) {
 	fset := token.NewFileSet()
 	noTestFiles := func(i os.FileInfo) bool {
 		return !strings.HasSuffix(i.Name(), "_test.go")
@@ -91,10 +91,16 @@ func New(src, packageName string) (*Mocker, error) {
 	if len(packageName) == 0 {
 		return nil, errors.New("failed to determine package name")
 	}
-	tmpl, err := template.New("moq").Funcs(templateFuncs).Parse(moqTemplate)
+	tmpl := template.New("moq").Funcs(templateFuncs)
+	if nopanic {
+		tmpl, err = tmpl.Parse(moqTemplateNoPanic)
+	} else {
+		tmpl, err = tmpl.Parse(moqTemplate)
+	}
 	if err != nil {
 		return nil, err
 	}
+
 	return &Mocker{
 		src:     src,
 		tmpl:    tmpl,
@@ -250,6 +256,22 @@ func (m *method) ReturnArglist() string {
 	}
 	if len(m.Returns) > 1 {
 		return fmt.Sprintf("(%s)", strings.Join(params, ", "))
+	}
+	return strings.Join(params, ", ")
+}
+
+func (m *method) NamedReturnArglist() string {
+	params := make([]string, len(m.Returns))
+	for i, p := range m.Returns {
+		params[i] = fmt.Sprintf("_r%v %v", i, p.TypeString())
+	}
+	return fmt.Sprintf("(%s)", strings.Join(params, ", "))
+}
+
+func (m *method) NamedReturnArgCallList() string {
+	params := make([]string, len(m.Returns))
+	for i := range m.Returns {
+		params[i] = fmt.Sprintf("_r%v", i)
 	}
 	return strings.Join(params, ", ")
 }
