@@ -341,6 +341,9 @@ func stripVendorPath(p string) string {
 // taken from https://github.com/ernesto-jimenez/gogen
 // Copyright (c) 2015 Ernesto Jiménez
 func stripGopath(p string) string {
+	// TODO: Is it correct to possibly trim the path multiple times? After p
+	// has a prefix removed from it, then anything subsequently identified as a
+	// prefix wouldn't actually be a prefix of the original p?
 	for _, gopath := range gopaths() {
 		p = strings.TrimPrefix(p, filepath.Join(gopath, "src")+string(filepath.Separator))
 	}
