@@ -187,7 +187,7 @@ func (m *Mocker) packageQualifier(pkg *types.Package) string {
 	if pkg.Path() == "." {
 		wd, err := os.Getwd()
 		if err == nil {
-			path = stripGopath(wd)
+			path = filepath.ToSlash(stripGopath(wd))
 		}
 	}
 	m.imports[path] = true
@@ -222,7 +222,7 @@ func (*Mocker) pkgInfoFromPath(src string) (*loader.PackageInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	pkgFull := stripGopath(abs)
+	pkgFull := filepath.ToSlash(stripGopath(abs))
 
 	conf := loader.Config{
 		ParserMode: parser.SpuriousErrors,
@@ -342,7 +342,7 @@ func stripVendorPath(p string) string {
 // Copyright (c) 2015 Ernesto Jiménez
 func stripGopath(p string) string {
 	for _, gopath := range gopaths() {
-		p = strings.TrimPrefix(p, path.Join(gopath, "src")+"/")
+		p = strings.TrimPrefix(p, filepath.Join(gopath, "src")+string(filepath.Separator))
 	}
 	return p
 }
