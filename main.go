@@ -55,6 +55,6 @@ func main() {
 	}
 	// create the file
 	if len(*outFile) > 0 {
-		err = ioutil.WriteFile(*outFile, buf.Bytes(), 0777)
+		err = ioutil.WriteFile(*outFile, buf.Bytes(), 0644)
 	}
 }
