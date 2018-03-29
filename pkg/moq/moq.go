@@ -294,7 +294,7 @@ func (m *method) ReturnArglist() string {
 func (m *method) NamedReturnArglist() string {
 	params := make([]string, len(m.Returns))
 	for i, p := range m.Returns {
-		params[i] = fmt.Sprintf("_r%v %v", i, p.TypeString())
+		params[i] = fmt.Sprintf("out%d %s", i+1, p.TypeString())
 	}
 	return fmt.Sprintf("(%s)", strings.Join(params, ", "))
 }
@@ -302,7 +302,7 @@ func (m *method) NamedReturnArglist() string {
 func (m *method) NamedReturnArgCallList() string {
 	params := make([]string, len(m.Returns))
 	for i := range m.Returns {
-		params[i] = fmt.Sprintf("_r%v", i)
+		params[i] = fmt.Sprintf("out%d", i+1)
 	}
 	return strings.Join(params, ", ")
 }
