@@ -46,26 +46,26 @@ type {{.InterfaceName}}Mock struct {
 	calls struct {
 {{- range .Methods }}
 		// {{ .Name }} holds details about calls to the {{.Name}} method.
-		{{ .Name }} []struct {
-			{{- range .Params }}
-			// {{ .Name | Exported }} is the {{ .Name }} argument value.
-			{{ .Name | Exported }} {{ .Type }}
-			{{- end }}
-		}
+		{{ .Name }} []{{.Name}}Call
 {{- end }}
 	}
 }
 {{ range .Methods }}
+
+// {{.Name}}Call represents the input arguments to {{.Name}}
+type {{.Name}}Call struct {
+	{{- range .Params }}
+	// {{ .Name | Exported }} is the {{ .Name }} argument value.
+	{{ .Name | Exported }} {{ .Type }}
+	{{- end }}
+}
+
 // {{.Name}} calls {{.Name}}Func.
 func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist}} {
 	if mock.{{.Name}}Func == nil {
 		panic("moq: {{$obj.InterfaceName}}Mock.{{.Name}}Func is nil but {{$obj.InterfaceName}}.{{.Name}} was just called")
 	}
-	callInfo := struct {
-		{{- range .Params }}
-		{{ .Name | Exported }} {{ .Type }}
-		{{- end }}
-	}{
+	callInfo := {{.Name}}Call {
 		{{- range .Params }}
 		{{ .Name | Exported }}: {{ .Name }},
 		{{- end }}
@@ -83,20 +83,10 @@ func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist
 // {{.Name}}Calls gets all the calls that were made to {{.Name}}.
 // Check the length with:
 //     len(mocked{{$obj.InterfaceName}}.{{.Name}}Calls())
-func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}Calls() []struct {
-		{{- range .Params }}
-		{{ .Name | Exported }} {{ .Type }}
-		{{- end }}
-	} {
-	var calls []struct {
-		{{- range .Params }}
-		{{ .Name | Exported }} {{ .Type }}
-		{{- end }}
-	}
+func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}Calls() []{{.Name}}Call {
 	lock{{$obj.InterfaceName}}Mock{{.Name}}.RLock()
-	calls = mock.calls.{{.Name}}
-	lock{{$obj.InterfaceName}}Mock{{.Name}}.RUnlock()
-	return calls
+	defer lock{{$obj.InterfaceName}}Mock{{.Name}}.RUnlock()
+	return mock.calls.{{.Name}}
 }
 {{ end -}}
 {{ end -}}`
