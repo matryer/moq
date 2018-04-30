@@ -42,6 +42,39 @@ func TestMoq(t *testing.T) {
 	}
 }
 
+func TestMoqWithAlias(t *testing.T) {
+	m, err := New("testpackages/example", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "PersonStore:AnotherPersonStore")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		"package example",
+		"type AnotherPersonStoreMock struct",
+		"CreateFunc func(ctx context.Context, person *Person, confirm bool) error",
+		"GetFunc func(ctx context.Context, id string) (*Person, error)",
+		"func (mock *AnotherPersonStoreMock) Create(ctx context.Context, person *Person, confirm bool) error",
+		"func (mock *AnotherPersonStoreMock) Get(ctx context.Context, id string) (*Person, error)",
+		"panic(\"moq: AnotherPersonStoreMock.CreateFunc is nil but AnotherPersonStore.Create was just called\")",
+		"panic(\"moq: AnotherPersonStoreMock.GetFunc is nil but AnotherPersonStore.Get was just called\")",
+		"lockAnotherPersonStoreMockGet.Lock()",
+		"mock.calls.Get = append(mock.calls.Get, callInfo)",
+		"lockAnotherPersonStoreMockGet.Unlock()",
+		"// ID is the id argument value",
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}
+
 func TestMoqExplicitPackage(t *testing.T) {
 	m, err := New("testpackages/example", "different")
 	if err != nil {

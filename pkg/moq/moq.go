@@ -112,8 +112,8 @@ func New(src, packageName string) (*Mocker, error) {
 }
 
 // Mock generates a mock for the specified interface name.
-func (m *Mocker) Mock(w io.Writer, name ...string) error {
-	if len(name) == 0 {
+func (m *Mocker) Mock(w io.Writer, names ...string) error {
+	if len(names) == 0 {
 		return errors.New("must specify one interface")
 	}
 
@@ -130,7 +130,13 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 	mocksMethods := false
 
 	tpkg := pkgInfo.Pkg
-	for _, n := range name {
+	for _, name := range names {
+		parts := strings.SplitN(name, ":", 2)
+		n := parts[0]
+		alias := n
+		if len(parts) == 2 {
+			alias = parts[1]
+		}
 		iface := tpkg.Scope().Lookup(n)
 		if iface == nil {
 			return fmt.Errorf("cannot find interface %s", n)
@@ -140,7 +146,8 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 		}
 		iiface := iface.Type().Underlying().(*types.Interface).Complete()
 		obj := obj{
-			InterfaceName: n,
+			InterfaceName:   alias,
+			MockedInterface: n,
 		}
 		for i := 0; i < iiface.NumMethods(); i++ {
 			mocksMethods = true
@@ -249,8 +256,9 @@ type doc struct {
 }
 
 type obj struct {
-	InterfaceName string
-	Methods       []*method
+	InterfaceName   string
+	MockedInterface string
+	Methods         []*method
 }
 type method struct {
 	Name    string

@@ -22,7 +22,7 @@ var (
 {{- end }}
 )
 
-// {{.InterfaceName}}Mock is a mock implementation of {{.InterfaceName}}.
+// {{.InterfaceName}}Mock is a mock implementation of {{.MockedInterface}}.
 //
 //     func TestSomethingThatUses{{.InterfaceName}}(t *testing.T) {
 //
