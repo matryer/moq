@@ -171,6 +171,10 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 		doc.Imports = append(doc.Imports, stripVendorPath(pkgToImport))
 	}
 
+	if tpkg.Name() != m.pkgName {
+		doc.SourcePackagePrefix = tpkg.Name() + "."
+	}
+
 	var buf bytes.Buffer
 	err = m.tmpl.Execute(&buf, doc)
 	if err != nil {
@@ -249,9 +253,10 @@ func pkgInfoFromPath(src string) (*loader.PackageInfo, error) {
 }
 
 type doc struct {
-	PackageName string
-	Objects     []obj
-	Imports     []string
+	PackageName         string
+	SourcePackagePrefix string
+	Objects             []obj
+	Imports             []string
 }
 
 type obj struct {
