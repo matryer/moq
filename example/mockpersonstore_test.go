@@ -62,7 +62,7 @@ type PersonStoreMock struct {
 // Create calls CreateFunc.
 func (mock *PersonStoreMock) Create(ctx context.Context, person *Person, confirm bool) error {
 	if mock.CreateFunc == nil {
-		panic("moq: PersonStoreMock.CreateFunc is nil but PersonStore.Create was just called")
+		panic("PersonStoreMock.CreateFunc: method is nil but PersonStore.Create was just called")
 	}
 	callInfo := struct {
 		Ctx     context.Context
@@ -101,7 +101,7 @@ func (mock *PersonStoreMock) CreateCalls() []struct {
 // Get calls GetFunc.
 func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error) {
 	if mock.GetFunc == nil {
-		panic("moq: PersonStoreMock.GetFunc is nil but PersonStore.Get was just called")
+		panic("PersonStoreMock.GetFunc: method is nil but PersonStore.Get was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context

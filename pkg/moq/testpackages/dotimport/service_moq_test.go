@@ -44,7 +44,7 @@ type ServiceMock struct {
 // User calls UserFunc.
 func (mock *ServiceMock) User(ID string) (dotimport.User, error) {
 	if mock.UserFunc == nil {
-		panic("moq: ServiceMock.UserFunc is nil but Service.User was just called")
+		panic("ServiceMock.UserFunc: method is nil but Service.User was just called")
 	}
 	callInfo := struct {
 		ID string

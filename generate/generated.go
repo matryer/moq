@@ -61,7 +61,7 @@ type MyInterfaceMock struct {
 // One calls OneFunc.
 func (mock *MyInterfaceMock) One() bool {
 	if mock.OneFunc == nil {
-		panic("moq: MyInterfaceMock.OneFunc is nil but MyInterface.One was just called")
+		panic("MyInterfaceMock.OneFunc: method is nil but MyInterface.One was just called")
 	}
 	callInfo := struct {
 	}{}
@@ -87,7 +87,7 @@ func (mock *MyInterfaceMock) OneCalls() []struct {
 // Three calls ThreeFunc.
 func (mock *MyInterfaceMock) Three() string {
 	if mock.ThreeFunc == nil {
-		panic("moq: MyInterfaceMock.ThreeFunc is nil but MyInterface.Three was just called")
+		panic("MyInterfaceMock.ThreeFunc: method is nil but MyInterface.Three was just called")
 	}
 	callInfo := struct {
 	}{}
@@ -113,7 +113,7 @@ func (mock *MyInterfaceMock) ThreeCalls() []struct {
 // Two calls TwoFunc.
 func (mock *MyInterfaceMock) Two() int {
 	if mock.TwoFunc == nil {
-		panic("moq: MyInterfaceMock.TwoFunc is nil but MyInterface.Two was just called")
+		panic("MyInterfaceMock.TwoFunc: method is nil but MyInterface.Two was just called")
 	}
 	callInfo := struct {
 	}{}
