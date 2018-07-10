@@ -283,8 +283,7 @@ func TestImportedPackageWithSameName(t *testing.T) {
 		t.Errorf("mock error: %s", err)
 	}
 	s := buf.String()
-	if !strings.Contains(s, `"samenameimport.A"`) {
-		t.Error("missing samenameimport.A to address the struct A from the external package samenameimport")
+	if !strings.Contains(s, `a samename.A`) {
+		t.Error("missing samename.A to address the struct A from the external package samename")
 	}
-	t.Logf("\n\n%s\n\n", s)
 }
