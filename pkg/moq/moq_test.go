@@ -271,3 +271,20 @@ func TestGoGenerateVendoredPackages(t *testing.T) {
 		t.Error("contains vendor directory in import path")
 	}
 }
+
+func TestImportedPackageWithSameName(t *testing.T) {
+	m, err := New("testpackages/samenameimport", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Example")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	s := buf.String()
+	if !strings.Contains(s, `"samenameimport.A"`) {
+		t.Error("missing samenameimport.A to address the struct A from the external package samenameimport")
+	}
+	t.Logf("\n\n%s\n\n", s)
+}
