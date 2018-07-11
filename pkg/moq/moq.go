@@ -69,6 +69,7 @@ type Mocker struct {
 	fset    *token.FileSet
 	pkgs    map[string]*ast.Package
 	pkgName string
+	pkgPath string
 
 	imports map[string]bool
 }
@@ -79,13 +80,17 @@ func New(src, packageName string) (*Mocker, error) {
 	noTestFiles := func(i os.FileInfo) bool {
 		return !strings.HasSuffix(i.Name(), "_test.go")
 	}
+	wd, err := os.Getwd()
+	if err != nil {
+		return nil, fmt.Errorf("failed to determin current working directory: %s", err)
+	}
+	packagePath := stripGopath(filepath.Join(wd, src, packageName))
 
 	pkgs, err := parser.ParseDir(fset, src, noTestFiles, parser.SpuriousErrors)
 	if err != nil {
 		return nil, err
 	}
 	if len(packageName) == 0 {
-
 		for pkgName := range pkgs {
 			if strings.Contains(pkgName, "_test") {
 				continue
@@ -97,6 +102,7 @@ func New(src, packageName string) (*Mocker, error) {
 	if len(packageName) == 0 {
 		return nil, errors.New("failed to determine package name")
 	}
+
 	tmpl, err := template.New("moq").Funcs(templateFuncs).Parse(moqTemplate)
 	if err != nil {
 		return nil, err
@@ -107,6 +113,7 @@ func New(src, packageName string) (*Mocker, error) {
 		fset:    fset,
 		pkgs:    pkgs,
 		pkgName: packageName,
+		pkgPath: packagePath,
 		imports: make(map[string]bool),
 	}, nil
 }
@@ -117,7 +124,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 		return errors.New("must specify one interface")
 	}
 
-	pkgInfo, err := m.pkgInfoFromPath(m.src)
+	pkgInfo, err := pkgInfoFromPath(m.src)
 	if err != nil {
 		return err
 	}
@@ -180,7 +187,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 }
 
 func (m *Mocker) packageQualifier(pkg *types.Package) string {
-	if m.pkgName == pkg.Name() {
+	if m.pkgPath == pkg.Path() {
 		return ""
 	}
 	path := pkg.Path()
@@ -216,8 +223,7 @@ func (m *Mocker) extractArgs(sig *types.Signature, list *types.Tuple, nameFormat
 	return params
 }
 
-func (*Mocker) pkgInfoFromPath(src string) (*loader.PackageInfo, error) {
-
+func pkgInfoFromPath(src string) (*loader.PackageInfo, error) {
 	abs, err := filepath.Abs(src)
 	if err != nil {
 		return nil, err

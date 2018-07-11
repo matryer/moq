@@ -223,7 +223,7 @@ func TestDotImports(t *testing.T) {
 		t.Errorf("mock error: %s", err)
 	}
 	s := buf.String()
-	if !strings.Contains(s, `/moq/pkg/moq/testpackages/dotimport"`) {
+	if strings.Contains(s, `"."`) {
 		t.Error("contains invalid dot import")
 	}
 }
