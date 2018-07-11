@@ -29,11 +29,11 @@ var (
 //         // make and configure a mocked {{.InterfaceName}}
 //         mocked{{.InterfaceName}} := &{{.InterfaceName}}Mock{ {{ range .Methods }}
 //             {{.Name}}Func: func({{ .Arglist }}) {{.ReturnArglist}} {
-// 	               panic("TODO: mock out the {{.Name}} method")
+// 	               panic("{{if .AddTodo}}TODO: {{end}}Mock out the {{.Name}} method")
 //             },{{- end }}
 //         }
 //
-//         // TODO: use mocked{{.InterfaceName}} in code that requires {{.InterfaceName}}
+//         // {{if .AddTodo}}TODO: {{end}}Use mocked{{.InterfaceName}} in code that requires {{.InterfaceName}}
 //         //       and then make assertions.
 //
 //     }

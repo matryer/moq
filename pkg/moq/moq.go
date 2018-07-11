@@ -65,12 +65,13 @@ type Mocker struct {
 	fset    *token.FileSet
 	pkgs    map[string]*ast.Package
 	pkgName string
+	addTodo bool
 
 	imports map[string]bool
 }
 
 // New makes a new Mocker for the specified package directory.
-func New(src, packageName string) (*Mocker, error) {
+func New(src, packageName string, addTodo bool) (*Mocker, error) {
 	fset := token.NewFileSet()
 	noTestFiles := func(i os.FileInfo) bool {
 		return !strings.HasSuffix(i.Name(), "_test.go")
@@ -102,6 +103,7 @@ func New(src, packageName string) (*Mocker, error) {
 		pkgs:    pkgs,
 		pkgName: packageName,
 		imports: make(map[string]bool),
+		addTodo: addTodo,
 	}, nil
 }
 
@@ -138,13 +140,15 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 			iiface := iface.Type().Underlying().(*types.Interface).Complete()
 			obj := obj{
 				InterfaceName: n,
+				AddTodo:       m.addTodo,
 			}
 			for i := 0; i < iiface.NumMethods(); i++ {
 				mocksMethods = true
 				meth := iiface.Method(i)
 				sig := meth.Type().(*types.Signature)
 				method := &method{
-					Name: meth.Name(),
+					Name:    meth.Name(),
+					AddTodo: m.addTodo,
 				}
 				obj.Methods = append(obj.Methods, method)
 				method.Params = m.extractArgs(sig, sig.Params(), "in%d")
@@ -220,11 +224,13 @@ type doc struct {
 type obj struct {
 	InterfaceName string
 	Methods       []*method
+	AddTodo       bool
 }
 type method struct {
 	Name    string
 	Params  []*param
 	Returns []*param
+	AddTodo bool
 }
 
 func (m *method) Arglist() string {
