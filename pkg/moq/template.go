@@ -34,7 +34,7 @@ var (
 //         }
 //
 //         // {{if .AddTodo}}TODO: {{end}}Use mocked{{.InterfaceName}} in code that requires {{.InterfaceName}}
-//         //       and then make assertions.
+//         // {{if .AddTodo}}      {{end}}and then make assertions.
 //
 //     }
 type {{.InterfaceName}}Mock struct {

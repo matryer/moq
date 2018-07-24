@@ -42,6 +42,40 @@ func TestMoq(t *testing.T) {
 	}
 }
 
+func TestTodoIncluded(t *testing.T) {
+	m, err := New("testpackages/example", "", true)
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "PersonStore")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	if !strings.Contains(s, "TODO") {
+		t.Errorf("Expected TODO comments not to be included")
+	}
+}
+
+func TestTodoNotIncluded(t *testing.T) {
+	m, err := New("testpackages/example", "", false)
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "PersonStore")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	if strings.Contains(s, "TODO") {
+		t.Errorf("Expected TODO comments to be included")
+	}
+}
+
 func TestMoqExplicitPackage(t *testing.T) {
 	m, err := New("testpackages/example", "different", true)
 	if err != nil {
