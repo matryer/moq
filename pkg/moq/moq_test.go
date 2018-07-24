@@ -223,7 +223,7 @@ func TestDotImports(t *testing.T) {
 		t.Errorf("mock error: %s", err)
 	}
 	s := buf.String()
-	if !strings.Contains(s, `/moq/pkg/moq/testpackages/dotimport"`) {
+	if strings.Contains(s, `"."`) {
 		t.Error("contains invalid dot import")
 	}
 }
@@ -269,5 +269,21 @@ func TestGoGenerateVendoredPackages(t *testing.T) {
 	s := buf.String()
 	if strings.Contains(s, `vendor/`) {
 		t.Error("contains vendor directory in import path")
+	}
+}
+
+func TestImportedPackageWithSameName(t *testing.T) {
+	m, err := New("testpackages/samenameimport", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Example")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	s := buf.String()
+	if !strings.Contains(s, `a samename.A`) {
+		t.Error("missing samename.A to address the struct A from the external package samename")
 	}
 }
