@@ -15,7 +15,7 @@ func TestMoq(t *testing.T) {
 		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "PersonStore")
+	err = m.Mock(&buf, "PersonStore", "")
 	if err != nil {
 		t.Errorf("m.Mock: %s", err)
 	}
@@ -42,13 +42,46 @@ func TestMoq(t *testing.T) {
 	}
 }
 
+func TestMoqExplicitMockName(t *testing.T) {
+	m, err := New("testpackages/example", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "PersonStore", "MockPersonStore")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		"package example",
+		"type MockPersonStore struct",
+		"CreateFunc func(ctx context.Context, person *Person, confirm bool) error",
+		"GetFunc func(ctx context.Context, id string) (*Person, error)",
+		"func (mock *MockPersonStore) Create(ctx context.Context, person *Person, confirm bool) error",
+		"func (mock *MockPersonStore) Get(ctx context.Context, id string) (*Person, error)",
+		"panic(\"MockPersonStore.CreateFunc: method is nil but PersonStore.Create was just called\")",
+		"panic(\"MockPersonStore.GetFunc: method is nil but PersonStore.Get was just called\")",
+		"lockMockPersonStoreGet.Lock()",
+		"mock.calls.Get = append(mock.calls.Get, callInfo)",
+		"lockMockPersonStoreGet.Unlock()",
+		"// ID is the id argument value",
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}
+
 func TestMoqExplicitPackage(t *testing.T) {
 	m, err := New("testpackages/example", "different")
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "PersonStore")
+	err = m.Mock(&buf, "PersonStore", "")
 	if err != nil {
 		t.Errorf("m.Mock: %s", err)
 	}
@@ -78,7 +111,7 @@ func TestVariadicArguments(t *testing.T) {
 		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "Greeter")
+	err = m.Mock(&buf, "Greeter", "")
 	if err != nil {
 		t.Errorf("m.Mock: %s", err)
 	}
@@ -103,7 +136,7 @@ func TestNothingToReturn(t *testing.T) {
 		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "PersonStore")
+	err = m.Mock(&buf, "PersonStore", "")
 	if err != nil {
 		t.Errorf("m.Mock: %s", err)
 	}
@@ -128,7 +161,7 @@ func TestChannelNames(t *testing.T) {
 		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "Queuer")
+	err = m.Mock(&buf, "Queuer", "")
 	if err != nil {
 		t.Errorf("m.Mock: %s", err)
 	}
@@ -149,14 +182,14 @@ func TestImports(t *testing.T) {
 		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "DoSomething")
+	err = m.Mock(&buf, "DoSomething", "")
 	if err != nil {
 		t.Errorf("m.Mock: %s", err)
 	}
 	s := buf.String()
 	var strs = []string{
 		`	"sync"`,
-		`	"github.com/matryer/moq/pkg/moq/testpackages/imports/one"`,
+		`	"github.com/sudo-suhas/moqit/pkg/moq/testpackages/imports/one"`,
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
@@ -181,7 +214,7 @@ func TestVendoredPackages(t *testing.T) {
 		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "Service")
+	err = m.Mock(&buf, "Service", "")
 	if err != nil {
 		t.Errorf("mock error: %s", err)
 	}
@@ -218,12 +251,12 @@ func TestDotImports(t *testing.T) {
 		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "Service")
+	err = m.Mock(&buf, "Service", "")
 	if err != nil {
 		t.Errorf("mock error: %s", err)
 	}
 	s := buf.String()
-	if !strings.Contains(s, `/moq/pkg/moq/testpackages/dotimport"`) {
+	if !strings.Contains(s, `/moqit/pkg/moq/testpackages/dotimport"`) {
 		t.Error("contains invalid dot import")
 	}
 }
@@ -234,7 +267,7 @@ func TestEmptyInterface(t *testing.T) {
 		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "Empty")
+	err = m.Mock(&buf, "Empty", "")
 	if err != nil {
 		t.Errorf("mock error: %s", err)
 	}

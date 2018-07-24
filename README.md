@@ -1,8 +1,12 @@
-![moq logo](moq-logo-small.png) [![Build Status](https://travis-ci.org/matryer/moq.svg?branch=master)](https://travis-ci.org/matryer/moq) [![Go Report Card](https://goreportcard.com/badge/github.com/matryer/moq)](https://goreportcard.com/report/github.com/matryer/moq)
+![moq logo](moq-logo-small.png) [![Build Status](https://travis-ci.org/matryer/moq.svg?branch=master)](https://travis-ci.org/matryer/moq) [![Go Report Card](https://goreportcard.com/badge/github.com/sudo-suhas/moqit)](https://goreportcard.com/report/github.com/sudo-suhas/moqit)
 
 Interface mocking tool for go generate.
 
 By [Mat Ryer](https://twitter.com/matryer) and [David Hernandez](https://github.com/dahernan), with ideas lovingly stolen from [Ernesto Jimenez](https://github.com/ernesto-jimenez).
+
+## Forked
+
+This fork allows to specify the name for the generated mock but removes the feature of generating mocks for multiple interfaces in a single command. To avoid confusion and to allow usage of both tools, the fork was renamed to `moqit`.
 
 ### What is Moq?
 
@@ -18,17 +22,19 @@ You can read more in the [Meet Moq blog post](http://bit.ly/meetmoq).
 
 To start using Moq, just run go get:
 ```
-$ go get github.com/matryer/moq
+$ go get github.com/sudo-suhas/moqit
 ```
 
 ### Usage
 
 ```
-moq [flags] destination interface [interface2 [interface3 [...]]]
+moq [flags] destination interface
   -out string
     	output file (default stdout)
   -pkg string
     	package name (default will infer)
+  -mock string
+    	mock name (default will infer)
 ```
 
 In a command line:
@@ -63,7 +69,7 @@ This this example, Moq generated the `EmailSenderMock` type:
 ```go
 func TestCompleteSignup(t *testing.T) {
 
-	var sentTo string 
+	var sentTo string
 
 	mockedEmailSender = &EmailSenderMock{
 		SendFunc: func(to, subject, body string) error {
