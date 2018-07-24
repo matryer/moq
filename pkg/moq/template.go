@@ -22,18 +22,18 @@ var (
 {{- end }}
 )
 
-// {{.MockName}} is a mock implementation of {{.InterfaceName}}.
+// {{.MockName}} is a mock implementation of {{.ID}}.
 //
 //     func TestSomethingThatUses{{.InterfaceName}}(t *testing.T) {
 //
-//         // make and configure a mocked {{.InterfaceName}}
+//         // make and configure a mocked {{.ID}}
 //         mocked{{.InterfaceName}} := &{{.MockName}}{ {{ range .Methods }}
 //             {{.Name}}Func: func({{ .Arglist }}) {{.ReturnArglist}} {
 // 	               panic("TODO: mock out the {{.Name}} method")
 //             },{{- end }}
 //         }
 //
-//         // TODO: use mocked{{.InterfaceName}} in code that requires {{.InterfaceName}}
+//         // TODO: use mocked{{.InterfaceName}} in code that requires {{.ID}}
 //         //       and then make assertions.
 //
 //     }

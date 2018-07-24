@@ -139,6 +139,7 @@ func (m *Mocker) Mock(w io.Writer, ifaceName, mockName string) error {
 	}
 	iiface := iface.Type().Underlying().(*types.Interface).Complete()
 	obj := obj{
+		ID:            tpkg.Name() + "." + iface.Id(),
 		InterfaceName: ifaceName,
 		MockName:      mockName,
 	}
@@ -248,6 +249,7 @@ type doc struct {
 }
 
 type obj struct {
+	ID            string
 	InterfaceName string
 	MockName      string
 	Methods       []*method
