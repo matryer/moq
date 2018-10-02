@@ -190,7 +190,7 @@ func (m *Mocker) packageQualifier(pkg *types.Package) string {
 	if m.pkgPath == pkg.Path() {
 		return ""
 	}
-	path := pkg.Path()
+	path := strings.Replace(pkg.Path(), `\`, `/`, -1)
 	if pkg.Path() == "." {
 		wd, err := os.Getwd()
 		if err == nil {
@@ -348,7 +348,9 @@ func stripVendorPath(p string) string {
 // Copyright (c) 2015 Ernesto Jiménez
 func stripGopath(p string) string {
 	for _, gopath := range gopaths() {
-		p = strings.TrimPrefix(p, path.Join(gopath, "src")+"/")
+		base := strings.TrimSuffix(gopath, string(os.PathSeparator))
+		pref := strings.Join([]string{base, "src"}, string(os.PathSeparator)) + string(os.PathSeparator)
+		p = strings.TrimPrefix(p, pref)
 	}
 	return p
 }
