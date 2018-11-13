@@ -231,7 +231,7 @@ func pkgInfoFromPath(src string) (*packages.Package, error) {
 	pkgFull := stripGopath(abs)
 
 	conf := packages.Config{
-		Mode: packages.LoadAllSyntax,
+		Mode: packages.LoadSyntax,
 		Dir:  src,
 	}
 	foundPackages, err := packages.Load(&conf, pkgFull)
