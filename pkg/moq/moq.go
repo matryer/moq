@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"go/ast"
+	"go/build"
 	"go/format"
 	"go/parser"
 	"go/token"
@@ -354,5 +355,9 @@ func stripGopath(p string) string {
 }
 
 func gopaths() []string {
-	return strings.Split(os.Getenv("GOPATH"), string(filepath.ListSeparator))
+	gopath := os.Getenv("GOPATH")
+    	if gopath == "" {
+        	gopath = build.Default.GOPATH
+    	}
+	return strings.Split(gopath, string(filepath.ListSeparator))
 }
