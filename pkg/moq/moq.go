@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"go/build"
 	"go/format"
 	"go/types"
 	"io"
@@ -323,16 +324,9 @@ func stripVendorPath(p string) string {
 
 // stripGopath takes the directory to a package and remove the gopath to get the
 // canonical package name.
-//
-// taken from https://github.com/ernesto-jimenez/gogen
-// Copyright (c) 2015 Ernesto Jiménez
 func stripGopath(p string) string {
-	for _, gopath := range gopaths() {
-		p = strings.TrimPrefix(p, path.Join(gopath, "src")+"/")
+	for _, gopath := range build.Default.SrcDirs() {
+		p = strings.TrimPrefix(p, gopath)
 	}
-	return p
-}
-
-func gopaths() []string {
-	return strings.Split(os.Getenv("GOPATH"), string(filepath.ListSeparator))
+	return strings.TrimPrefix(p, string(os.PathSeparator))
 }
