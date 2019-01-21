@@ -259,6 +259,28 @@ func TestVendoredPackages(t *testing.T) {
 	}
 }
 
+func TestVendoredBuildConstraints(t *testing.T) {
+	m, err := New("testpackages/buildconstraints/user", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Service")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		`"github.com/matryer/buildconstraints"`,
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}
+
 // TestDotImports tests for https://github.com/matryer/moq/issues/21.
 func TestDotImports(t *testing.T) {
 	preDir, err := os.Getwd()
