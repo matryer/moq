@@ -19,12 +19,12 @@ var (
 //         // make and configure a mocked Service
 //         mockedService := &ServiceMock{
 //             DoSomethingFunc: func(in1 somerepo.SomeType) error {
-// 	               panic("TODO: mock out the DoSomething method")
+// 	               panic("mock out the DoSomething method")
 //             },
 //         }
 //
-//         // TODO: use mockedService in code that requires Service
-//         //       and then make assertions.
+//         // use mockedService in code that requires Service
+//         // and then make assertions.
 //
 //     }
 type ServiceMock struct {
