@@ -24,18 +24,18 @@ var _ MyInterface = &MyInterfaceMock{}
 //         // make and configure a mocked MyInterface
 //         mockedMyInterface := &MyInterfaceMock{
 //             OneFunc: func() bool {
-// 	               panic("TODO: mock out the One method")
+// 	               panic("mock out the One method")
 //             },
 //             ThreeFunc: func() string {
-// 	               panic("TODO: mock out the Three method")
+// 	               panic("mock out the Three method")
 //             },
 //             TwoFunc: func() int {
-// 	               panic("TODO: mock out the Two method")
+// 	               panic("mock out the Two method")
 //             },
 //         }
 //
-//         // TODO: use mockedMyInterface in code that requires MyInterface
-//         //       and then make assertions.
+//         // use mockedMyInterface in code that requires MyInterface
+//         // and then make assertions.
 //
 //     }
 type MyInterfaceMock struct {

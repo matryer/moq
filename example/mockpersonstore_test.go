@@ -24,15 +24,15 @@ var _ PersonStore = &PersonStoreMock{}
 //         // make and configure a mocked PersonStore
 //         mockedPersonStore := &PersonStoreMock{
 //             CreateFunc: func(ctx context.Context, person *Person, confirm bool) error {
-// 	               panic("TODO: mock out the Create method")
+// 	               panic("mock out the Create method")
 //             },
 //             GetFunc: func(ctx context.Context, id string) (*Person, error) {
-// 	               panic("TODO: mock out the Get method")
+// 	               panic("mock out the Get method")
 //             },
 //         }
 //
-//         // TODO: use mockedPersonStore in code that requires PersonStore
-//         //       and then make assertions.
+//         // use mockedPersonStore in code that requires PersonStore
+//         // and then make assertions.
 //
 //     }
 type PersonStoreMock struct {
