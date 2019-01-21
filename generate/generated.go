@@ -13,6 +13,10 @@ var (
 	lockMyInterfaceMockTwo   sync.RWMutex
 )
 
+// Ensure, that MyInterfaceMock does implement MyInterface.
+// If this is not the case, regenerate this file with moq.
+var _ MyInterface = &MyInterfaceMock{}
+
 // MyInterfaceMock is a mock implementation of MyInterface.
 //
 //     func TestSomethingThatUsesMyInterface(t *testing.T) {

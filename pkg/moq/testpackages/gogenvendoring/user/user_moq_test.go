@@ -12,6 +12,10 @@ var (
 	lockServiceMockDoSomething sync.RWMutex
 )
 
+// Ensure, that ServiceMock does implement Service.
+// If this is not the case, regenerate this file with moq.
+var _ Service = &ServiceMock{}
+
 // ServiceMock is a mock implementation of Service.
 //
 //     func TestSomethingThatUsesService(t *testing.T) {
