@@ -13,6 +13,10 @@ var (
 	lockPersonStoreMockGet    sync.RWMutex
 )
 
+// Ensure, that PersonStoreMock does implement PersonStore.
+// If this is not the case, regenerate this file with moq.
+var _ PersonStore = &PersonStoreMock{}
+
 // PersonStoreMock is a mock implementation of PersonStore.
 //
 //     func TestSomethingThatUsesPersonStore(t *testing.T) {
