@@ -19,12 +19,12 @@ var (
 //         // make and configure a mocked Service
 //         mockedService := &ServiceMock{
 //             UserFunc: func(ID string) (dotimport.User, error) {
-// 	               panic("TODO: mock out the User method")
+// 	               panic("mock out the User method")
 //             },
 //         }
 //
-//         // TODO: use mockedService in code that requires Service
-//         //       and then make assertions.
+//         // use mockedService in code that requires Service
+//         // and then make assertions.
 //
 //     }
 type ServiceMock struct {
