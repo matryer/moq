@@ -7,16 +7,6 @@ import (
 	"sync"
 )
 
-var (
-	lockMyInterfaceMockOne   sync.RWMutex
-	lockMyInterfaceMockThree sync.RWMutex
-	lockMyInterfaceMockTwo   sync.RWMutex
-)
-
-// Ensure, that MyInterfaceMock does implement MyInterface.
-// If this is not the case, regenerate this file with moq.
-var _ MyInterface = &MyInterfaceMock{}
-
 // MyInterfaceMock is a mock implementation of MyInterface.
 //
 //     func TestSomethingThatUsesMyInterface(t *testing.T) {
@@ -60,6 +50,9 @@ type MyInterfaceMock struct {
 		Two []struct {
 		}
 	}
+	lockMyInterfaceMockOne   sync.RWMutex
+	lockMyInterfaceMockThree sync.RWMutex
+	lockMyInterfaceMockTwo   sync.RWMutex
 }
 
 // One calls OneFunc.
@@ -69,9 +62,9 @@ func (mock *MyInterfaceMock) One() bool {
 	}
 	callInfo := struct {
 	}{}
-	lockMyInterfaceMockOne.Lock()
+	mock.lockMyInterfaceMockOne.Lock()
 	mock.calls.One = append(mock.calls.One, callInfo)
-	lockMyInterfaceMockOne.Unlock()
+	mock.lockMyInterfaceMockOne.Unlock()
 	return mock.OneFunc()
 }
 
@@ -82,9 +75,9 @@ func (mock *MyInterfaceMock) OneCalls() []struct {
 } {
 	var calls []struct {
 	}
-	lockMyInterfaceMockOne.RLock()
+	mock.lockMyInterfaceMockOne.RLock()
 	calls = mock.calls.One
-	lockMyInterfaceMockOne.RUnlock()
+	mock.lockMyInterfaceMockOne.RUnlock()
 	return calls
 }
 
@@ -95,9 +88,9 @@ func (mock *MyInterfaceMock) Three() string {
 	}
 	callInfo := struct {
 	}{}
-	lockMyInterfaceMockThree.Lock()
+	mock.lockMyInterfaceMockThree.Lock()
 	mock.calls.Three = append(mock.calls.Three, callInfo)
-	lockMyInterfaceMockThree.Unlock()
+	mock.lockMyInterfaceMockThree.Unlock()
 	return mock.ThreeFunc()
 }
 
@@ -108,9 +101,9 @@ func (mock *MyInterfaceMock) ThreeCalls() []struct {
 } {
 	var calls []struct {
 	}
-	lockMyInterfaceMockThree.RLock()
+	mock.lockMyInterfaceMockThree.RLock()
 	calls = mock.calls.Three
-	lockMyInterfaceMockThree.RUnlock()
+	mock.lockMyInterfaceMockThree.RUnlock()
 	return calls
 }
 
@@ -121,9 +114,9 @@ func (mock *MyInterfaceMock) Two() int {
 	}
 	callInfo := struct {
 	}{}
-	lockMyInterfaceMockTwo.Lock()
+	mock.lockMyInterfaceMockTwo.Lock()
 	mock.calls.Two = append(mock.calls.Two, callInfo)
-	lockMyInterfaceMockTwo.Unlock()
+	mock.lockMyInterfaceMockTwo.Unlock()
 	return mock.TwoFunc()
 }
 
@@ -134,8 +127,8 @@ func (mock *MyInterfaceMock) TwoCalls() []struct {
 } {
 	var calls []struct {
 	}
-	lockMyInterfaceMockTwo.RLock()
+	mock.lockMyInterfaceMockTwo.RLock()
 	calls = mock.calls.Two
-	lockMyInterfaceMockTwo.RUnlock()
+	mock.lockMyInterfaceMockTwo.RUnlock()
 	return calls
 }

@@ -4,17 +4,10 @@
 package dotimport_test
 
 import (
-	"github.com/matryer/moq/pkg/moq/testpackages/dotimport"
 	"sync"
-)
 
-var (
-	lockServiceMockUser sync.RWMutex
+	"github.com/matryer/moq/pkg/moq/testpackages/dotimport"
 )
-
-// Ensure, that ServiceMock does implement Service.
-// If this is not the case, regenerate this file with moq.
-var _ dotimport.Service = &ServiceMock{}
 
 // ServiceMock is a mock implementation of Service.
 //
@@ -43,6 +36,7 @@ type ServiceMock struct {
 			ID string
 		}
 	}
+	lockServiceMockUser sync.RWMutex
 }
 
 // User calls UserFunc.
@@ -55,9 +49,9 @@ func (mock *ServiceMock) User(ID string) (dotimport.User, error) {
 	}{
 		ID: ID,
 	}
-	lockServiceMockUser.Lock()
+	mock.lockServiceMockUser.Lock()
 	mock.calls.User = append(mock.calls.User, callInfo)
-	lockServiceMockUser.Unlock()
+	mock.lockServiceMockUser.Unlock()
 	return mock.UserFunc(ID)
 }
 
@@ -70,8 +64,8 @@ func (mock *ServiceMock) UserCalls() []struct {
 	var calls []struct {
 		ID string
 	}
-	lockServiceMockUser.RLock()
+	mock.lockServiceMockUser.RLock()
 	calls = mock.calls.User
-	lockServiceMockUser.RUnlock()
+	mock.lockServiceMockUser.RUnlock()
 	return calls
 }

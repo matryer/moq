@@ -17,16 +17,6 @@ import (
 )
 
 {{ range $i, $obj := .Objects -}}
-var (
-{{- range .Methods }}
-	lock{{$obj.InterfaceName}}Mock{{.Name}}	sync.RWMutex
-{{- end }}
-)
-
-// Ensure, that {{.InterfaceName}}Mock does implement {{.InterfaceName}}.
-// If this is not the case, regenerate this file with moq.
-var _ {{$sourcePackagePrefix}}{{.InterfaceName}} = &{{.InterfaceName}}Mock{}
-
 // {{.InterfaceName}}Mock is a mock implementation of {{.InterfaceName}}.
 //
 //     func TestSomethingThatUses{{.InterfaceName}}(t *testing.T) {
@@ -59,6 +49,10 @@ type {{.InterfaceName}}Mock struct {
 		}
 {{- end }}
 	}
+
+{{- range .Methods }}
+	lock{{$obj.InterfaceName}}Mock{{.Name}}	sync.RWMutex
+{{- end }}
 }
 {{ range .Methods }}
 // {{.Name}} calls {{.Name}}Func.
@@ -75,9 +69,9 @@ func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}({{.Arglist}}) {{.ReturnArglist
 		{{ .Name | Exported }}: {{ .Name }},
 		{{- end }}
 	}
-	lock{{$obj.InterfaceName}}Mock{{.Name}}.Lock()
+	mock.lock{{$obj.InterfaceName}}Mock{{.Name}}.Lock()
 	mock.calls.{{.Name}} = append(mock.calls.{{.Name}}, callInfo)
-	lock{{$obj.InterfaceName}}Mock{{.Name}}.Unlock()
+	mock.lock{{$obj.InterfaceName}}Mock{{.Name}}.Unlock()
 {{- if .ReturnArglist }}
 	return mock.{{.Name}}Func({{.ArgCallList}})
 {{- else }}
@@ -98,9 +92,9 @@ func (mock *{{$obj.InterfaceName}}Mock) {{.Name}}Calls() []struct {
 		{{ .Name | Exported }} {{ .Type }}
 		{{- end }}
 	}
-	lock{{$obj.InterfaceName}}Mock{{.Name}}.RLock()
+	mock.lock{{$obj.InterfaceName}}Mock{{.Name}}.RLock()
 	calls = mock.calls.{{.Name}}
-	lock{{$obj.InterfaceName}}Mock{{.Name}}.RUnlock()
+	mock.lock{{$obj.InterfaceName}}Mock{{.Name}}.RUnlock()
 	return calls
 }
 {{ end -}}
