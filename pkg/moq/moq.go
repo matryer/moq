@@ -10,14 +10,13 @@ import (
 	"go/token"
 	"go/types"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"text/template"
 
-	"golang.org/x/tools/go/loader"
+	"golang.org/x/tools/go/packages"
 )
 
 // This list comes from the golint codebase. Golint will complain about any of
@@ -137,7 +136,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 
 	mocksMethods := false
 
-	tpkg := pkgInfo.Pkg
+	tpkg := pkgInfo.Types
 	for _, n := range name {
 		iface := tpkg.Scope().Lookup(n)
 		if iface == nil {
@@ -228,41 +227,30 @@ func (m *Mocker) extractArgs(sig *types.Signature, list *types.Tuple, nameFormat
 	return params
 }
 
-func pkgInfoFromPath(src string) (*loader.PackageInfo, error) {
+func pkgInfoFromPath(src string) (*packages.Package, error) {
 	abs, err := filepath.Abs(src)
 	if err != nil {
 		return nil, err
 	}
 	pkgFull := stripGopath(abs)
 
-	conf := loader.Config{
-		ParserMode: parser.SpuriousErrors,
-		Cwd:        src,
+	conf := packages.Config{
+		Mode: packages.LoadSyntax,
+		Dir:  src,
 	}
-	if strings.HasPrefix(pkgFull, string(filepath.Separator)) {
-		files, err := ioutil.ReadDir(pkgFull)
-		if err != nil {
-			return nil, err
-		}
-		for _, file := range files {
-			if !file.IsDir() && strings.HasSuffix(file.Name(), ".go") && !strings.HasSuffix(file.Name(), "_test.go") {
-				conf.CreateFromFilenames(abs, file.Name())
-			}
-		}
-	} else {
-		conf.Import(pkgFull)
-	}
-	lprog, err := conf.Load()
+
+	foundPackages, err := packages.Load(&conf, pkgFull)
 	if err != nil {
 		return nil, err
 	}
 
-	pkgInfo := lprog.Package(pkgFull)
-	if pkgInfo == nil {
-		return nil, errors.New("package was nil")
+	if len(foundPackages) == 0 {
+		return nil, errors.New("No packages found")
 	}
-
-	return pkgInfo, nil
+	if len(foundPackages) > 1 {
+		return nil, errors.New("More than one package was found")
+	}
+	return foundPackages[0], nil
 }
 
 type doc struct {
