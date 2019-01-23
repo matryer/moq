@@ -239,18 +239,18 @@ func pkgInfoFromPath(src string) (*packages.Package, error) {
 		Dir:  src,
 	}
 
-	foundPackages, err := packages.Load(&conf, pkgFull)
+	pkgs, err := packages.Load(&conf, pkgFull)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(foundPackages) == 0 {
+	if len(pkgs) == 0 {
 		return nil, errors.New("No packages found")
 	}
-	if len(foundPackages) > 1 {
+	if len(pkgs) > 1 {
 		return nil, errors.New("More than one package was found")
 	}
-	return foundPackages[0], nil
+	return pkgs[0], nil
 }
 
 type doc struct {
