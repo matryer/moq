@@ -25,9 +25,10 @@ func main() {
 	var (
 		outFile = flag.String("out", "", "output file (default stdout)")
 		pkgName = flag.String("pkg", "", "package name (default will infer)")
+		nopanic = flag.Bool("stub", false, "if set, generated methods will trivially return instead of panicking on an unset call")
 	)
 	flag.Usage = func() {
-		fmt.Println(`moq [flags] destination interface [interface2 [interface3 [...]]]`)
+		fmt.Println(`moq [flags] source interface [interface2 [interface3 [...]]]`)
 		flag.PrintDefaults()
 	}
 	flag.Parse()
@@ -36,7 +37,7 @@ func main() {
 		err = errors.New("not enough arguments")
 		return
 	}
-	destination := args[0]
+	src := args[0]
 	args = args[1:]
 	var buf bytes.Buffer
 	var out io.Writer
@@ -44,7 +45,7 @@ func main() {
 	if len(*outFile) > 0 {
 		out = &buf
 	}
-	m, err := moq.New(destination, *pkgName)
+	m, err := moq.New(src, *pkgName, *nopanic)
 	if err != nil {
 		return
 	}

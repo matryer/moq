@@ -70,7 +70,7 @@ type Mocker struct {
 }
 
 // New makes a new Mocker for the specified package directory.
-func New(src, packageName string) (*Mocker, error) {
+func New(src, packageName string, nopanic bool) (*Mocker, error) {
 	srcPkg, err := pkgInfoFromPath(src, packages.LoadSyntax)
 	if err != nil {
 		return nil, fmt.Errorf("Couldn't load source package: %s", err)
@@ -90,8 +90,12 @@ func New(src, packageName string) (*Mocker, error) {
 		}
 		pkgPath = mockPkg.PkgPath
 	}
-
-	tmpl, err := template.New("moq").Funcs(templateFuncs).Parse(moqTemplate)
+	tmpl := template.New("moq").Funcs(templateFuncs)
+	if nopanic {
+		tmpl, err = tmpl.Parse(moqTemplateNoPanic)
+	} else {
+		tmpl, err = tmpl.Parse(moqTemplate)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -267,6 +271,22 @@ func (m *method) ReturnArglist() string {
 	}
 	if len(m.Returns) > 1 {
 		return fmt.Sprintf("(%s)", strings.Join(params, ", "))
+	}
+	return strings.Join(params, ", ")
+}
+
+func (m *method) NamedReturnArglist() string {
+	params := make([]string, len(m.Returns))
+	for i, p := range m.Returns {
+		params[i] = fmt.Sprintf("out%d %s", i+1, p.TypeString())
+	}
+	return fmt.Sprintf("(%s)", strings.Join(params, ", "))
+}
+
+func (m *method) NamedReturnArgCallList() string {
+	params := make([]string, len(m.Returns))
+	for i := range m.Returns {
+		params[i] = fmt.Sprintf("out%d", i+1)
 	}
 	return strings.Join(params, ", ")
 }

@@ -10,7 +10,7 @@ import (
 )
 
 func TestMoq(t *testing.T) {
-	m, err := New("testpackages/example", "")
+	m, err := New("testpackages/example", "", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -43,7 +43,7 @@ func TestMoq(t *testing.T) {
 }
 
 func TestMoqWithStaticCheck(t *testing.T) {
-	m, err := New("testpackages/example", "")
+	m, err := New("testpackages/example", "", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -77,7 +77,7 @@ func TestMoqWithStaticCheck(t *testing.T) {
 }
 
 func TestMoqExplicitPackage(t *testing.T) {
-	m, err := New("testpackages/example", "different")
+	m, err := New("testpackages/example", "different", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -104,7 +104,7 @@ func TestMoqExplicitPackage(t *testing.T) {
 }
 
 func TestMoqExplicitPackageWithStaticCheck(t *testing.T) {
-	m, err := New("testpackages/example", "different")
+	m, err := New("testpackages/example", "different", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -135,7 +135,7 @@ func TestMoqExplicitPackageWithStaticCheck(t *testing.T) {
 // expected.
 // see https://github.com/matryer/moq/issues/5
 func TestVariadicArguments(t *testing.T) {
-	m, err := New("testpackages/variadic", "")
+	m, err := New("testpackages/variadic", "", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -160,7 +160,7 @@ func TestVariadicArguments(t *testing.T) {
 }
 
 func TestNothingToReturn(t *testing.T) {
-	m, err := New("testpackages/example", "")
+	m, err := New("testpackages/example", "", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -185,7 +185,7 @@ func TestNothingToReturn(t *testing.T) {
 }
 
 func TestChannelNames(t *testing.T) {
-	m, err := New("testpackages/channels", "")
+	m, err := New("testpackages/channels", "", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -206,7 +206,7 @@ func TestChannelNames(t *testing.T) {
 }
 
 func TestImports(t *testing.T) {
-	m, err := New("testpackages/imports/two", "")
+	m, err := New("testpackages/imports/two", "", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -238,7 +238,7 @@ func TestTemplateFuncs(t *testing.T) {
 }
 
 func TestVendoredPackages(t *testing.T) {
-	m, err := New("testpackages/vendoring/user", "")
+	m, err := New("testpackages/vendoring/user", "", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -260,7 +260,7 @@ func TestVendoredPackages(t *testing.T) {
 }
 
 func TestVendoredBuildConstraints(t *testing.T) {
-	m, err := New("testpackages/buildconstraints/user", "")
+	m, err := New("testpackages/buildconstraints/user", "", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -297,7 +297,7 @@ func TestDotImports(t *testing.T) {
 			t.Errorf("Chdir back: %s", err)
 		}
 	}()
-	m, err := New(".", "moqtest_test")
+	m, err := New(".", "moqtest_test", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -313,7 +313,7 @@ func TestDotImports(t *testing.T) {
 }
 
 func TestEmptyInterface(t *testing.T) {
-	m, err := New("testpackages/emptyinterface", "")
+	m, err := New("testpackages/emptyinterface", "", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -357,7 +357,7 @@ func TestGoGenerateVendoredPackages(t *testing.T) {
 }
 
 func TestImportedPackageWithSameName(t *testing.T) {
-	m, err := New("testpackages/samenameimport", "")
+	m, err := New("testpackages/samenameimport", "", false)
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
