@@ -217,8 +217,10 @@ func TestImports(t *testing.T) {
 	}
 	s := buf.String()
 	var strs = []string{
-		`	"sync"`,
-		`	"github.com/matryer/moq/pkg/moq/testpackages/imports/one"`,
+		`	sync "sync"`,
+		`	one "github.com/matryer/moq/pkg/moq/testpackages/imports/one"`,
+		`	http "github.com/matryer/moq/pkg/moq/testpackages/imports/http"`,
+		`	httpa "net/http"`,
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
