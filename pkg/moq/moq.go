@@ -65,8 +65,10 @@ type Mocker struct {
 	tmpl    *template.Template
 	pkgName string
 	pkgPath string
-
-	imports map[string]bool
+	// importByPath of the format key:path value:alias
+	importByPath map[string]string
+	// importByAlias of the format key:alias value:path
+	importByAlias map[string]string
 }
 
 // New makes a new Mocker for the specified package directory.
@@ -96,11 +98,12 @@ func New(src, packageName string) (*Mocker, error) {
 		return nil, err
 	}
 	return &Mocker{
-		tmpl:    tmpl,
-		srcPkg:  srcPkg,
-		pkgName: packageName,
-		pkgPath: pkgPath,
-		imports: make(map[string]bool),
+		tmpl:          tmpl,
+		srcPkg:        srcPkg,
+		pkgName:       packageName,
+		pkgPath:       pkgPath,
+		importByPath:  make(map[string]string),
+		importByAlias: make(map[string]string),
 	}, nil
 }
 
@@ -115,7 +118,10 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 		Imports:     moqImports,
 	}
 
-	mocksMethods := false
+	// Add sync first to ensure it doesn't get an alias which will break the template
+	m.addSyncImport()
+
+	var syncNeeded bool
 
 	tpkg := m.srcPkg.Types
 	for _, n := range name {
@@ -131,7 +137,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 			InterfaceName: n,
 		}
 		for i := 0; i < iiface.NumMethods(); i++ {
-			mocksMethods = true
+			syncNeeded = true
 			meth := iiface.Method(i)
 			sig := meth.Type().(*types.Signature)
 			method := &method{
@@ -144,17 +150,23 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 		doc.Objects = append(doc.Objects, obj)
 	}
 
-	if mocksMethods {
-		doc.Imports = append(doc.Imports, "sync")
-	}
-
-	for pkgToImport := range m.imports {
-		doc.Imports = append(doc.Imports, stripVendorPath(pkgToImport))
+	if !syncNeeded {
+		delete(m.importByAlias, "sync")
+		delete(m.importByPath, "sync")
 	}
 
 	if tpkg.Name() != m.pkgName {
-		doc.SourcePackagePrefix = tpkg.Name() + "."
-		doc.Imports = append(doc.Imports, tpkg.Path())
+		if _, ok := m.importByPath[tpkg.Path()]; !ok {
+			alias := m.getUniqueAlias(tpkg.Name())
+			m.importByAlias[alias] = tpkg.Path()
+			m.importByPath[tpkg.Path()] = alias
+		}
+		doc.SourcePackagePrefix = m.importByPath[tpkg.Path()] + "."
+	}
+
+	for alias, path := range m.importByAlias {
+		aliasImport := fmt.Sprintf(`%s "%s"`, alias, stripVendorPath(path))
+		doc.Imports = append(doc.Imports, aliasImport)
 	}
 
 	var buf bytes.Buffer
@@ -172,6 +184,13 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 	return nil
 }
 
+func (m *Mocker) addSyncImport() {
+	if _, ok := m.importByPath["sync"]; !ok {
+		m.importByAlias["sync"] = "sync"
+		m.importByPath["sync"] = "sync"
+	}
+}
+
 func (m *Mocker) packageQualifier(pkg *types.Package) string {
 	if m.pkgPath == pkg.Path() {
 		return ""
@@ -183,8 +202,30 @@ func (m *Mocker) packageQualifier(pkg *types.Package) string {
 			path = stripGopath(wd)
 		}
 	}
-	m.imports[path] = true
-	return pkg.Name()
+
+	if alias, ok := m.importByPath[path]; ok {
+		return alias
+	}
+
+	alias := pkg.Name()
+
+	if _, ok := m.importByAlias[alias]; ok {
+		alias = m.getUniqueAlias(alias)
+	}
+
+	m.importByAlias[alias] = path
+	m.importByPath[path] = alias
+
+	return alias
+}
+
+func (m *Mocker) getUniqueAlias(alias string) string {
+	for i := 0; ; i++ {
+		newAlias := alias + string('a'+byte(i))
+		if _, exists := m.importByAlias[newAlias]; !exists {
+			return newAlias
+		}
+	}
 }
 
 func (m *Mocker) extractArgs(sig *types.Signature, list *types.Tuple, nameFormat string) []*param {
