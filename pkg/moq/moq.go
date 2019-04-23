@@ -4,10 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"go/ast"
 	"go/format"
-	"go/parser"
-	"go/token"
 	"go/types"
 	"io"
 	"os"
@@ -16,7 +13,7 @@ import (
 	"strings"
 	"text/template"
 
-	"golang.org/x/tools/go/loader"
+	"golang.org/x/tools/go/packages"
 )
 
 // This list comes from the golint codebase. Golint will complain about any of
@@ -64,10 +61,8 @@ var golintInitialisms = []string{
 
 // Mocker can generate mock structs.
 type Mocker struct {
-	src     string
+	srcPkg  *packages.Package
 	tmpl    *template.Template
-	fset    *token.FileSet
-	pkgs    map[string]*ast.Package
 	pkgName string
 	pkgPath string
 
@@ -76,31 +71,24 @@ type Mocker struct {
 
 // New makes a new Mocker for the specified package directory.
 func New(src, packageName string) (*Mocker, error) {
-	fset := token.NewFileSet()
-	noTestFiles := func(i os.FileInfo) bool {
-		return !strings.HasSuffix(i.Name(), "_test.go")
-	}
-	wd, err := os.Getwd()
+	srcPkg, err := pkgInfoFromPath(src, packages.LoadSyntax)
 	if err != nil {
-		return nil, fmt.Errorf("failed to determin current working directory: %s", err)
+		return nil, fmt.Errorf("Couldn't load source package: %s", err)
 	}
-	packagePath := stripGopath(filepath.Join(wd, src, packageName))
+	pkgPath := srcPkg.PkgPath
 
-	pkgs, err := parser.ParseDir(fset, src, noTestFiles, parser.SpuriousErrors)
-	if err != nil {
-		return nil, err
-	}
 	if len(packageName) == 0 {
-		for pkgName := range pkgs {
-			if strings.Contains(pkgName, "_test") {
-				continue
-			}
-			packageName = pkgName
-			break
+		packageName = srcPkg.Name
+	} else {
+		mockPkgPath := filepath.Join(src, packageName)
+		if _, err := os.Stat(mockPkgPath); os.IsNotExist(err) {
+			os.Mkdir(mockPkgPath, os.ModePerm)
 		}
-	}
-	if len(packageName) == 0 {
-		return nil, errors.New("failed to determine package name")
+		mockPkg, err := pkgInfoFromPath(mockPkgPath, packages.LoadFiles)
+		if err != nil {
+			return nil, fmt.Errorf("Couldn't load mock package: %s", err)
+		}
+		pkgPath = mockPkg.PkgPath
 	}
 
 	tmpl, err := template.New("moq").Funcs(templateFuncs).Parse(moqTemplate)
@@ -108,12 +96,10 @@ func New(src, packageName string) (*Mocker, error) {
 		return nil, err
 	}
 	return &Mocker{
-		src:     src,
 		tmpl:    tmpl,
-		fset:    fset,
-		pkgs:    pkgs,
+		srcPkg:  srcPkg,
 		pkgName: packageName,
-		pkgPath: packagePath,
+		pkgPath: pkgPath,
 		imports: make(map[string]bool),
 	}, nil
 }
@@ -124,11 +110,6 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 		return errors.New("must specify one interface")
 	}
 
-	pkgInfo, err := pkgInfoFromPath(m.src)
-	if err != nil {
-		return err
-	}
-
 	doc := doc{
 		PackageName: m.pkgName,
 		Imports:     moqImports,
@@ -136,7 +117,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 
 	mocksMethods := false
 
-	tpkg := pkgInfo.Pkg
+	tpkg := m.srcPkg.Types
 	for _, n := range name {
 		iface := tpkg.Scope().Lookup(n)
 		if iface == nil {
@@ -171,8 +152,13 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 		doc.Imports = append(doc.Imports, stripVendorPath(pkgToImport))
 	}
 
+	if tpkg.Name() != m.pkgName {
+		doc.SourcePackagePrefix = tpkg.Name() + "."
+		doc.Imports = append(doc.Imports, tpkg.Path())
+	}
+
 	var buf bytes.Buffer
-	err = m.tmpl.Execute(&buf, doc)
+	err := m.tmpl.Execute(&buf, doc)
 	if err != nil {
 		return err
 	}
@@ -223,35 +209,29 @@ func (m *Mocker) extractArgs(sig *types.Signature, list *types.Tuple, nameFormat
 	return params
 }
 
-func pkgInfoFromPath(src string) (*loader.PackageInfo, error) {
-	abs, err := filepath.Abs(src)
+func pkgInfoFromPath(src string, mode packages.LoadMode) (*packages.Package, error) {
+	conf := packages.Config{
+		Mode: mode,
+		Dir:  src,
+	}
+	pkgs, err := packages.Load(&conf)
 	if err != nil {
 		return nil, err
 	}
-	pkgFull := stripGopath(abs)
-
-	conf := loader.Config{
-		ParserMode: parser.SpuriousErrors,
-		Cwd:        src,
+	if len(pkgs) == 0 {
+		return nil, errors.New("No packages found")
 	}
-	conf.Import(pkgFull)
-	lprog, err := conf.Load()
-	if err != nil {
-		return nil, err
+	if len(pkgs) > 1 {
+		return nil, errors.New("More than one package was found")
 	}
-
-	pkgInfo := lprog.Package(pkgFull)
-	if pkgInfo == nil {
-		return nil, errors.New("package was nil")
-	}
-
-	return pkgInfo, nil
+	return pkgs[0], nil
 }
 
 type doc struct {
-	PackageName string
-	Objects     []obj
-	Imports     []string
+	PackageName         string
+	SourcePackagePrefix string
+	Objects             []obj
+	Imports             []string
 }
 
 type obj struct {

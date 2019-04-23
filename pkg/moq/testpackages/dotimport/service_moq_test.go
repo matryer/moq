@@ -12,6 +12,10 @@ var (
 	lockServiceMockUser sync.RWMutex
 )
 
+// Ensure, that ServiceMock does implement Service.
+// If this is not the case, regenerate this file with moq.
+var _ dotimport.Service = &ServiceMock{}
+
 // ServiceMock is a mock implementation of Service.
 //
 //     func TestSomethingThatUsesService(t *testing.T) {
@@ -19,12 +23,12 @@ var (
 //         // make and configure a mocked Service
 //         mockedService := &ServiceMock{
 //             UserFunc: func(ID string) (dotimport.User, error) {
-// 	               panic("TODO: mock out the User method")
+// 	               panic("mock out the User method")
 //             },
 //         }
 //
-//         // TODO: use mockedService in code that requires Service
-//         //       and then make assertions.
+//         // use mockedService in code that requires Service
+//         // and then make assertions.
 //
 //     }
 type ServiceMock struct {
