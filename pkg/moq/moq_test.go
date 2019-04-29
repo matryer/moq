@@ -371,3 +371,37 @@ func TestImportedPackageWithSameName(t *testing.T) {
 		t.Error("missing samename.A to address the struct A from the external package samename")
 	}
 }
+
+// TestSliceReturns tests to ensure returning a slice works as expected
+func TestSliceReturns(t *testing.T) {
+	m, err := New("testpackages/slices", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Search")
+	if err != nil {
+		t.Fatalf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		"package slices",
+		"type SearchMock struct",
+		"GetNamesFunc func(ctx context.Context, search string) []string",
+		"GetOtherFunc func(ctx context.Context, search string) ([]string, error)",
+		"GetMultipleSlicesFunc func(ctx context.Context, search ...string) ([]string, []error)",
+		"GetPointerSlicesFunc func(ctx context.Context, search string) ([]*string, error)",
+		"MultiSearchFunc func(ctx context.Context, searchTerms ...string) []string",
+		"func (mock *SearchMock) GetNames(ctx context.Context, search string) []string",
+		"func (mock *SearchMock) GetOther(ctx context.Context, search string) ([]string, error)",
+		"func (mock *SearchMock) GetMultipleSlices(ctx context.Context, search ...string) ([]string, []error)",
+		"func (mock *SearchMock) GetPointerSlices(ctx context.Context, search string) ([]*string, error)",
+		"func (mock *SearchMock) MultiSearch(ctx context.Context, searchTerms ...string) []string",
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}
