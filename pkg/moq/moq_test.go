@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -500,30 +499,19 @@ func TestEmptyInterface(t *testing.T) {
 	}
 }
 
+func helperExec(t *testing.T, args []string, dir string) []byte {
+	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Dir = dir
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("Exec: %s; Output:\n%s\n", err, output)
+	}
+	return output
+}
+
 func TestGoGenerateVendoredPackages(t *testing.T) {
-	cmd := exec.Command("go", "generate", "./...")
-	cmd.Dir = "testpackages/gogenvendoring"
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		t.Errorf("StdoutPipe: %s", err)
-	}
-	defer stdout.Close()
-	err = cmd.Start()
-	if err != nil {
-		t.Errorf("Start: %s", err)
-	}
-	buf := bytes.NewBuffer(nil)
-	io.Copy(buf, stdout)
-	err = cmd.Wait()
-	if err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
-			t.Errorf("Wait: %s %s", exitErr, string(exitErr.Stderr))
-		} else {
-			t.Errorf("Wait: %s", err)
-		}
-	}
-	s := buf.String()
-	if strings.Contains(s, `vendor/`) {
+	output := helperExec(t, []string{"go", "generate", "./..."}, "testpackages/gogenvendoring")
+	if bytes.Contains(output, []byte(`vendor/`)) {
 		t.Error("contains vendor directory in import path")
 	}
 }
@@ -553,4 +541,32 @@ func normalize(d []byte) []byte {
 	// replace CF \r (mac) with LF \n (unix)
 	d = bytes.Replace(d, []byte{13}, []byte{10}, -1)
 	return d
+}
+
+func TestParamShadowsImport(t *testing.T) {
+	m, err := New(Config{SrcDir: "testpackages/shadow", PkgName: "gen"})
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+
+	genDir := "./testpackages/shadow/gen"
+	err = os.MkdirAll(genDir, 0777)
+	if err != nil {
+		t.Fatalf("mkdir: %s", err)
+	}
+	defer os.Remove(genDir)
+
+	f, err := os.Create(filepath.Join(genDir, "shadowmock.go"))
+	if err != nil {
+		t.Fatalf("failed to create shadowmock: %s", err)
+	}
+	defer f.Close()
+	defer os.Remove(f.Name())
+
+	err = m.Mock(f, "Shadower")
+	if err != nil {
+		t.Fatalf("mock error: %s", err)
+	}
+
+	helperExec(t, []string{"go", "vet", genDir}, "")
 }
