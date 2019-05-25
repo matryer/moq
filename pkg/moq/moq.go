@@ -127,6 +127,8 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 
 	mocksMethods := false
 
+	paramCache := make(map[string][]*param)
+
 	tpkg := m.srcPkg.Types
 	for _, name := range names {
 		n, mockName := parseInterfaceName(name)
@@ -151,6 +153,10 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 			}
 			obj.Methods = append(obj.Methods, method)
 			method.Params, method.Returns = m.extractArgs(sig)
+
+			for _, param := range method.Params {
+				paramCache[param.Name] = append(paramCache[param.Name], param)
+			}
 		}
 		doc.Objects = append(doc.Objects, obj)
 	}
@@ -168,6 +174,18 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 		qualifier, importLine := m.qualifierAndImportLine(tpkg.Path(), tpkg.Name())
 		doc.SourcePackagePrefix = qualifier + "."
 		doc.Imports = append(doc.Imports, importLine)
+	}
+
+	// try to detect naming conflicts; we aren't necessarily in the same
+	// package setup as the final mocks, so don't error out- best effort only.
+	conf := packages.Config{Mode: packages.NeedName}
+	pkgs, _ := packages.Load(&conf, doc.Imports...)
+	for _, pkg := range pkgs {
+		if params, hasConflict := paramCache[pkg.Name]; hasConflict {
+			for _, param := range params {
+				param.LocalName = fmt.Sprintf("%sMoqParam", param.LocalName)
+			}
+		}
 	}
 
 	var buf bytes.Buffer
@@ -273,7 +291,7 @@ func (m *Mocker) buildParam(v *types.Var, fallbackName string) *param {
 		name = fallbackName
 	}
 	typ := types.TypeString(v.Type(), m.packageQualifier)
-	return &param{Name: name, Type: typ}
+	return &param{Name: name, LocalName: name, Type: typ}
 }
 
 func pkgInfoFromPath(srcDir string, mode packages.LoadMode) (*packages.Package, error) {
@@ -349,20 +367,21 @@ func (m *method) ReturnArglist() string {
 }
 
 type param struct {
-	Name     string
-	Type     string
-	Variadic bool
+	Name      string
+	LocalName string
+	Type      string
+	Variadic  bool
 }
 
 func (p param) String() string {
-	return fmt.Sprintf("%s %s", p.Name, p.TypeString())
+	return fmt.Sprintf("%s %s", p.LocalName, p.TypeString())
 }
 
 func (p param) CallName() string {
 	if p.Variadic {
-		return p.Name + "..."
+		return p.LocalName + "..."
 	}
-	return p.Name
+	return p.LocalName
 }
 
 func (p param) TypeString() string {
