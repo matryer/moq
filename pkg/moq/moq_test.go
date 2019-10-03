@@ -131,6 +131,25 @@ func TestMoqExplicitPackageWithStaticCheck(t *testing.T) {
 	}
 }
 
+func TestNotCreatingEmptyDirWhenPkgIsGiven(t *testing.T) {
+	m, err := New("testpackages/example", "different")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "PersonStore")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	if len(s) == 0 {
+		t.Fatalf("mock should be generated")
+	}
+	if _, err := os.Stat("testpackages/example/different"); !os.IsNotExist(err) {
+		t.Fatalf("no empty dir should be created by moq")
+	}
+}
+
 // TestVeradicArguments tests to ensure variadic work as
 // expected.
 // see https://github.com/matryer/moq/issues/5
