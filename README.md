@@ -58,7 +58,7 @@ Mocking interfaces is a nice way to write unit tests where you can easily contro
 
 Moq creates a struct that has a function field for each method, which you can declare in your test code.
 
-This this example, Moq generated the `EmailSenderMock` type:
+In this example, Moq generated the `EmailSenderMock` type:
 
 ```go
 func TestCompleteSignup(t *testing.T) {
