@@ -42,6 +42,40 @@ func TestMoq(t *testing.T) {
 	}
 }
 
+func TestMoqWithStaticCheck(t *testing.T) {
+	m, err := New("testpackages/example", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "PersonStore")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		"package example",
+		"var _ PersonStore = &PersonStoreMock{}",
+		"type PersonStoreMock struct",
+		"CreateFunc func(ctx context.Context, person *Person, confirm bool) error",
+		"GetFunc func(ctx context.Context, id string) (*Person, error)",
+		"func (mock *PersonStoreMock) Create(ctx context.Context, person *Person, confirm bool) error",
+		"func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error)",
+		"panic(\"PersonStoreMock.CreateFunc: method is nil but PersonStore.Create was just called\")",
+		"panic(\"PersonStoreMock.GetFunc: method is nil but PersonStore.Get was just called\")",
+		"lockPersonStoreMockGet.Lock()",
+		"mock.calls.Get = append(mock.calls.Get, callInfo)",
+		"lockPersonStoreMockGet.Unlock()",
+		"// ID is the id argument value",
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}
+
 func TestMoqExplicitPackage(t *testing.T) {
 	m, err := New("testpackages/example", "different")
 	if err != nil {
@@ -56,6 +90,34 @@ func TestMoqExplicitPackage(t *testing.T) {
 	// assertions of things that should be mentioned
 	var strs = []string{
 		"package different",
+		"type PersonStoreMock struct",
+		"CreateFunc func(ctx context.Context, person *example.Person, confirm bool) error",
+		"GetFunc func(ctx context.Context, id string) (*example.Person, error)",
+		"func (mock *PersonStoreMock) Create(ctx context.Context, person *example.Person, confirm bool) error",
+		"func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*example.Person, error)",
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}
+
+func TestMoqExplicitPackageWithStaticCheck(t *testing.T) {
+	m, err := New("testpackages/example", "different")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "PersonStore")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		"package different",
+		"var _ example.PersonStore = &PersonStoreMock{}",
 		"type PersonStoreMock struct",
 		"CreateFunc func(ctx context.Context, person *example.Person, confirm bool) error",
 		"GetFunc func(ctx context.Context, id string) (*example.Person, error)",
@@ -197,6 +259,28 @@ func TestVendoredPackages(t *testing.T) {
 	}
 }
 
+func TestVendoredBuildConstraints(t *testing.T) {
+	m, err := New("testpackages/buildconstraints/user", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Service")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		`"github.com/matryer/buildconstraints"`,
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}
+
 // TestDotImports tests for https://github.com/matryer/moq/issues/21.
 func TestDotImports(t *testing.T) {
 	preDir, err := os.Getwd()
@@ -223,7 +307,7 @@ func TestDotImports(t *testing.T) {
 		t.Errorf("mock error: %s", err)
 	}
 	s := buf.String()
-	if !strings.Contains(s, `/moq/pkg/moq/testpackages/dotimport"`) {
+	if strings.Contains(s, `"."`) {
 		t.Error("contains invalid dot import")
 	}
 }
@@ -269,5 +353,21 @@ func TestGoGenerateVendoredPackages(t *testing.T) {
 	s := buf.String()
 	if strings.Contains(s, `vendor/`) {
 		t.Error("contains vendor directory in import path")
+	}
+}
+
+func TestImportedPackageWithSameName(t *testing.T) {
+	m, err := New("testpackages/samenameimport", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Example")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	s := buf.String()
+	if !strings.Contains(s, `a samename.A`) {
+		t.Error("missing samename.A to address the struct A from the external package samename")
 	}
 }
