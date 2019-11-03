@@ -76,8 +76,7 @@ func TestModulesSamePackage(t *testing.T) {
 		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "Foo")
-	if err != nil {
+	if err = m.Mock(&buf, "Foo", ""); err != nil {
 		t.Errorf("m.Mock: %s", err)
 	}
 	s := buf.String()
@@ -108,8 +107,7 @@ func TestModulesNestedPackage(t *testing.T) {
 		t.Fatalf("moq.New: %s", err)
 	}
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "Foo")
-	if err != nil {
+	if err = m.Mock(&buf, "Foo", ""); err != nil {
 		t.Errorf("m.Mock: %s", err)
 	}
 	s := buf.String()

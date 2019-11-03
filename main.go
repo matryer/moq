@@ -9,7 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/matryer/moq/pkg/moq"
+	"github.com/sudo-suhas/moqit/pkg/moq"
 )
 
 func main() {
@@ -23,11 +23,12 @@ func main() {
 		}
 	}()
 	var (
-		outFile = flag.String("out", "", "output file (default stdout)")
-		pkgName = flag.String("pkg", "", "package name (default will infer)")
+		outFile  = flag.String("out", "", "output file (default stdout)")
+		pkgName  = flag.String("pkg", "", "package name (default will infer)")
+		mockName = flag.String("mock", "", "mock name (default will infer)")
 	)
 	flag.Usage = func() {
-		fmt.Println(`moq [flags] destination interface [interface2 [interface3 [...]]]`)
+		fmt.Println(`moq [flags] destination interface`)
 		flag.PrintDefaults()
 	}
 	flag.Parse()
@@ -36,7 +37,7 @@ func main() {
 		err = errors.New("not enough arguments")
 		return
 	}
-	destination := args[0]
+	destination, iface := args[0], args[1]
 	args = args[1:]
 	var buf bytes.Buffer
 	var out io.Writer
@@ -48,8 +49,7 @@ func main() {
 	if err != nil {
 		return
 	}
-	err = m.Mock(out, args...)
-	if err != nil {
+	if err = m.Mock(out, iface, *mockName); err != nil {
 		return
 	}
 	// create the file

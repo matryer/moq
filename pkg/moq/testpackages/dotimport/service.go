@@ -1,7 +1,7 @@
 // Package dotimport addresses issue 21.
 package dotimport
 
-//go:generate moq -out service_moq_test.go -pkg dotimport_test . Service
+//go:generate moqit -out service_moq_test.go -pkg dotimport_test . Service
 
 // Service is the interface which should be mocked by moq
 type Service interface {

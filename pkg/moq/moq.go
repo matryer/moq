@@ -105,9 +105,9 @@ func New(src, packageName string) (*Mocker, error) {
 }
 
 // Mock generates a mock for the specified interface name.
-func (m *Mocker) Mock(w io.Writer, name ...string) error {
-	if len(name) == 0 {
-		return errors.New("must specify one interface")
+func (m *Mocker) Mock(w io.Writer, ifaceName, mockName string) error {
+	if mockName == "" {
+		mockName = ifaceName + "Mock"
 	}
 
 	doc := doc{
@@ -118,31 +118,31 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 	mocksMethods := false
 
 	tpkg := m.srcPkg.Types
-	for _, n := range name {
-		iface := tpkg.Scope().Lookup(n)
-		if iface == nil {
-			return fmt.Errorf("cannot find interface %s", n)
-		}
-		if !types.IsInterface(iface.Type()) {
-			return fmt.Errorf("%s (%s) not an interface", n, iface.Type().String())
-		}
-		iiface := iface.Type().Underlying().(*types.Interface).Complete()
-		obj := obj{
-			InterfaceName: n,
-		}
-		for i := 0; i < iiface.NumMethods(); i++ {
-			mocksMethods = true
-			meth := iiface.Method(i)
-			sig := meth.Type().(*types.Signature)
-			method := &method{
-				Name: meth.Name(),
-			}
-			obj.Methods = append(obj.Methods, method)
-			method.Params = m.extractArgs(sig, sig.Params(), "in%d")
-			method.Returns = m.extractArgs(sig, sig.Results(), "out%d")
-		}
-		doc.Objects = append(doc.Objects, obj)
+	iface := tpkg.Scope().Lookup(ifaceName)
+	if iface == nil {
+		return fmt.Errorf("cannot find interface %s", ifaceName)
 	}
+	if !types.IsInterface(iface.Type()) {
+		return fmt.Errorf("%s (%s) not an interface", ifaceName, iface.Type().String())
+	}
+	iiface := iface.Type().Underlying().(*types.Interface).Complete()
+	obj := obj{
+		ID:            tpkg.Name() + "." + iface.Id(),
+		InterfaceName: ifaceName,
+		MockName:      mockName,
+	}
+	for i := 0; i < iiface.NumMethods(); i++ {
+		mocksMethods = true
+		meth := iiface.Method(i)
+		sig := meth.Type().(*types.Signature)
+		method := &method{
+			Name: meth.Name(),
+		}
+		obj.Methods = append(obj.Methods, method)
+		method.Params = m.extractArgs(sig, sig.Params(), "in%d")
+		method.Returns = m.extractArgs(sig, sig.Results(), "out%d")
+	}
+	doc.Objects = append(doc.Objects, obj)
 
 	if mocksMethods {
 		doc.Imports = append(doc.Imports, "sync")
@@ -235,7 +235,9 @@ type doc struct {
 }
 
 type obj struct {
+	ID            string
 	InterfaceName string
+	MockName      string
 	Methods       []*method
 }
 type method struct {
