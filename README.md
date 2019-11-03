@@ -29,6 +29,8 @@ moq [flags] destination interface [interface2 [interface3 [...]]]
     	output file (default stdout)
   -pkg string
     	package name (default will infer)
+Specifying an alias for the mock is also supported with the format 'interface:alias'
+Ex: moq -pkg different . MyInterface:MyMock
 ```
 
 In a command line:
@@ -63,7 +65,7 @@ In this example, Moq generated the `EmailSenderMock` type:
 ```go
 func TestCompleteSignup(t *testing.T) {
 
-	var sentTo string 
+	var sentTo string
 
 	mockedEmailSender = &EmailSenderMock{
 		SendFunc: func(to, subject, body string) error {
