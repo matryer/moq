@@ -2,14 +2,14 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
+	"errors"
 
-	"github.com/sudo-suhas/moqit/pkg/moq"
+	"github.com/matryer/moq/pkg/moq"
 )
 
 func main() {
@@ -23,12 +23,11 @@ func main() {
 		}
 	}()
 	var (
-		outFile  = flag.String("out", "", "output file (default stdout)")
-		pkgName  = flag.String("pkg", "", "package name (default will infer)")
-		mockName = flag.String("mock", "", "mock name (default will infer)")
+		outFile = flag.String("out", "", "output file (default stdout)")
+		pkgName = flag.String("pkg", "", "package name (default will infer)")
 	)
 	flag.Usage = func() {
-		fmt.Println(`moq [flags] destination interface`)
+		fmt.Println(`moq [flags] destination interface [interface2 [interface3 [...]]]`)
 		flag.PrintDefaults()
 	}
 	flag.Parse()
@@ -37,7 +36,7 @@ func main() {
 		err = errors.New("not enough arguments")
 		return
 	}
-	destination, iface := args[0], args[1]
+	destination := args[0]
 	args = args[1:]
 	var buf bytes.Buffer
 	var out io.Writer
@@ -49,8 +48,8 @@ func main() {
 	if err != nil {
 		return
 	}
-
-	if err = m.Mock(out, iface, *mockName); err != nil {
+	err = m.Mock(out, args...)
+	if err != nil {
 		return
 	}
 	// create the file
