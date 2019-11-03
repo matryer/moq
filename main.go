@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/matryer/moq/pkg/moq"
 )
@@ -54,6 +55,10 @@ func main() {
 	}
 	// create the file
 	if len(*outFile) > 0 {
+		err = os.MkdirAll(filepath.Dir(*outFile), 0755)
+		if err != nil {
+			return
+		}
 		err = ioutil.WriteFile(*outFile, buf.Bytes(), 0644)
 	}
 }
