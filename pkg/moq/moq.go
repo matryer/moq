@@ -126,8 +126,8 @@ func pkgInDir(pkgName, dir string) bool {
 }
 
 // Mock generates a mock for the specified interface name.
-func (m *Mocker) Mock(w io.Writer, name ...string) error {
-	if len(name) == 0 {
+func (m *Mocker) Mock(w io.Writer, names ...string) error {
+	if len(names) == 0 {
 		return errors.New("must specify one interface")
 	}
 
@@ -139,7 +139,8 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 	mocksMethods := false
 
 	tpkg := m.srcPkg.Types
-	for _, n := range name {
+	for _, name := range names {
+		n, mockName := parseInterfaceName(name)
 		iface := tpkg.Scope().Lookup(n)
 		if iface == nil {
 			return fmt.Errorf("cannot find interface %s", n)
@@ -150,6 +151,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 		iiface := iface.Type().Underlying().(*types.Interface).Complete()
 		obj := obj{
 			InterfaceName: n,
+			MockName:      mockName,
 		}
 		for i := 0; i < iiface.NumMethods(); i++ {
 			mocksMethods = true
@@ -248,6 +250,16 @@ func pkgInfoFromPath(src string, mode packages.LoadMode) (*packages.Package, err
 	return pkgs[0], nil
 }
 
+func parseInterfaceName(name string) (ifaceName, mockName string) {
+	parts := strings.SplitN(name, ":", 2)
+	ifaceName = parts[0]
+	mockName = ifaceName + "Mock"
+	if len(parts) == 2 {
+		mockName = parts[1]
+	}
+	return
+}
+
 type doc struct {
 	PackageName         string
 	SourcePackagePrefix string
@@ -257,6 +269,7 @@ type doc struct {
 
 type obj struct {
 	InterfaceName string
+	MockName      string
 	Methods       []*method
 }
 type method struct {
