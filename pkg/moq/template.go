@@ -23,7 +23,7 @@ var (
 {{- end }}
 )
 
-// Ensure, that {{.MockName}} does implement {{.InterfaceName}}.
+// Ensure, that {{.MockName}} does implement {{$sourcePackagePrefix}}{{.InterfaceName}}.
 // If this is not the case, regenerate this file with moq.
 var _ {{$sourcePackagePrefix}}{{.InterfaceName}} = &{{.MockName}}{}
 
