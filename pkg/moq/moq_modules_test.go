@@ -71,7 +71,7 @@ func TestModulesSamePackage(t *testing.T) {
 		t.Fatalf("Test package copy error: %s", err)
 	}
 
-	m, err := New(tmpDir, "")
+	m, err := New(Config{SrcDir: tmpDir})
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -103,7 +103,7 @@ func TestModulesNestedPackage(t *testing.T) {
 		t.Fatalf("Test package copy error: %s", err)
 	}
 
-	m, err := New(tmpDir, "nested")
+	m, err := New(Config{SrcDir: tmpDir, PkgName: "nested"})
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
