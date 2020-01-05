@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"go/build"
 	"go/format"
 	"go/types"
 	"io"
@@ -358,16 +359,12 @@ func stripVendorPath(p string) string {
 // stripGopath takes the directory to a package and removes the
 // $GOPATH/src path to get the canonical package name.
 func stripGopath(p string) string {
-	for _, gopath := range gopaths() {
-		rel, err := filepath.Rel(filepath.Join(gopath, "src"), p)
+	for _, srcDir := range build.Default.SrcDirs() {
+		rel, err := filepath.Rel(srcDir, p)
 		if err != nil || strings.HasPrefix(rel, "..") {
 			continue
 		}
 		return filepath.ToSlash(rel)
 	}
 	return p
-}
-
-func gopaths() []string {
-	return strings.Split(os.Getenv("GOPATH"), string(filepath.ListSeparator))
 }
