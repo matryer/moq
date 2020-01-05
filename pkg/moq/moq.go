@@ -355,14 +355,15 @@ func stripVendorPath(p string) string {
 	return strings.TrimLeft(path.Join(parts[1:]...), "/")
 }
 
-// stripGopath takes the directory to a package and remove the gopath to get the
-// canonical package name.
-//
-// taken from https://github.com/ernesto-jimenez/gogen
-// Copyright (c) 2015 Ernesto Jiménez
+// stripGopath takes the directory to a package and removes the
+// $GOPATH/src path to get the canonical package name.
 func stripGopath(p string) string {
 	for _, gopath := range gopaths() {
-		p = strings.TrimPrefix(p, path.Join(gopath, "src")+"/")
+		rel, err := filepath.Rel(filepath.Join(gopath, "src"), p)
+		if err != nil || strings.HasPrefix(rel, "..") {
+			continue
+		}
+		return filepath.ToSlash(rel)
 	}
 	return p
 }
