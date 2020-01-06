@@ -177,7 +177,7 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 
 	if tpkg.Name() != m.pkgName {
 		doc.SourcePackagePrefix = tpkg.Name() + "."
-		doc.Imports = append(doc.Imports, tpkg.Path())
+		doc.Imports = append(doc.Imports, stripVendorPath(tpkg.Path()))
 	}
 
 	var buf bytes.Buffer

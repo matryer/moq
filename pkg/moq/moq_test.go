@@ -311,6 +311,32 @@ func TestVendoredPackages(t *testing.T) {
 	}
 }
 
+func TestVendoredInterface(t *testing.T) {
+	m, err := New("testpackages/vendoring/vendor/github.com/matryer/somerepo", "someother")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "SomeService")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		`"github.com/matryer/somerepo"`,
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+	incorrectImport := `"github.com/matryer/moq/pkg/moq/testpackages/vendoring/vendor/github.com/matryer/somerepo"`
+	if strings.Contains(s, incorrectImport) {
+		t.Errorf("unexpected import: %s", incorrectImport)
+	}
+}
+
 func TestVendoredBuildConstraints(t *testing.T) {
 	m, err := New("testpackages/buildconstraints/user", "")
 	if err != nil {
