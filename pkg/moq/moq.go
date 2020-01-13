@@ -73,22 +73,11 @@ type Mocker struct {
 func New(src, packageName string) (*Mocker, error) {
 	srcPkg, err := pkgInfoFromPath(src, packages.LoadSyntax)
 	if err != nil {
-		return nil, fmt.Errorf("Couldn't load source package: %s", err)
+		return nil, fmt.Errorf("couldn't load source package: %s", err)
 	}
-	pkgPath := srcPkg.PkgPath
-
-	if len(packageName) == 0 {
-		packageName = srcPkg.Name
-	} else {
-		mockPkgPath := filepath.Join(src, packageName)
-		if _, err := os.Stat(mockPkgPath); os.IsNotExist(err) {
-			os.Mkdir(mockPkgPath, os.ModePerm)
-		}
-		mockPkg, err := pkgInfoFromPath(mockPkgPath, packages.LoadFiles)
-		if err != nil {
-			return nil, fmt.Errorf("Couldn't load mock package: %s", err)
-		}
-		pkgPath = mockPkg.PkgPath
+	pkgPath, err := findPkgPath(packageName, srcPkg)
+	if err != nil {
+		return nil, fmt.Errorf("couldn't load mock package: %s", err)
 	}
 
 	tmpl, err := template.New("moq").Funcs(templateFuncs).Parse(moqTemplate)
@@ -98,15 +87,47 @@ func New(src, packageName string) (*Mocker, error) {
 	return &Mocker{
 		tmpl:    tmpl,
 		srcPkg:  srcPkg,
-		pkgName: packageName,
+		pkgName: preventZeroStr(packageName, srcPkg.Name),
 		pkgPath: pkgPath,
 		imports: make(map[string]bool),
 	}, nil
 }
 
+func preventZeroStr(val, defaultVal string) string {
+	if val == "" {
+		return defaultVal
+	}
+	return val
+}
+
+func findPkgPath(pkgInputVal string, srcPkg *packages.Package) (string, error) {
+	if pkgInputVal == "" {
+		return srcPkg.PkgPath, nil
+	}
+	if pkgInDir(".", pkgInputVal) {
+		return ".", nil
+	}
+	if pkgInDir(srcPkg.PkgPath, pkgInputVal) {
+		return srcPkg.PkgPath, nil
+	}
+	subdirectoryPath := filepath.Join(srcPkg.PkgPath, pkgInputVal)
+	if pkgInDir(subdirectoryPath, pkgInputVal) {
+		return subdirectoryPath, nil
+	}
+	return "", nil
+}
+
+func pkgInDir(pkgName, dir string) bool {
+	currentPkg, err := pkgInfoFromPath(dir, packages.LoadFiles)
+	if err != nil {
+		return false
+	}
+	return currentPkg.Name == pkgName || currentPkg.Name+"_test" == pkgName
+}
+
 // Mock generates a mock for the specified interface name.
-func (m *Mocker) Mock(w io.Writer, name ...string) error {
-	if len(name) == 0 {
+func (m *Mocker) Mock(w io.Writer, names ...string) error {
+	if len(names) == 0 {
 		return errors.New("must specify one interface")
 	}
 
@@ -118,7 +139,8 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 	mocksMethods := false
 
 	tpkg := m.srcPkg.Types
-	for _, n := range name {
+	for _, name := range names {
+		n, mockName := parseInterfaceName(name)
 		iface := tpkg.Scope().Lookup(n)
 		if iface == nil {
 			return fmt.Errorf("cannot find interface %s", n)
@@ -129,6 +151,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 		iiface := iface.Type().Underlying().(*types.Interface).Complete()
 		obj := obj{
 			InterfaceName: n,
+			MockName:      mockName,
 		}
 		for i := 0; i < iiface.NumMethods(); i++ {
 			mocksMethods = true
@@ -173,7 +196,7 @@ func (m *Mocker) Mock(w io.Writer, name ...string) error {
 }
 
 func (m *Mocker) packageQualifier(pkg *types.Package) string {
-	if m.pkgPath == pkg.Path() {
+	if m.pkgPath != "" && m.pkgPath == pkg.Path() {
 		return ""
 	}
 	path := pkg.Path()
@@ -227,6 +250,16 @@ func pkgInfoFromPath(src string, mode packages.LoadMode) (*packages.Package, err
 	return pkgs[0], nil
 }
 
+func parseInterfaceName(name string) (ifaceName, mockName string) {
+	parts := strings.SplitN(name, ":", 2)
+	ifaceName = parts[0]
+	mockName = ifaceName + "Mock"
+	if len(parts) == 2 {
+		mockName = parts[1]
+	}
+	return
+}
+
 type doc struct {
 	PackageName         string
 	SourcePackagePrefix string
@@ -236,6 +269,7 @@ type doc struct {
 
 type obj struct {
 	InterfaceName string
+	MockName      string
 	Methods       []*method
 }
 type method struct {

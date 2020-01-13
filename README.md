@@ -29,6 +29,8 @@ moq [flags] destination interface [interface2 [interface3 [...]]]
     	output file (default stdout)
   -pkg string
     	package name (default will infer)
+Specifying an alias for the mock is also supported with the format 'interface:alias'
+Ex: moq -pkg different . MyInterface:MyMock
 ```
 
 In a command line:
@@ -58,12 +60,12 @@ Mocking interfaces is a nice way to write unit tests where you can easily contro
 
 Moq creates a struct that has a function field for each method, which you can declare in your test code.
 
-This this example, Moq generated the `EmailSenderMock` type:
+In this example, Moq generated the `EmailSenderMock` type:
 
 ```go
 func TestCompleteSignup(t *testing.T) {
 
-	var sentTo string 
+	var sentTo string
 
 	mockedEmailSender = &EmailSenderMock{
 		SendFunc: func(to, subject, body string) error {
