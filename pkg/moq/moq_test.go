@@ -449,3 +449,29 @@ func TestImportedPackageWithSameName(t *testing.T) {
 		t.Error("missing samename.A to address the struct A from the external package samename")
 	}
 }
+
+func TestImportAliases(t *testing.T) {
+	m, err := New("testpackages/importalias", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+
+	var buf bytes.Buffer
+	if err = m.Mock(&buf, "SalesService"); err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		`doucheclient "github.com/matryer/moq/pkg/moq/testpackages/importalias/douche/client"`,
+		`niceclient "github.com/matryer/moq/pkg/moq/testpackages/importalias/nice/client"`,
+		`	PitchEasyFunc func(p niceclient.Person)`,
+		`	PitchHardFunc func(p doucheclient.Person)`,
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}

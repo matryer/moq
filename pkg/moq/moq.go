@@ -66,16 +66,20 @@ type Mocker struct {
 	tmpl    *template.Template
 	pkgName string
 	pkgPath string
+	aliases map[string]string // for imports in source package
 
 	imports map[string]bool
 }
 
 // New makes a new Mocker for the specified package directory.
 func New(src, packageName string) (*Mocker, error) {
-	srcPkg, err := pkgInfoFromPath(src, packages.NeedName|packages.NeedTypes|packages.NeedTypesInfo)
+	srcPkg, err := pkgInfoFromPath(src, packages.NeedName|packages.NeedTypes|packages.NeedSyntax|packages.NeedTypesInfo)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't load source package: %s", err)
 	}
+
+	aliases := parseImportAliases(srcPkg)
+
 	pkgPath, err := findPkgPath(packageName, srcPkg)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't load mock package: %s", err)
@@ -90,6 +94,7 @@ func New(src, packageName string) (*Mocker, error) {
 		srcPkg:  srcPkg,
 		pkgName: preventZeroStr(packageName, srcPkg.Name),
 		pkgPath: pkgPath,
+		aliases: aliases,
 		imports: make(map[string]bool),
 	}, nil
 }
@@ -132,10 +137,8 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 		return errors.New("must specify one interface")
 	}
 
-	doc := doc{
-		PackageName: m.pkgName,
-		Imports:     moqImports,
-	}
+	doc := doc{PackageName: m.pkgName}
+	imports := append(([]string)(nil), moqImports...)
 
 	mocksMethods := false
 
@@ -169,17 +172,19 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 	}
 
 	if mocksMethods {
-		doc.Imports = append(doc.Imports, "sync")
+		imports = append(imports, "sync")
 	}
 
 	for pkgToImport := range m.imports {
-		doc.Imports = append(doc.Imports, stripVendorPath(pkgToImport))
+		imports = append(imports, stripVendorPath(pkgToImport))
 	}
 
 	if tpkg.Name() != m.pkgName {
 		doc.SourcePackagePrefix = tpkg.Name() + "."
-		doc.Imports = append(doc.Imports, stripVendorPath(tpkg.Path()))
+		imports = append(imports, stripVendorPath(tpkg.Path()))
 	}
+
+	doc.Imports = m.importStatements(imports)
 
 	var buf bytes.Buffer
 	err := m.tmpl.Execute(&buf, doc)
@@ -200,14 +205,19 @@ func (m *Mocker) packageQualifier(pkg *types.Package) string {
 	if m.pkgPath != "" && m.pkgPath == pkg.Path() {
 		return ""
 	}
-	path := pkg.Path()
+	pkgPath := pkg.Path()
 	if pkg.Path() == "." {
 		wd, err := os.Getwd()
 		if err == nil {
-			path = stripGopath(wd)
+			pkgPath = stripGopath(wd)
 		}
 	}
-	m.imports[path] = true
+
+	m.imports[pkgPath] = true
+
+	if alias, ok := m.aliases[pkgPath]; ok {
+		return alias
+	}
 	return pkg.Name()
 }
 
@@ -233,6 +243,25 @@ func (m *Mocker) extractArgs(sig *types.Signature, list *types.Tuple, nameFormat
 	return params
 }
 
+// importStatements returns the import statements with quotes and
+// if applicable, aliases.
+func (m *Mocker) importStatements(imports []string) []string {
+	if len(imports) == 0 {
+		return nil
+	}
+
+	stmnts := make([]string, len(imports))
+	for i, imprt := range imports {
+		if alias, ok := m.aliases[imprt]; ok {
+			stmnts[i] = fmt.Sprintf("%s %q", alias, imprt)
+			continue
+		}
+		stmnts[i] = fmt.Sprintf("%q", imprt)
+	}
+
+	return stmnts
+}
+
 func pkgInfoFromPath(src string, mode packages.LoadMode) (*packages.Package, error) {
 	conf := packages.Config{
 		Mode: mode,
@@ -249,6 +278,18 @@ func pkgInfoFromPath(src string, mode packages.LoadMode) (*packages.Package, err
 		return nil, errors.New("More than one package was found")
 	}
 	return pkgs[0], nil
+}
+
+func parseImportAliases(pkg *packages.Package) map[string]string {
+	aliases := make(map[string]string)
+	for _, syntax := range pkg.Syntax {
+		for _, imprt := range syntax.Imports {
+			if imprt.Name != nil {
+				aliases[strings.Trim(imprt.Path.Value, `"`)] = imprt.Name.Name
+			}
+		}
+	}
+	return aliases
 }
 
 func parseInterfaceName(name string) (ifaceName, mockName string) {
