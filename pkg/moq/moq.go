@@ -71,7 +71,7 @@ type Mocker struct {
 
 // New makes a new Mocker for the specified package directory.
 func New(src, packageName string) (*Mocker, error) {
-	srcPkg, err := pkgInfoFromPath(src, packages.LoadSyntax)
+	srcPkg, err := pkgInfoFromPath(src, packages.NeedName|packages.NeedTypes|packages.NeedTypesInfo)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't load source package: %s", err)
 	}
@@ -118,7 +118,7 @@ func findPkgPath(pkgInputVal string, srcPkg *packages.Package) (string, error) {
 }
 
 func pkgInDir(pkgName, dir string) bool {
-	currentPkg, err := pkgInfoFromPath(dir, packages.LoadFiles)
+	currentPkg, err := pkgInfoFromPath(dir, packages.NeedName)
 	if err != nil {
 		return false
 	}
