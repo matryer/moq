@@ -332,6 +332,8 @@ func matchGoldenFile(goldenFile string, actual []byte) error {
 		return fmt.Errorf("read: %s: %s", goldenFile, err)
 	}
 
+	// Normalise newlines
+	actual, expected = normalize(actual), normalize(expected)
 	if !bytes.Equal(expected, actual) {
 		return fmt.Errorf("match: %s:\n(ACTUAL)\n%s\n(EXPECTED)\n%s", goldenFile, actual, expected)
 	}
@@ -508,4 +510,15 @@ func TestImportedPackageWithSameName(t *testing.T) {
 	if !strings.Contains(s, `a samename.A`) {
 		t.Error("missing samename.A to address the struct A from the external package samename")
 	}
+}
+
+// normalize normalizes \r\n (windows) and \r (mac)
+// into \n (unix)
+func normalize(d []byte) []byte {
+	// Source: https://www.programming-books.io/essential/go/normalize-newlines-1d3abcf6f17c4186bb9617fa14074e48
+	// replace CR LF \r\n (windows) with LF \n (unix)
+	d = bytes.Replace(d, []byte{13, 10}, []byte{10}, -1)
+	// replace CF \r (mac) with LF \n (unix)
+	d = bytes.Replace(d, []byte{13}, []byte{10}, -1)
+	return d
 }
