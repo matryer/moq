@@ -67,12 +67,13 @@ type Mocker struct {
 	pkgName string
 	pkgPath string
 
-	imports map[string]string
+	aliases map[string]string // path -> name
+	imports map[string]string // name -> path
 }
 
 // New makes a new Mocker for the specified package directory.
 func New(src, packageName string) (*Mocker, error) {
-	srcPkg, err := pkgInfoFromPath(src, packages.NeedName|packages.NeedTypes|packages.NeedTypesInfo)
+	srcPkg, err := pkgInfoFromPath(src, packages.NeedName|packages.NeedSyntax|packages.NeedTypes|packages.NeedTypesInfo)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't load source package: %s", err)
 	}
@@ -90,6 +91,7 @@ func New(src, packageName string) (*Mocker, error) {
 		srcPkg:  srcPkg,
 		pkgName: preventZeroStr(packageName, srcPkg.Name),
 		pkgPath: pkgPath,
+		aliases: extractAliases(srcPkg),
 		imports: make(map[string]string),
 	}, nil
 }
@@ -99,6 +101,18 @@ func preventZeroStr(val, defaultVal string) string {
 		return defaultVal
 	}
 	return val
+}
+
+func extractAliases(pkg *packages.Package) map[string]string {
+	aliases := make(map[string]string)
+	for _, syntax := range pkg.Syntax {
+		for _, imprt := range syntax.Imports {
+			if imprt.Name != nil {
+				aliases[strings.Trim(imprt.Path.Value, `"`)] = imprt.Name.Name
+			}
+		}
+	}
+	return aliases
 }
 
 func findPkgPath(pkgInputVal string, srcPkg *packages.Package) (string, error) {
@@ -172,7 +186,7 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 
 	if tpkg.Name() != m.pkgName {
 		doc.SourcePackagePrefix = tpkg.Name() + "."
-		doc.Imports = append(doc.Imports, `"`+tpkg.Path()+`"`)
+		doc.Imports = append(doc.Imports, `"`+stripVendorPath(tpkg.Path())+`"`)
 	}
 
 	var buf bytes.Buffer
@@ -208,7 +222,10 @@ func (m *Mocker) packageQualifier(pkg *types.Package) string {
 			path = stripGopath(wd)
 		}
 	}
-	name := pkg.Name()
+	name := m.aliases[path]
+	if name == "" {
+		name = pkg.Name()
+	}
 	for i := 1; ; i++ {
 		if p, exists := m.imports[name]; exists && p != path {
 			name = fmt.Sprintf("%s%d", pkg.Name(), i)

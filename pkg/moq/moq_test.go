@@ -270,7 +270,34 @@ func TestImports(t *testing.T) {
 	s := buf.String()
 	var strs = []string{
 		`	"sync"`,
+		`	another "github.com/matryer/moq/pkg/moq/testpackages/imports/another/one"`,
 		`	"github.com/matryer/moq/pkg/moq/testpackages/imports/one"`,
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+		if len(strings.Split(s, str)) > 2 {
+			t.Errorf("more than one: \"%s\"", str)
+		}
+	}
+}
+
+func TestImportsConflict(t *testing.T) {
+	m, err := New("testpackages/imports/three", "")
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "DoFirst", "DoAnother")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	var strs = []string{
+		`	"sync"`,
+		`	"github.com/matryer/moq/pkg/moq/testpackages/imports/one"`,
+		`	one1 "github.com/matryer/moq/pkg/moq/testpackages/imports/another/one"`,
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
@@ -333,7 +360,7 @@ func TestVendoredInterface(t *testing.T) {
 	}
 	incorrectImport := `"github.com/matryer/moq/pkg/moq/testpackages/vendoring/vendor/github.com/matryer/somerepo"`
 	if strings.Contains(s, incorrectImport) {
-		t.Errorf("unexpected import: %s", incorrectImport)
+		t.Errorf("unexpected import: %s\n%s", incorrectImport, s)
 	}
 }
 
