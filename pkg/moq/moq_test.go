@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/pmezard/go-difflib/difflib"
 )
 
 var update = flag.Bool("update", false, "Update golden files.")
@@ -335,7 +337,17 @@ func matchGoldenFile(goldenFile string, actual []byte) error {
 	// Normalise newlines
 	actual, expected = normalize(actual), normalize(expected)
 	if !bytes.Equal(expected, actual) {
-		return fmt.Errorf("match: %s:\n(ACTUAL)\n%s\n(EXPECTED)\n%s", goldenFile, actual, expected)
+		diff, err := difflib.GetUnifiedDiffString(difflib.UnifiedDiff{
+			A:        difflib.SplitLines(string(expected)),
+			B:        difflib.SplitLines(string(actual)),
+			FromFile: "Expected",
+			ToFile:   "Actual",
+			Context:  1,
+		})
+		if err != nil {
+			return fmt.Errorf("diff: %s", err)
+		}
+		return fmt.Errorf("match: %s:\n%s", goldenFile, diff)
 	}
 
 	return nil
