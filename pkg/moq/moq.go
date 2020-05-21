@@ -133,8 +133,8 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 				Name: meth.Name(),
 			}
 			obj.Methods = append(obj.Methods, method)
-			method.Params = m.extractArgs(sig, sig.Params(), "in%d")
-			method.Returns = m.extractArgs(sig, sig.Results(), "out%d")
+			method.Params = m.extractArgs(sig.Variadic(), sig.Params(), "in%d")
+			method.Returns = m.extractArgs(false, sig.Results(), "out%d")
 		}
 		doc.Objects = append(doc.Objects, obj)
 	}
@@ -182,7 +182,7 @@ func (m *Mocker) packageQualifier(pkg *types.Package) string {
 	return pkg.Name()
 }
 
-func (m *Mocker) extractArgs(sig *types.Signature, list *types.Tuple, nameFormat string) []*param {
+func (m *Mocker) extractArgs(variadic bool, list *types.Tuple, nameFormat string) []*param {
 	var params []*param
 	listLen := list.Len()
 	for ii := 0; ii < listLen; ii++ {
