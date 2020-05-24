@@ -193,7 +193,7 @@ func (m *Mocker) extractArgs(variadic bool, list *types.Tuple, nameFormat string
 		}
 		typename := types.TypeString(p.Type(), m.packageQualifier)
 		// check for final variadic argument
-		variadic := sig.Variadic() && ii == listLen-1 && typename[0:2] == "[]"
+		variadic := ii == listLen-1 && typename[0:2] == "[]"
 		param := &param{
 			Name:     name,
 			Type:     typename,
