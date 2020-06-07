@@ -191,7 +191,7 @@ func TestNotCreatingEmptyDirWhenPkgIsGiven(t *testing.T) {
 	}
 }
 
-// TestVeradicArguments tests to ensure variadic work as
+// TestVariadicArguments tests to ensure variadic work as
 // expected.
 // see https://github.com/matryer/moq/issues/5
 func TestVariadicArguments(t *testing.T) {
@@ -216,6 +216,26 @@ func TestVariadicArguments(t *testing.T) {
 		if !strings.Contains(s, str) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
+	}
+}
+
+// TestSliceResult tests to ensure slice return data type works as
+// expected.
+// see https://github.com/matryer/moq/issues/124
+func TestSliceResult(t *testing.T) {
+	m, err := New(Config{SrcDir: "testpackages/variadic"})
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+
+	var buf bytes.Buffer
+	if err = m.Mock(&buf, "Echoer"); err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+
+	golden := filepath.Join("testpackages/variadic/testdata", "echoer.golden.go")
+	if err := matchGoldenFile(golden, buf.Bytes()); err != nil {
+		t.Errorf("check golden file: %s", err)
 	}
 }
 
@@ -320,7 +340,7 @@ func TestFormatter(t *testing.T) {
 
 func matchGoldenFile(goldenFile string, actual []byte) error {
 	// To update golden files, run the following:
-	// go test -v -run ^<Test-Name>$ github.com/matryer/moq/pkg/moq -update
+	// go test -v -run '^<Test-Name>$' github.com/matryer/moq/pkg/moq -update
 	if *update {
 		if err := ioutil.WriteFile(goldenFile, actual, 0644); err != nil {
 			return fmt.Errorf("write: %s: %s", goldenFile, err)

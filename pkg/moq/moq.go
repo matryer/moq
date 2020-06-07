@@ -10,6 +10,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -133,8 +134,7 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 				Name: meth.Name(),
 			}
 			obj.Methods = append(obj.Methods, method)
-			method.Params = m.extractArgs(sig, sig.Params(), "in%d")
-			method.Returns = m.extractArgs(sig, sig.Results(), "out%d")
+			method.Params, method.Returns = m.extractArgs(sig)
 		}
 		doc.Objects = append(doc.Objects, obj)
 	}
@@ -182,26 +182,30 @@ func (m *Mocker) packageQualifier(pkg *types.Package) string {
 	return pkg.Name()
 }
 
-func (m *Mocker) extractArgs(sig *types.Signature, list *types.Tuple, nameFormat string) []*param {
-	var params []*param
-	listLen := list.Len()
-	for ii := 0; ii < listLen; ii++ {
-		p := list.At(ii)
-		name := p.Name()
-		if name == "" {
-			name = fmt.Sprintf(nameFormat, ii+1)
-		}
-		typename := types.TypeString(p.Type(), m.packageQualifier)
+func (m *Mocker) extractArgs(sig *types.Signature) (params, results []*param) {
+	pp := sig.Params()
+	for i := 0; i < pp.Len(); i++ {
+		p := m.buildParam(pp.At(i), "in"+strconv.Itoa(i+1))
 		// check for final variadic argument
-		variadic := sig.Variadic() && ii == listLen-1 && typename[0:2] == "[]"
-		param := &param{
-			Name:     name,
-			Type:     typename,
-			Variadic: variadic,
-		}
-		params = append(params, param)
+		p.Variadic = sig.Variadic() && i == pp.Len()-1 && p.Type[0:2] == "[]"
+		params = append(params, p)
 	}
-	return params
+
+	rr := sig.Results()
+	for i := 0; i < rr.Len(); i++ {
+		results = append(results, m.buildParam(rr.At(i), "out"+strconv.Itoa(i+1)))
+	}
+
+	return
+}
+
+func (m *Mocker) buildParam(v *types.Var, fallbackName string) *param {
+	name := v.Name()
+	if name == "" {
+		name = fallbackName
+	}
+	typ := types.TypeString(v.Type(), m.packageQualifier)
+	return &param{Name: name, Type: typ}
 }
 
 func pkgInfoFromPath(srcDir string, mode packages.LoadMode) (*packages.Package, error) {
