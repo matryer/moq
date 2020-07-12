@@ -528,6 +528,40 @@ func TestGoGenerateVendoredPackages(t *testing.T) {
 	}
 }
 
+func TestOverrlappingImports(t *testing.T) {
+	m, err := New(Config{
+		SrcDir:  "testpackages/overlappingimports",
+		PkgName: "template",
+	})
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Example", "Example2")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	var strs = []string{
+		`template1 "github.com/matryer/moq/pkg/moq/testpackages/overlappingimports"`,
+		`"github.com/matryer/moq/pkg/moq/testpackages/overlappingimports/one"`,
+		`one1 "github.com/matryer/moq/pkg/moq/testpackages/overlappingimports/one/one"`,
+		`"html/template"`,
+		`custom "text/template"`,
+		`HTML() template.HTML`,
+		`Text() custom.Template`,
+		`Self() template1.Example`,
+		`MultiFile() one.Example`,
+		`Example2MultiFile() one1.Example`,
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}
+
 func TestImportedPackageWithSameName(t *testing.T) {
 	m, err := New(Config{SrcDir: "testpackages/samenameimport"})
 	if err != nil {
