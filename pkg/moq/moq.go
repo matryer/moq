@@ -176,12 +176,8 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 		doc.Imports = append(doc.Imports, importLine)
 	}
 
-	// try to detect naming conflicts; we aren't necessarily in the same
-	// package setup as the final mocks, so don't error out- best effort only.
-	conf := packages.Config{Mode: packages.NeedName}
-	pkgs, _ := packages.Load(&conf, doc.Imports...)
-	for _, pkg := range pkgs {
-		if params, hasConflict := paramCache[pkg.Name]; hasConflict {
+	for pkg := range m.importAliases {
+		if params, hasConflict := paramCache[pkg]; hasConflict {
 			for _, param := range params {
 				param.LocalName = fmt.Sprintf("%sMoqParam", param.LocalName)
 			}
