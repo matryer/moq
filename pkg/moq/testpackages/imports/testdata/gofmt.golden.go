@@ -8,11 +8,6 @@ import (
 	"sync"
 )
 
-var (
-	lockDoSomethingMockAnother sync.RWMutex
-	lockDoSomethingMockDo      sync.RWMutex
-)
-
 // Ensure, that DoSomethingMock does implement DoSomething.
 // If this is not the case, regenerate this file with moq.
 var _ DoSomething = &DoSomethingMock{}
@@ -55,6 +50,8 @@ type DoSomethingMock struct {
 			Thing one.Thing
 		}
 	}
+	lockAnother sync.RWMutex
+	lockDo      sync.RWMutex
 }
 
 // Another calls AnotherFunc.
@@ -67,9 +64,9 @@ func (mock *DoSomethingMock) Another(thing one.Thing) error {
 	}{
 		Thing: thing,
 	}
-	lockDoSomethingMockAnother.Lock()
+	mock.lockAnother.Lock()
 	mock.calls.Another = append(mock.calls.Another, callInfo)
-	lockDoSomethingMockAnother.Unlock()
+	mock.lockAnother.Unlock()
 	return mock.AnotherFunc(thing)
 }
 
@@ -82,9 +79,9 @@ func (mock *DoSomethingMock) AnotherCalls() []struct {
 	var calls []struct {
 		Thing one.Thing
 	}
-	lockDoSomethingMockAnother.RLock()
+	mock.lockAnother.RLock()
 	calls = mock.calls.Another
-	lockDoSomethingMockAnother.RUnlock()
+	mock.lockAnother.RUnlock()
 	return calls
 }
 
@@ -98,9 +95,9 @@ func (mock *DoSomethingMock) Do(thing one.Thing) error {
 	}{
 		Thing: thing,
 	}
-	lockDoSomethingMockDo.Lock()
+	mock.lockDo.Lock()
 	mock.calls.Do = append(mock.calls.Do, callInfo)
-	lockDoSomethingMockDo.Unlock()
+	mock.lockDo.Unlock()
 	return mock.DoFunc(thing)
 }
 
@@ -113,8 +110,8 @@ func (mock *DoSomethingMock) DoCalls() []struct {
 	var calls []struct {
 		Thing one.Thing
 	}
-	lockDoSomethingMockDo.RLock()
+	mock.lockDo.RLock()
 	calls = mock.calls.Do
-	lockDoSomethingMockDo.RUnlock()
+	mock.lockDo.RUnlock()
 	return calls
 }

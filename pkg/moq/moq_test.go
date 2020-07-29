@@ -38,9 +38,9 @@ func TestMoq(t *testing.T) {
 		"func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error)",
 		"panic(\"PersonStoreMock.CreateFunc: method is nil but PersonStore.Create was just called\")",
 		"panic(\"PersonStoreMock.GetFunc: method is nil but PersonStore.Get was just called\")",
-		"lockPersonStoreMockGet.Lock()",
+		"mock.lockGet.Lock()",
 		"mock.calls.Get = append(mock.calls.Get, callInfo)",
-		"lockPersonStoreMockGet.Unlock()",
+		"mock.lockGet.Unlock()",
 		"// ID is the id argument value",
 	}
 	for _, str := range strs {
@@ -72,9 +72,9 @@ func TestMoqWithStaticCheck(t *testing.T) {
 		"func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error)",
 		"panic(\"PersonStoreMock.CreateFunc: method is nil but PersonStore.Create was just called\")",
 		"panic(\"PersonStoreMock.GetFunc: method is nil but PersonStore.Get was just called\")",
-		"lockPersonStoreMockGet.Lock()",
+		"mock.lockGet.Lock()",
 		"mock.calls.Get = append(mock.calls.Get, callInfo)",
-		"lockPersonStoreMockGet.Unlock()",
+		"mock.lockGet.Unlock()",
 		"// ID is the id argument value",
 	}
 	for _, str := range strs {
@@ -105,9 +105,9 @@ func TestMoqWithAlias(t *testing.T) {
 		"func (mock *AnotherPersonStoreMock) Get(ctx context.Context, id string) (*Person, error)",
 		"panic(\"AnotherPersonStoreMock.CreateFunc: method is nil but PersonStore.Create was just called\")",
 		"panic(\"AnotherPersonStoreMock.GetFunc: method is nil but PersonStore.Get was just called\")",
-		"lockAnotherPersonStoreMockGet.Lock()",
+		"mock.lockGet.Lock()",
 		"mock.calls.Get = append(mock.calls.Get, callInfo)",
-		"lockAnotherPersonStoreMockGet.Unlock()",
+		"mock.lockGet.Unlock()",
 		"// ID is the id argument value",
 	}
 	for _, str := range strs {

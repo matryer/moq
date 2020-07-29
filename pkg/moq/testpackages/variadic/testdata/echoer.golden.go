@@ -7,10 +7,6 @@ import (
 	"sync"
 )
 
-var (
-	lockEchoerMockEcho sync.RWMutex
-)
-
 // Ensure, that EchoerMock does implement Echoer.
 // If this is not the case, regenerate this file with moq.
 var _ Echoer = &EchoerMock{}
@@ -42,6 +38,7 @@ type EchoerMock struct {
 			Ss []string
 		}
 	}
+	lockEcho sync.RWMutex
 }
 
 // Echo calls EchoFunc.
@@ -54,9 +51,9 @@ func (mock *EchoerMock) Echo(ss ...string) []string {
 	}{
 		Ss: ss,
 	}
-	lockEchoerMockEcho.Lock()
+	mock.lockEcho.Lock()
 	mock.calls.Echo = append(mock.calls.Echo, callInfo)
-	lockEchoerMockEcho.Unlock()
+	mock.lockEcho.Unlock()
 	return mock.EchoFunc(ss...)
 }
 
@@ -69,8 +66,8 @@ func (mock *EchoerMock) EchoCalls() []struct {
 	var calls []struct {
 		Ss []string
 	}
-	lockEchoerMockEcho.RLock()
+	mock.lockEcho.RLock()
 	calls = mock.calls.Echo
-	lockEchoerMockEcho.RUnlock()
+	mock.lockEcho.RUnlock()
 	return calls
 }
