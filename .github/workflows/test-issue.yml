@@ -1,0 +1,64 @@
+name: build
+
+on:
+  push:
+    tags: [v*]
+    branches: [master]
+  pull_request:
+
+jobs:
+  # See https://github.com/mvdan/github-actions-golang
+  test:
+    env:
+      GOPATH: ${{ github.workspace }}
+      GO111MODULE: off
+
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        working-directory: ./src/github.com/${{ github.repository }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        go-version: [1.12.x, 1.13.x, 1.14.x]
+        # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#example-including-new-combinations
+        include:
+          - os: windows-latest
+            go-version: 1.14.x
+          - os: macos-latest
+            go-version: 1.14.x
+
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          path: ./src/github.com/${{ github.repository }}
+
+      - name: echo env
+        run: |
+          echo $(go env GOPATH)
+          echo $(go env GOROOT)
+          echo $PATH
+          echo $PWD
+
+      - name: Go Get
+        run:
+          go get -v -u -t -d ./...
+
+      - name: Go Vet
+        run: go vet ./...
+
+      - name: Lint
+        run: |
+          go get -u golang.org/x/lint/golint
+          golint ./...
+
+      - name: Test
+        run: go test ./...
