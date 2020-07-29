@@ -1,0 +1,57 @@
+name: build
+
+on:
+  push:
+    tags: [v*]
+    branches: [master]
+  pull_request:
+
+jobs:
+  # See https://github.com/mvdan/github-actions-golang
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        go-version: [1.14.x, 1.15.x]
+        # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#example-including-new-combinations
+        include:
+          - os: windows-latest
+            go-version: 1.15.x
+          - os: macos-latest
+            go-version: 1.15.x
+
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # See https://github.com/actions/cache/blob/master/examples.md#go---modules
+      - name: Cache Go Modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Go install moq
+        run: go install -mod=readonly
+
+      - name: Run vet
+        if: matrix.os == 'ubuntu-latest'
+        run: go vet -mod=readonly ./...
+
+      - name: Lint
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          GO111MODULE=off go get -u golang.org/x/lint/golint
+          golint ./...
+
+      - name: Test
+        run: go test -mod=readonly ./...

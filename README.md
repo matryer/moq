@@ -1,4 +1,4 @@
-![moq logo](moq-logo-small.png) [![Build Status](https://travis-ci.org/matryer/moq.svg?branch=master)](https://travis-ci.org/matryer/moq) [![Go Report Card](https://goreportcard.com/badge/github.com/matryer/moq)](https://goreportcard.com/report/github.com/matryer/moq)
+![moq logo](moq-logo-small.png) [![build](https://github.com/matryer/moq/workflows/build/badge.svg)](https://github.com/matryer/moq/actions?query=branch%3Amaster) [![Go Report Card](https://goreportcard.com/badge/github.com/matryer/moq)](https://goreportcard.com/report/github.com/matryer/moq)
 
 Interface mocking tool for go generate.
 
