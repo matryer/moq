@@ -4,20 +4,20 @@
 package two
 
 import (
-	"github.com/matryer/moq/pkg/moq/testpackages/imports/one"
 	"sync"
+	"github.com/matryer/moq/pkg/moq/testpackages/imports/one"
 )
 
-// Ensure, that DoSomethingMock does implement DoSomething.
+// Ensure, that noopMock does implement DoSomething.
 // If this is not the case, regenerate this file with moq.
-var _ DoSomething = &DoSomethingMock{}
+var _ DoSomething = &noopMock{}
 
-// DoSomethingMock is a mock implementation of DoSomething.
+// noopMock is a mock implementation of DoSomething.
 //
 //     func TestSomethingThatUsesDoSomething(t *testing.T) {
 //
 //         // make and configure a mocked DoSomething
-//         mockedDoSomething := &DoSomethingMock{
+//         mockedDoSomething := &noopMock{ 
 //             AnotherFunc: func(thing one.Thing) error {
 // 	               panic("mock out the Another method")
 //             },
@@ -30,7 +30,7 @@ var _ DoSomething = &DoSomethingMock{}
 //         // and then make assertions.
 //
 //     }
-type DoSomethingMock struct {
+type noopMock struct {
 	// AnotherFunc mocks the Another method.
 	AnotherFunc func(thing one.Thing) error
 
@@ -51,13 +51,13 @@ type DoSomethingMock struct {
 		}
 	}
 	lockAnother sync.RWMutex
-	lockDo      sync.RWMutex
+	lockDo sync.RWMutex
 }
 
 // Another calls AnotherFunc.
-func (mock *DoSomethingMock) Another(thing one.Thing) error {
+func (mock *noopMock) Another(thing one.Thing) error {
 	if mock.AnotherFunc == nil {
-		panic("DoSomethingMock.AnotherFunc: method is nil but DoSomething.Another was just called")
+		panic("noopMock.AnotherFunc: method is nil but DoSomething.Another was just called")
 	}
 	callInfo := struct {
 		Thing one.Thing
@@ -73,9 +73,9 @@ func (mock *DoSomethingMock) Another(thing one.Thing) error {
 // AnotherCalls gets all the calls that were made to Another.
 // Check the length with:
 //     len(mockedDoSomething.AnotherCalls())
-func (mock *DoSomethingMock) AnotherCalls() []struct {
-	Thing one.Thing
-} {
+func (mock *noopMock) AnotherCalls() []struct {
+		Thing one.Thing
+	} {
 	var calls []struct {
 		Thing one.Thing
 	}
@@ -86,9 +86,9 @@ func (mock *DoSomethingMock) AnotherCalls() []struct {
 }
 
 // Do calls DoFunc.
-func (mock *DoSomethingMock) Do(thing one.Thing) error {
+func (mock *noopMock) Do(thing one.Thing) error {
 	if mock.DoFunc == nil {
-		panic("DoSomethingMock.DoFunc: method is nil but DoSomething.Do was just called")
+		panic("noopMock.DoFunc: method is nil but DoSomething.Do was just called")
 	}
 	callInfo := struct {
 		Thing one.Thing
@@ -104,9 +104,9 @@ func (mock *DoSomethingMock) Do(thing one.Thing) error {
 // DoCalls gets all the calls that were made to Do.
 // Check the length with:
 //     len(mockedDoSomething.DoCalls())
-func (mock *DoSomethingMock) DoCalls() []struct {
-	Thing one.Thing
-} {
+func (mock *noopMock) DoCalls() []struct {
+		Thing one.Thing
+	} {
 	var calls []struct {
 		Thing one.Thing
 	}

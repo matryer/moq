@@ -61,8 +61,11 @@ func New(conf Config) (*Mocker, error) {
 	}
 
 	fmter := gofmt
-	if conf.Formatter == "goimports" {
+	switch conf.Formatter {
+	case "goimports":
 		fmter = goimports
+	case "noop":
+		fmter = noopFmt
 	}
 
 	return &Mocker{

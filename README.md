@@ -26,13 +26,13 @@ $ go get github.com/matryer/moq
 ```
 moq [flags] source-dir interface [interface2 [interface3 [...]]]
   -fmt string
-	go pretty-printer: gofmt (default) or goimports
+    	go pretty-printer: gofmt, goimports or noop (default gofmt)
   -out string
     	output file (default stdout)
   -pkg string
     	package name (default will infer)
   -stub
-	return zero values when no mock implementation is provided, do not panic
+    	return zero values when no mock implementation is provided, do not panic
 Specifying an alias for the mock is also supported with the format 'interface:alias'
 Ex: moq -pkg different . MyInterface:MyMock
 ```
@@ -109,6 +109,9 @@ The mocked structure implements the interface, where each method calls the assoc
 * Use closured variables inside your test function to capture details about the calls to the methods
 * Use `.MethodCalls()` to track the calls
 * Use `go:generate` to invoke the `moq` command
+* If Moq fails with a `go/format` error, it indicates the generated code was not valid. 
+  You can run the same command with `-fmt noop` to print the generated source code without attempting to format it. 
+  This can aid in debugging the root cause. 
 
 ## License
 
