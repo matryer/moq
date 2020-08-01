@@ -233,7 +233,26 @@ func TestSliceResult(t *testing.T) {
 		t.Errorf("m.Mock: %s", err)
 	}
 
-	golden := filepath.Join("testpackages/variadic/testdata", "echoer.golden.go")
+	golden := filepath.Join("testpackages/variadic", "echoer.golden.go")
+	if err := matchGoldenFile(golden, buf.Bytes()); err != nil {
+		t.Errorf("check golden file: %s", err)
+	}
+}
+
+// TestBlankID tests generation of mock where a method on the interface
+// uses a blank identifier.
+// See https://github.com/matryer/moq/issues/70
+func TestBlankID(t *testing.T) {
+	m, err := New(Config{SrcDir: "testpackages/blankid"})
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+
+	var buf bytes.Buffer
+	if err = m.Mock(&buf, "Swallower"); err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	golden := filepath.Join("testpackages/blankid", "swallower.golden.go")
 	if err := matchGoldenFile(golden, buf.Bytes()); err != nil {
 		t.Errorf("check golden file: %s", err)
 	}
@@ -342,8 +361,11 @@ func matchGoldenFile(goldenFile string, actual []byte) error {
 	// To update golden files, run the following:
 	// go test -v -run '^<Test-Name>$' github.com/matryer/moq/pkg/moq -update
 	if *update {
+		if err := os.MkdirAll(filepath.Dir(goldenFile), 0755); err != nil {
+			return fmt.Errorf("create dir: %s", err)
+		}
 		if err := ioutil.WriteFile(goldenFile, actual, 0644); err != nil {
-			return fmt.Errorf("write: %s: %s", goldenFile, err)
+			return fmt.Errorf("write: %s", err)
 		}
 
 		return nil

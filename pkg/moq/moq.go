@@ -201,7 +201,7 @@ func (m *Mocker) extractArgs(sig *types.Signature) (params, results []*param) {
 
 func (m *Mocker) buildParam(v *types.Var, fallbackName string) *param {
 	name := v.Name()
-	if name == "" {
+	if name == "" || name == "_" {
 		name = fallbackName
 	}
 	typ := types.TypeString(v.Type(), m.packageQualifier)
