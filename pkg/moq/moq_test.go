@@ -284,23 +284,19 @@ func TestNothingToReturn(t *testing.T) {
 }
 
 func TestChannelNames(t *testing.T) {
-	m, err := New(Config{SrcDir: "testpackages/channels"})
+	m, err := New(Config{SrcDir: "testpackages/channels", StubImpl: true})
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
+
 	var buf bytes.Buffer
-	err = m.Mock(&buf, "Queuer")
-	if err != nil {
+	if err = m.Mock(&buf, "Queuer"); err != nil {
 		t.Errorf("m.Mock: %s", err)
 	}
-	s := buf.String()
-	var strs = []string{
-		"func (mock *QueuerMock) Sub(topic string) (<-chan Queue, error)",
-	}
-	for _, str := range strs {
-		if !strings.Contains(s, str) {
-			t.Errorf("expected but missing: \"%s\"", str)
-		}
+
+	golden := filepath.Join("testpackages/channels", "queuer_moq.golden.go")
+	if err := matchGoldenFile(golden, buf.Bytes()); err != nil {
+		t.Errorf("check golden file: %s", err)
 	}
 }
 

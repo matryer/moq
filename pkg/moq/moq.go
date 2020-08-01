@@ -19,11 +19,12 @@ import (
 
 // Mocker can generate mock structs.
 type Mocker struct {
-	srcPkg  *packages.Package
-	tmpl    *template.Template
-	pkgName string
-	pkgPath string
-	fmter   func(src []byte) ([]byte, error)
+	srcPkg   *packages.Package
+	tmpl     *template.Template
+	pkgName  string
+	pkgPath  string
+	fmter    func(src []byte) ([]byte, error)
+	stubImpl bool
 
 	imports map[string]bool
 }
@@ -34,6 +35,7 @@ type Config struct {
 	SrcDir    string
 	PkgName   string
 	Formatter string
+	StubImpl  bool
 }
 
 // New makes a new Mocker for the specified package directory.
@@ -64,12 +66,13 @@ func New(conf Config) (*Mocker, error) {
 	}
 
 	return &Mocker{
-		tmpl:    tmpl,
-		srcPkg:  srcPkg,
-		pkgName: pkgName,
-		pkgPath: pkgPath,
-		fmter:   fmter,
-		imports: make(map[string]bool),
+		tmpl:     tmpl,
+		srcPkg:   srcPkg,
+		pkgName:  pkgName,
+		pkgPath:  pkgPath,
+		fmter:    fmter,
+		stubImpl: conf.StubImpl,
+		imports:  make(map[string]bool),
 	}, nil
 }
 
@@ -107,6 +110,7 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 	doc := doc{
 		PackageName: m.pkgName,
 		Imports:     moqImports,
+		StubImpl:    m.stubImpl,
 	}
 
 	mocksMethods := false
@@ -246,6 +250,7 @@ type doc struct {
 	SourcePackagePrefix string
 	Objects             []obj
 	Imports             []string
+	StubImpl            bool
 }
 
 type obj struct {
@@ -275,13 +280,21 @@ func (m *method) ArgCallList() string {
 	return strings.Join(params, ", ")
 }
 
-func (m *method) ReturnArglist() string {
+func (m *method) ReturnArgTypeList() string {
 	params := make([]string, len(m.Returns))
 	for i, p := range m.Returns {
 		params[i] = p.TypeString()
 	}
 	if len(m.Returns) > 1 {
 		return fmt.Sprintf("(%s)", strings.Join(params, ", "))
+	}
+	return strings.Join(params, ", ")
+}
+
+func (m *method) ReturnArgNameList() string {
+	params := make([]string, len(m.Returns))
+	for i, p := range m.Returns {
+		params[i] = p.Name
 	}
 	return strings.Join(params, ", ")
 }
