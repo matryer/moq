@@ -26,7 +26,8 @@ $ go get github.com/matryer/moq
 ```
 moq [flags] source-dir interface [interface2 [interface3 [...]]]
   -fmt string
-	go pretty-printer: gofmt (default) or goimports
+	go pretty-printer, divided by comma: gofmt (default) or/and goimports.  
+        Example: `fmt` or `goimports` or `fmt,goimports`
   -out string
     	output file (default stdout)
   -pkg string
