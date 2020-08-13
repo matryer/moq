@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/matryer/moq/pkg/moq"
 )
@@ -16,7 +17,7 @@ import (
 type userFlags struct {
 	outFile   string
 	pkgName   string
-	formatter string
+	formatters string
 	args      []string
 }
 
@@ -24,7 +25,8 @@ func main() {
 	var flags userFlags
 	flag.StringVar(&flags.outFile, "out", "", "output file (default stdout)")
 	flag.StringVar(&flags.pkgName, "pkg", "", "package name (default will infer)")
-	flag.StringVar(&flags.formatter, "fmt", "", "go pretty-printer: gofmt (default) or goimports")
+	flag.StringVar(&flags.formatters, "fmt", "gofmt,goimports", "go pretty-printer, divided by comma: "+
+		"gofmt (default) or/and goimports. Example: `fmt`, `goimports`, `fmt,goimports`")
 
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
@@ -58,7 +60,7 @@ func run(flags userFlags) error {
 	m, err := moq.New(moq.Config{
 		SrcDir:    srcDir,
 		PkgName:   flags.pkgName,
-		Formatter: flags.formatter,
+		Formatters: strings.Split(flags.formatters, ","),
 	})
 	if err != nil {
 		return err

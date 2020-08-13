@@ -23,7 +23,7 @@ type Mocker struct {
 	tmpl    *template.Template
 	pkgName string
 	pkgPath string
-	fmter   func(src []byte) ([]byte, error)
+	fmters  []func(src []byte) ([]byte, error)
 
 	imports map[string]bool
 }
@@ -33,44 +33,47 @@ type Mocker struct {
 type Config struct {
 	SrcDir    string
 	PkgName   string
-	Formatter string
+	Formatters []string
 }
 
 // New makes a new Mocker for the specified package directory.
 func New(conf Config) (*Mocker, error) {
-	srcPkg, err := pkgInfoFromPath(conf.SrcDir, packages.NeedName|packages.NeedTypes|packages.NeedTypesInfo)
+	var err error
+
+	m := Mocker{}
+	m.imports = make(map[string]bool)
+
+	m.srcPkg, err = pkgInfoFromPath(conf.SrcDir, packages.NeedName|packages.NeedTypes|packages.NeedTypesInfo)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't load source package: %s", err)
 	}
 
-	pkgName := conf.PkgName
-	if pkgName == "" {
-		pkgName = srcPkg.Name
+	m.pkgName = conf.PkgName
+	if m.pkgName == "" {
+		m.pkgName = m.srcPkg.Name
 	}
 
-	pkgPath, err := findPkgPath(conf.PkgName, srcPkg)
+	m.pkgPath, err = findPkgPath(conf.PkgName, m.srcPkg)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't load mock package: %s", err)
 	}
 
-	tmpl, err := template.New("moq").Funcs(templateFuncs).Parse(moqTemplate)
+	m.tmpl, err = template.New("moq").Funcs(templateFuncs).Parse(moqTemplate)
 	if err != nil {
 		return nil, err
 	}
 
-	fmter := gofmt
-	if conf.Formatter == "goimports" {
-		fmter = goimports
+	m.fmters = make([]func(src []byte) ([]byte, error), 0, len(conf.Formatters))
+	for _, fmter := range conf.Formatters {
+		switch fmter {
+		case "gofmt":
+			m.fmters = append(m.fmters, gofmt)
+		case "goimports":
+			m.fmters = append(m.fmters, goimports)
+		}
 	}
 
-	return &Mocker{
-		tmpl:    tmpl,
-		srcPkg:  srcPkg,
-		pkgName: pkgName,
-		pkgPath: pkgPath,
-		fmter:   fmter,
-		imports: make(map[string]bool),
-	}, nil
+	return &m, nil
 }
 
 func findPkgPath(pkgInputVal string, srcPkg *packages.Package) (string, error) {
@@ -157,11 +160,16 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 	if err != nil {
 		return err
 	}
-	formatted, err := m.fmter(buf.Bytes())
-	if err != nil {
-		return err
+
+	result := buf.Bytes()
+	for _, fmter := range m.fmters {
+		result, err = fmter(result)
+		if err != nil {
+			return err
+		}
 	}
-	if _, err := w.Write(formatted); err != nil {
+
+	if _, err = w.Write(result); err != nil {
 		return err
 	}
 	return nil
