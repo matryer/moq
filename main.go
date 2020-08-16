@@ -26,7 +26,7 @@ func main() {
 	flag.StringVar(&flags.outFile, "out", "", "output file (default stdout)")
 	flag.StringVar(&flags.pkgName, "pkg", "", "package name (default will infer)")
 	flag.StringVar(&flags.formatter, "fmt", "", "go pretty-printer: gofmt (default) or goimports")
-	flag.BoolVar(&flags.stubImpl, "stubImpl", false,
+	flag.BoolVar(&flags.stubImpl, "stub", false,
 		"return zero values when no mock implementation is provided, do not panic")
 
 	flag.Usage = func() {

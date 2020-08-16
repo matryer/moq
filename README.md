@@ -31,6 +31,8 @@ moq [flags] source-dir interface [interface2 [interface3 [...]]]
     	output file (default stdout)
   -pkg string
     	package name (default will infer)
+  -stub
+	return zero values when no mock implementation is provided, do not panic
 Specifying an alias for the mock is also supported with the format 'interface:alias'
 Ex: moq -pkg different . MyInterface:MyMock
 ```
