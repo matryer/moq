@@ -1,6 +1,6 @@
 package user
 
-import "github.com/matryer/somerepo"
+import "github.com/sudo-suhas/moq-test-pkgs/somerepo"
 
 // Service does something good with computers.
 type Service interface {

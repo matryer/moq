@@ -9,4 +9,3 @@ type SomeType struct {
 	// Truth indicates whether true is true or not. Computers.
 	Truth bool
 }
-

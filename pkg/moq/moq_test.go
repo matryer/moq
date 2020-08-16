@@ -393,7 +393,7 @@ func TestVendoredPackages(t *testing.T) {
 	s := buf.String()
 	// assertions of things that should be mentioned
 	var strs = []string{
-		`"github.com/matryer/somerepo"`,
+		`"github.com/sudo-suhas/moq-test-pkgs/somerepo"`,
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
@@ -404,7 +404,7 @@ func TestVendoredPackages(t *testing.T) {
 
 func TestVendoredInterface(t *testing.T) {
 	m, err := New(Config{
-		SrcDir:  "testpackages/vendoring/vendor/github.com/matryer/somerepo",
+		SrcDir:  "testpackages/vendoring/vendor/github.com/sudo-suhas/moq-test-pkgs/somerepo",
 		PkgName: "someother",
 	})
 	if err != nil {
@@ -418,14 +418,14 @@ func TestVendoredInterface(t *testing.T) {
 	s := buf.String()
 	// assertions of things that should be mentioned
 	var strs = []string{
-		`"github.com/matryer/somerepo"`,
+		`"github.com/sudo-suhas/moq-test-pkgs/somerepo"`,
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
 	}
-	incorrectImport := `"github.com/matryer/moq/pkg/moq/testpackages/vendoring/vendor/github.com/matryer/somerepo"`
+	incorrectImport := `"github.com/matryer/moq/pkg/moq/testpackages/vendoring/vendor/github.com/sudo-suhas/moq-test-pkgs/somerepo"`
 	if strings.Contains(s, incorrectImport) {
 		t.Errorf("unexpected import: %s", incorrectImport)
 	}
@@ -444,7 +444,7 @@ func TestVendoredBuildConstraints(t *testing.T) {
 	s := buf.String()
 	// assertions of things that should be mentioned
 	var strs = []string{
-		`"github.com/matryer/buildconstraints"`,
+		`"github.com/sudo-suhas/moq-test-pkgs/buildconstraints"`,
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
