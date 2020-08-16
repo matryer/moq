@@ -1,6 +1,6 @@
 package user
 
-import "github.com/matryer/somerepo"
+import "github.com/sudo-suhas/moq-test-pkgs/somerepo"
 
 //go:generate moq -out user_moq_test.go . Service
 

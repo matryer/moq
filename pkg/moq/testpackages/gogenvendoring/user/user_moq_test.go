@@ -4,7 +4,7 @@
 package user
 
 import (
-	"github.com/matryer/somerepo"
+	"github.com/sudo-suhas/moq-test-pkgs/somerepo"
 	"sync"
 )
 

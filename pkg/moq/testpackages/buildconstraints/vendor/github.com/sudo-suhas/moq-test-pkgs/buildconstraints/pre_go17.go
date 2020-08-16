@@ -3,4 +3,3 @@
 package buildconstraints
 
 var someVariable = "Value 2"
-
