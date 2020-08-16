@@ -7,12 +7,6 @@ import (
 	"sync"
 )
 
-var (
-	lockMyInterfaceMockOne   sync.RWMutex
-	lockMyInterfaceMockThree sync.RWMutex
-	lockMyInterfaceMockTwo   sync.RWMutex
-)
-
 // Ensure, that MyInterfaceMock does implement MyInterface.
 // If this is not the case, regenerate this file with moq.
 var _ MyInterface = &MyInterfaceMock{}
@@ -60,6 +54,9 @@ type MyInterfaceMock struct {
 		Two []struct {
 		}
 	}
+	lockOne   sync.RWMutex
+	lockThree sync.RWMutex
+	lockTwo   sync.RWMutex
 }
 
 // One calls OneFunc.
@@ -69,9 +66,9 @@ func (mock *MyInterfaceMock) One() bool {
 	}
 	callInfo := struct {
 	}{}
-	lockMyInterfaceMockOne.Lock()
+	mock.lockOne.Lock()
 	mock.calls.One = append(mock.calls.One, callInfo)
-	lockMyInterfaceMockOne.Unlock()
+	mock.lockOne.Unlock()
 	return mock.OneFunc()
 }
 
@@ -82,9 +79,9 @@ func (mock *MyInterfaceMock) OneCalls() []struct {
 } {
 	var calls []struct {
 	}
-	lockMyInterfaceMockOne.RLock()
+	mock.lockOne.RLock()
 	calls = mock.calls.One
-	lockMyInterfaceMockOne.RUnlock()
+	mock.lockOne.RUnlock()
 	return calls
 }
 
@@ -95,9 +92,9 @@ func (mock *MyInterfaceMock) Three() string {
 	}
 	callInfo := struct {
 	}{}
-	lockMyInterfaceMockThree.Lock()
+	mock.lockThree.Lock()
 	mock.calls.Three = append(mock.calls.Three, callInfo)
-	lockMyInterfaceMockThree.Unlock()
+	mock.lockThree.Unlock()
 	return mock.ThreeFunc()
 }
 
@@ -108,9 +105,9 @@ func (mock *MyInterfaceMock) ThreeCalls() []struct {
 } {
 	var calls []struct {
 	}
-	lockMyInterfaceMockThree.RLock()
+	mock.lockThree.RLock()
 	calls = mock.calls.Three
-	lockMyInterfaceMockThree.RUnlock()
+	mock.lockThree.RUnlock()
 	return calls
 }
 
@@ -121,9 +118,9 @@ func (mock *MyInterfaceMock) Two() int {
 	}
 	callInfo := struct {
 	}{}
-	lockMyInterfaceMockTwo.Lock()
+	mock.lockTwo.Lock()
 	mock.calls.Two = append(mock.calls.Two, callInfo)
-	lockMyInterfaceMockTwo.Unlock()
+	mock.lockTwo.Unlock()
 	return mock.TwoFunc()
 }
 
@@ -134,8 +131,8 @@ func (mock *MyInterfaceMock) TwoCalls() []struct {
 } {
 	var calls []struct {
 	}
-	lockMyInterfaceMockTwo.RLock()
+	mock.lockTwo.RLock()
 	calls = mock.calls.Two
-	lockMyInterfaceMockTwo.RUnlock()
+	mock.lockTwo.RUnlock()
 	return calls
 }

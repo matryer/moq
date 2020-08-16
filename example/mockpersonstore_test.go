@@ -8,11 +8,6 @@ import (
 	"sync"
 )
 
-var (
-	lockPersonStoreMockCreate sync.RWMutex
-	lockPersonStoreMockGet    sync.RWMutex
-)
-
 // Ensure, that PersonStoreMock does implement PersonStore.
 // If this is not the case, regenerate this file with moq.
 var _ PersonStore = &PersonStoreMock{}
@@ -61,6 +56,8 @@ type PersonStoreMock struct {
 			ID string
 		}
 	}
+	lockCreate sync.RWMutex
+	lockGet    sync.RWMutex
 }
 
 // Create calls CreateFunc.
@@ -77,9 +74,9 @@ func (mock *PersonStoreMock) Create(ctx context.Context, person *Person, confirm
 		Person:  person,
 		Confirm: confirm,
 	}
-	lockPersonStoreMockCreate.Lock()
+	mock.lockCreate.Lock()
 	mock.calls.Create = append(mock.calls.Create, callInfo)
-	lockPersonStoreMockCreate.Unlock()
+	mock.lockCreate.Unlock()
 	return mock.CreateFunc(ctx, person, confirm)
 }
 
@@ -96,9 +93,9 @@ func (mock *PersonStoreMock) CreateCalls() []struct {
 		Person  *Person
 		Confirm bool
 	}
-	lockPersonStoreMockCreate.RLock()
+	mock.lockCreate.RLock()
 	calls = mock.calls.Create
-	lockPersonStoreMockCreate.RUnlock()
+	mock.lockCreate.RUnlock()
 	return calls
 }
 
@@ -114,9 +111,9 @@ func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error
 		Ctx: ctx,
 		ID:  id,
 	}
-	lockPersonStoreMockGet.Lock()
+	mock.lockGet.Lock()
 	mock.calls.Get = append(mock.calls.Get, callInfo)
-	lockPersonStoreMockGet.Unlock()
+	mock.lockGet.Unlock()
 	return mock.GetFunc(ctx, id)
 }
 
@@ -131,8 +128,8 @@ func (mock *PersonStoreMock) GetCalls() []struct {
 		Ctx context.Context
 		ID  string
 	}
-	lockPersonStoreMockGet.RLock()
+	mock.lockGet.RLock()
 	calls = mock.calls.Get
-	lockPersonStoreMockGet.RUnlock()
+	mock.lockGet.RUnlock()
 	return calls
 }
