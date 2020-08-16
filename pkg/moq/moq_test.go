@@ -332,6 +332,7 @@ func TestFormatter(t *testing.T) {
 	}{
 		{name: "gofmt", conf: Config{SrcDir: "testpackages/imports/two"}},
 		{name: "goimports", conf: Config{SrcDir: "testpackages/imports/two", Formatter: "goimports"}},
+		{name: "noop", conf: Config{SrcDir: "testpackages/imports/two", Formatter: "noop"}},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -340,12 +341,12 @@ func TestFormatter(t *testing.T) {
 				t.Fatalf("moq.New: %s", err)
 			}
 			var buf bytes.Buffer
-			err = m.Mock(&buf, "DoSomething")
+			err = m.Mock(&buf, "DoSomething:"+tc.name+"Mock")
 			if err != nil {
 				t.Errorf("m.Mock: %s", err)
 			}
 
-			golden := filepath.Join("testpackages/imports/testdata", tc.name+".golden.go")
+			golden := filepath.Join("testpackages/imports/two", tc.name+".golden.go")
 			if err := matchGoldenFile(golden, buf.Bytes()); err != nil {
 				t.Errorf("check golden file: %s", err)
 			}
