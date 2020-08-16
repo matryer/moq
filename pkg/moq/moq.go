@@ -222,6 +222,12 @@ func pkgInfoFromPath(srcDir string, mode packages.LoadMode) (*packages.Package, 
 	if len(pkgs) > 1 {
 		return nil, errors.New("More than one package was found")
 	}
+	if errs := pkgs[0].Errors; len(errs) != 0 {
+		if len(errs) == 1 {
+			return nil, errs[0]
+		}
+		return nil, fmt.Errorf("%s (and %d more errors)", errs[0], len(errs)-1)
+	}
 	return pkgs[0], nil
 }
 

@@ -544,6 +544,17 @@ func TestImportedPackageWithSameName(t *testing.T) {
 	}
 }
 
+func TestParseError(t *testing.T) {
+	_, err := New(Config{SrcDir: "testpackages/_parseerror/service"})
+	if err == nil {
+		t.Errorf("expected error but got nil")
+		return
+	}
+	if !strings.Contains(err.Error(), `could not import github.com/matryer/notexist (invalid package name: "")`) {
+		t.Errorf("unexpected error: %s", err.Error())
+	}
+}
+
 // normalize normalizes \r\n (windows) and \r (mac)
 // into \n (unix)
 func normalize(d []byte) []byte {
