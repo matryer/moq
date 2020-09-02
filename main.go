@@ -13,6 +13,9 @@ import (
 	"github.com/matryer/moq/pkg/moq"
 )
 
+// version is the command version, injected at build time.
+var version string
+
 type userFlags struct {
 	outFile   string
 	pkgName   string
