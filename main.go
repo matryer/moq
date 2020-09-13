@@ -17,11 +17,12 @@ import (
 var version string
 
 type userFlags struct {
-	outFile   string
-	pkgName   string
-	formatter string
-	stubImpl  bool
-	args      []string
+	outFile    string
+	pkgName    string
+	formatter  string
+	stubImpl   bool
+	skipEnsure bool
+	args       []string
 }
 
 func main() {
@@ -31,6 +32,8 @@ func main() {
 	flag.StringVar(&flags.formatter, "fmt", "", "go pretty-printer: gofmt, goimports or noop (default gofmt)")
 	flag.BoolVar(&flags.stubImpl, "stub", false,
 		"return zero values when no mock implementation is provided, do not panic")
+	flag.BoolVar(&flags.skipEnsure, "skip-ensure", false,
+		"suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package")
 
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
@@ -62,10 +65,11 @@ func run(flags userFlags) error {
 
 	srcDir, args := flags.args[0], flags.args[1:]
 	m, err := moq.New(moq.Config{
-		SrcDir:    srcDir,
-		PkgName:   flags.pkgName,
-		Formatter: flags.formatter,
-		StubImpl:  flags.stubImpl,
+		SrcDir:     srcDir,
+		PkgName:    flags.pkgName,
+		Formatter:  flags.formatter,
+		StubImpl:   flags.stubImpl,
+		SkipEnsure: flags.skipEnsure,
 	})
 	if err != nil {
 		return err

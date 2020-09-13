@@ -8,10 +8,6 @@ import (
 	"sync"
 )
 
-var (
-	lockServiceMockDoSomething sync.RWMutex
-)
-
 // Ensure, that ServiceMock does implement Service.
 // If this is not the case, regenerate this file with moq.
 var _ Service = &ServiceMock{}
@@ -43,6 +39,7 @@ type ServiceMock struct {
 			In1 somerepo.SomeType
 		}
 	}
+	lockDoSomething sync.RWMutex
 }
 
 // DoSomething calls DoSomethingFunc.
@@ -55,9 +52,9 @@ func (mock *ServiceMock) DoSomething(in1 somerepo.SomeType) error {
 	}{
 		In1: in1,
 	}
-	lockServiceMockDoSomething.Lock()
+	mock.lockDoSomething.Lock()
 	mock.calls.DoSomething = append(mock.calls.DoSomething, callInfo)
-	lockServiceMockDoSomething.Unlock()
+	mock.lockDoSomething.Unlock()
 	return mock.DoSomethingFunc(in1)
 }
 
@@ -70,8 +67,8 @@ func (mock *ServiceMock) DoSomethingCalls() []struct {
 	var calls []struct {
 		In1 somerepo.SomeType
 	}
-	lockServiceMockDoSomething.RLock()
+	mock.lockDoSomething.RLock()
 	calls = mock.calls.DoSomething
-	lockServiceMockDoSomething.RUnlock()
+	mock.lockDoSomething.RUnlock()
 	return calls
 }
