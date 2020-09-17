@@ -19,12 +19,13 @@ import (
 
 // Mocker can generate mock structs.
 type Mocker struct {
-	srcPkg   *packages.Package
-	tmpl     *template.Template
-	pkgName  string
-	pkgPath  string
-	fmter    func(src []byte) ([]byte, error)
-	stubImpl bool
+	srcPkg     *packages.Package
+	tmpl       *template.Template
+	pkgName    string
+	pkgPath    string
+	fmter      func(src []byte) ([]byte, error)
+	stubImpl   bool
+	skipEnsure bool
 
 	imports map[string]bool
 }
@@ -32,10 +33,11 @@ type Mocker struct {
 // Config specifies details about how interfaces should be mocked.
 // SrcDir is the only field which needs be specified.
 type Config struct {
-	SrcDir    string
-	PkgName   string
-	Formatter string
-	StubImpl  bool
+	SrcDir     string
+	PkgName    string
+	Formatter  string
+	StubImpl   bool
+	SkipEnsure bool
 }
 
 // New makes a new Mocker for the specified package directory.
@@ -69,13 +71,14 @@ func New(conf Config) (*Mocker, error) {
 	}
 
 	return &Mocker{
-		tmpl:     tmpl,
-		srcPkg:   srcPkg,
-		pkgName:  pkgName,
-		pkgPath:  pkgPath,
-		fmter:    fmter,
-		stubImpl: conf.StubImpl,
-		imports:  make(map[string]bool),
+		tmpl:       tmpl,
+		srcPkg:     srcPkg,
+		pkgName:    pkgName,
+		pkgPath:    pkgPath,
+		fmter:      fmter,
+		stubImpl:   conf.StubImpl,
+		skipEnsure: conf.SkipEnsure,
+		imports:    make(map[string]bool),
 	}, nil
 }
 
@@ -114,6 +117,7 @@ func (m *Mocker) Mock(w io.Writer, names ...string) error {
 		PackageName: m.pkgName,
 		Imports:     moqImports,
 		StubImpl:    m.stubImpl,
+		SkipEnsure:  m.skipEnsure,
 	}
 
 	mocksMethods := false
@@ -254,6 +258,7 @@ type doc struct {
 	Objects             []obj
 	Imports             []string
 	StubImpl            bool
+	SkipEnsure          bool
 }
 
 type obj struct {
