@@ -38,7 +38,8 @@ moq [flags] source-dir interface [interface2 [interface3 [...]]]
 		generated outside of the tested package
 
 Specifying an alias for the mock is also supported with the format 'interface:alias'
-Ex: moq -pkg different . MyInterface:MyMock
+
+Example: moq -pkg different . MyInterface:MyMock
 ```
 
 **NOTE:** `source-dir` is the directory where the source code (definition) of the target interface is located. 
