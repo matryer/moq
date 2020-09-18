@@ -34,7 +34,8 @@ moq [flags] source-dir interface [interface2 [interface3 [...]]]
 	-stub
 		return zero values when no mock implementation is provided, do not panic
 	-skip-ensure
-		suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package
+		suppress mock implementation check, avoid import cycle if mocks 
+		generated outside of the tested package
 
 Specifying an alias for the mock is also supported with the format 'interface:alias'
 Ex: moq -pkg different . MyInterface:MyMock
