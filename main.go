@@ -14,7 +14,7 @@ import (
 )
 
 // version is the command version, injected at build time.
-var version string
+var version string = "dev"
 
 type userFlags struct {
 	outFile    string
@@ -32,6 +32,7 @@ func main() {
 	flag.StringVar(&flags.formatter, "fmt", "", "go pretty-printer: gofmt, goimports or noop (default gofmt)")
 	flag.BoolVar(&flags.stubImpl, "stub", false,
 		"return zero values when no mock implementation is provided, do not panic")
+	printVersion := flag.Bool("version", false, "show the version for moq")
 	flag.BoolVar(&flags.skipEnsure, "skip-ensure", false,
 		"suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package")
 
@@ -44,6 +45,11 @@ func main() {
 
 	flag.Parse()
 	flags.args = flag.Args()
+
+	if *printVersion {
+		fmt.Printf("moq version %s\n", version)
+		os.Exit(0)
+	}
 
 	if err := run(flags); err != nil {
 		fmt.Fprintln(os.Stderr, err)
