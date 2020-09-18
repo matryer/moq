@@ -25,15 +25,15 @@ $ go get github.com/matryer/moq
 
 ```
 moq [flags] source-dir interface [interface2 [interface3 [...]]]
-  -fmt string
-    	go pretty-printer: gofmt, goimports or noop (default gofmt)
-  -out string
-    	output file (default stdout)
-  -pkg string
-    	package name (default will infer)
-  -stub
-    	return zero values when no mock implementation is provided, do not panic
-  -skip-ensure
+	-fmt string
+		go pretty-printer: gofmt, goimports or noop (default gofmt)
+	-out string
+		output file (default stdout)
+	-pkg string
+		package name (default will infer)
+	-stub
+		return zero values when no mock implementation is provided, do not panic
+	-skip-ensure
 		suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package
 
 Specifying an alias for the mock is also supported with the format 'interface:alias'
