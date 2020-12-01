@@ -65,10 +65,10 @@ func (mock *QueuerMock) Sub(topic string) (<-chan Queue, error) {
 	mock.lockSub.Unlock()
 	if mock.SubFunc == nil {
 		var (
-			out1 <-chan Queue
-			out2 error
+			queueChOut <-chan Queue
+			errOut     error
 		)
-		return out1, out2
+		return queueChOut, errOut
 	}
 	return mock.SubFunc(topic)
 }

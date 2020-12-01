@@ -4,8 +4,8 @@
 package two
 
 import (
-	"sync"
 	"github.com/matryer/moq/pkg/moq/testpackages/imports/one"
+	"sync"
 )
 
 // Ensure, that noopMock does implement DoSomething.

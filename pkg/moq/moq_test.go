@@ -352,6 +352,72 @@ func TestImports(t *testing.T) {
 	}
 }
 
+func TestMockGolden(t *testing.T) {
+	cases := []struct {
+		name       string
+		cfg        Config
+		interfaces []string
+		goldenFile string
+	}{
+		{
+			// Tests generation of mock when the interface imports a different
+			// package by the same name as it's own.
+			// See https://github.com/matryer/moq/issues/94
+			name:       "PkgShadow",
+			cfg:        Config{SrcDir: "testpackages/shadow/http", PkgName: "mock"},
+			interfaces: []string{"Thing"},
+			goldenFile: filepath.Join("testpackages/shadow/mock", "thing_moq.golden.go"),
+		},
+		{
+			// Tests generation of mock when a method parameter shadows an
+			// imported package name.
+			name:       "ParamShadow",
+			cfg:        Config{SrcDir: "testpackages/shadow"},
+			interfaces: []string{"Shadower"},
+			goldenFile: filepath.Join("testpackages/shadow", "shadower_moq.golden.go"),
+		},
+		{
+			name:       "ImportAlias",
+			cfg:        Config{SrcDir: "testpackages/importalias"},
+			interfaces: []string{"MiddleMan"},
+			goldenFile: filepath.Join("testpackages/importalias", "middleman_moq.golden.go"),
+		},
+		{
+			// Tests conflict resolution for generated names of method
+			// parameters.
+			name:       "ParamNameConflict",
+			cfg:        Config{SrcDir: "testpackages/paramconflict"},
+			interfaces: []string{"Interface"},
+			goldenFile: filepath.Join("testpackages/paramconflict", "iface_moq.golden.go"),
+		},
+		{
+			// Tests generation of names for unnamed method parameters.
+			name:       "GenerateParamNames",
+			cfg:        Config{SrcDir: "testpackages/genparamname"},
+			interfaces: []string{"Interface"},
+			goldenFile: filepath.Join("testpackages/genparamname", "iface_moq.golden.go"),
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			m, err := New(tc.cfg)
+			if err != nil {
+				t.Fatalf("moq.New: %s", err)
+			}
+
+			var buf bytes.Buffer
+			if err = m.Mock(&buf, tc.interfaces...); err != nil {
+				t.Errorf("m.Mock: %s", err)
+				return
+			}
+
+			if err := matchGoldenFile(tc.goldenFile, buf.Bytes()); err != nil {
+				t.Errorf("check golden file: %s", err)
+			}
+		})
+	}
+}
+
 func TestFormatter(t *testing.T) {
 	cases := []struct {
 		name string
@@ -417,13 +483,6 @@ func matchGoldenFile(goldenFile string, actual []byte) error {
 	}
 
 	return nil
-}
-
-func TestTemplateFuncs(t *testing.T) {
-	fn := templateFuncs["Exported"].(func(string) string)
-	if fn("var") != "Var" {
-		t.Errorf("exported didn't work: %s", fn("var"))
-	}
 }
 
 func TestVendoredPackages(t *testing.T) {
