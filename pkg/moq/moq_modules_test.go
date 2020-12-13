@@ -15,7 +15,7 @@ import (
 // copy copies srcPath to destPath, dirs and files
 func copy(srcPath, destPath string, item os.FileInfo) error {
 	if item.IsDir() {
-		if err := os.MkdirAll(destPath, os.FileMode(0755)); err != nil {
+		if err := os.MkdirAll(destPath, os.FileMode(0750)); err != nil {
 			return err
 		}
 		items, err := ioutil.ReadDir(srcPath)
