@@ -246,45 +246,6 @@ func TestVariadicArguments(t *testing.T) {
 	}
 }
 
-// TestSliceResult tests to ensure slice return data type works as
-// expected.
-// see https://github.com/matryer/moq/issues/124
-func TestSliceResult(t *testing.T) {
-	m, err := New(Config{SrcDir: "testpackages/variadic"})
-	if err != nil {
-		t.Fatalf("moq.New: %s", err)
-	}
-
-	var buf bytes.Buffer
-	if err = m.Mock(&buf, "Echoer"); err != nil {
-		t.Errorf("m.Mock: %s", err)
-	}
-
-	golden := filepath.Join("testpackages/variadic", "echoer.golden.go")
-	if err := matchGoldenFile(golden, buf.Bytes()); err != nil {
-		t.Errorf("check golden file: %s", err)
-	}
-}
-
-// TestBlankID tests generation of mock where a method on the interface
-// uses a blank identifier.
-// See https://github.com/matryer/moq/issues/70
-func TestBlankID(t *testing.T) {
-	m, err := New(Config{SrcDir: "testpackages/blankid"})
-	if err != nil {
-		t.Fatalf("moq.New: %s", err)
-	}
-
-	var buf bytes.Buffer
-	if err = m.Mock(&buf, "Swallower"); err != nil {
-		t.Errorf("m.Mock: %s", err)
-	}
-	golden := filepath.Join("testpackages/blankid", "swallower.golden.go")
-	if err := matchGoldenFile(golden, buf.Bytes()); err != nil {
-		t.Errorf("check golden file: %s", err)
-	}
-}
-
 func TestNothingToReturn(t *testing.T) {
 	m, err := New(Config{SrcDir: "testpackages/example"})
 	if err != nil {
@@ -307,23 +268,6 @@ func TestNothingToReturn(t *testing.T) {
 		if !strings.Contains(s, str) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
-	}
-}
-
-func TestChannelNames(t *testing.T) {
-	m, err := New(Config{SrcDir: "testpackages/channels", StubImpl: true})
-	if err != nil {
-		t.Fatalf("moq.New: %s", err)
-	}
-
-	var buf bytes.Buffer
-	if err = m.Mock(&buf, "Queuer"); err != nil {
-		t.Errorf("m.Mock: %s", err)
-	}
-
-	golden := filepath.Join("testpackages/channels", "queuer_moq.golden.go")
-	if err := matchGoldenFile(golden, buf.Bytes()); err != nil {
-		t.Errorf("check golden file: %s", err)
 	}
 }
 
@@ -359,6 +303,29 @@ func TestMockGolden(t *testing.T) {
 		interfaces []string
 		goldenFile string
 	}{
+		{
+			// Tests to ensure slice return data type works as expected.
+			// See https://github.com/matryer/moq/issues/124
+			name:       "SliceResult",
+			cfg:        Config{SrcDir: "testpackages/variadic"},
+			interfaces: []string{"Echoer"},
+			goldenFile: filepath.Join("testpackages/variadic", "echoer.golden.go"),
+		},
+		{
+			// Tests generation of mock where a method on the interface uses a
+			// blank identifier.
+			// See https://github.com/matryer/moq/issues/70
+			name:       "BlankID",
+			cfg:        Config{SrcDir: "testpackages/blankid"},
+			interfaces: []string{"Swallower"},
+			goldenFile: filepath.Join("testpackages/blankid", "swallower.golden.go"),
+		},
+		{
+			name:       "ChannelNames",
+			cfg:        Config{SrcDir: "testpackages/channels", StubImpl: true},
+			interfaces: []string{"Queuer"},
+			goldenFile: filepath.Join("testpackages/channels", "queuer_moq.golden.go"),
+		},
 		{
 			// Tests generation of mock when the interface imports a different
 			// package by the same name as it's own.
