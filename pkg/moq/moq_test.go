@@ -364,6 +364,12 @@ func TestMockGolden(t *testing.T) {
 			interfaces: []string{"Interface"},
 			goldenFile: filepath.Join("testpackages/genparamname", "iface_moq.golden.go"),
 		},
+		{
+			name:       "SyncImport",
+			cfg:        Config{SrcDir: "testpackages/syncimport"},
+			interfaces: []string{"Syncer"},
+			goldenFile: filepath.Join("testpackages/syncimport", "syncer_moq.golden.go"),
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

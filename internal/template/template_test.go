@@ -8,19 +8,42 @@ import (
 )
 
 func TestTemplateFuncs(t *testing.T) {
-	fn1 := templateFuncs["Exported"].(func(string) string)
-	if fn1("var") != "Var" {
-		t.Errorf("exported didn't work: %s", fn1("var"))
-	}
+	t.Run("Exported", func(t *testing.T) {
+		f := templateFuncs["Exported"].(func(string) string)
+		if f("var") != "Var" {
+			t.Errorf("Exported(...) want: `Var`; got: `%s`", f("var"))
+		}
+	})
 
-	fn2 := templateFuncs["ImportStatement"].(func(*registry.Package) string)
-	pkg := registry.NewPackage(types.NewPackage("xyz", "xyz"))
-	if fn2(pkg) != `"xyz"` {
-		t.Errorf("ImportStatement didn't work: %s", fn2(pkg))
-	}
+	t.Run("ImportStatement", func(t *testing.T) {
+		f := templateFuncs["ImportStatement"].(func(*registry.Package) string)
+		pkg := registry.NewPackage(types.NewPackage("xyz", "xyz"))
+		if f(pkg) != `"xyz"` {
+			t.Errorf("ImportStatement(...): want: `\"xyz\"`; got: `%s`", f(pkg))
+		}
 
-	pkg.Alias = "x"
-	if fn2(pkg) != `x "xyz"` {
-		t.Errorf("ImportStatement didn't work: %s", fn2(pkg))
-	}
+		pkg.Alias = "x"
+		if f(pkg) != `x "xyz"` {
+			t.Errorf("ImportStatement(...): want: `x \"xyz\"`; got: `%s`", f(pkg))
+		}
+	})
+
+	t.Run("SyncPkgQualifier", func(t *testing.T) {
+		f := templateFuncs["SyncPkgQualifier"].(func([]*registry.Package) string)
+		imports := []*registry.Package{
+			registry.NewPackage(types.NewPackage("sync", "sync")),
+			registry.NewPackage(types.NewPackage("github.com/some/module", "module")),
+		}
+		if f(imports) != "sync" {
+			t.Errorf("SyncPkgQualifier(...): want: `sync`; got: `%s`", f(imports))
+		}
+
+		syncPkg := registry.NewPackage(types.NewPackage("sync", "sync"))
+		syncPkg.Alias = "stdsync"
+		otherSyncPkg := registry.NewPackage(types.NewPackage("github.com/someother/sync", "sync"))
+		imports = []*registry.Package{otherSyncPkg, syncPkg}
+		if f(imports) != "stdsync" {
+			t.Errorf("SyncPkgQualifier(...): want: `stdsync`; got: `%s`", f(imports))
+		}
+	})
 }
