@@ -633,6 +633,41 @@ func TestParseError(t *testing.T) {
 	}
 }
 
+func TestMockError(t *testing.T) {
+	m, err := New(Config{SrcDir: "testpackages/example"})
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	cases := []struct {
+		name     string
+		namePair string
+		wantErr  string
+	}{
+		{
+			name:     "TypeNotFound",
+			namePair: "DoesNotExist",
+			wantErr:  "interface not found: DoesNotExist",
+		},
+		{
+			name:     "UnexpectedType",
+			namePair: "Person",
+			wantErr:  "Person (github.com/matryer/moq/pkg/moq/testpackages/example.Person) is not an interface",
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			err := m.Mock(ioutil.Discard, tc.namePair)
+			if err == nil {
+				t.Errorf("expected error but got nil")
+				return
+			}
+			if !strings.Contains(err.Error(), tc.wantErr) {
+				t.Errorf("unexpected error: %s", err.Error())
+			}
+		})
+	}
+}
+
 // normalize normalizes \r\n (windows) and \r (mac)
 // into \n (unix)
 func normalize(d []byte) []byte {

@@ -51,10 +51,10 @@ func (v Var) packageQualifier(pkg *types.Package) string {
 // - a.MyType -> myType
 func generateVarName(t types.Type) string {
 	if t, ok := t.(*types.Named); ok {
-		name := t.Obj().Name()
+		name := deCapitalise(t.Obj().Name())
 		if name == "error" {
 			name = "err"
-		} else if name == deCapitalise(name) {
+		} else if name == t.Obj().Name() {
 			return name + "MoqParam"
 		}
 

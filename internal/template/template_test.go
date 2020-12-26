@@ -10,6 +10,9 @@ import (
 func TestTemplateFuncs(t *testing.T) {
 	t.Run("Exported", func(t *testing.T) {
 		f := templateFuncs["Exported"].(func(string) string)
+		if f("") != "" {
+			t.Errorf("Exported(...) want: ``; got: `%s`", f(""))
+		}
 		if f("var") != "Var" {
 			t.Errorf("Exported(...) want: `Var`; got: `%s`", f("var"))
 		}
@@ -30,6 +33,9 @@ func TestTemplateFuncs(t *testing.T) {
 
 	t.Run("SyncPkgQualifier", func(t *testing.T) {
 		f := templateFuncs["SyncPkgQualifier"].(func([]*registry.Package) string)
+		if f(nil) != "sync" {
+			t.Errorf("SyncPkgQualifier(...): want: `sync`; got: `%s`", f(nil))
+		}
 		imports := []*registry.Package{
 			registry.NewPackage(types.NewPackage("sync", "sync")),
 			registry.NewPackage(types.NewPackage("github.com/some/module", "module")),

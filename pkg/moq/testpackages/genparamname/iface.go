@@ -3,6 +3,7 @@ package genparamname
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
@@ -10,14 +11,24 @@ import (
 	"net/url"
 )
 
+type (
+	Go     func()
+	myType struct{}
+)
+
 type Interface interface {
 	Method(
+		myType,
 		[3]json.Number,
 		[]byte,
 		map[sql.NullString]io.Reader,
 		func(conn net.Conn),
+		Go,
 		chan *httputil.BufferPool,
 		struct{ URL *url.URL },
-		interface{ CookieJar() http.CookieJar },
+		interface {
+			fmt.Stringer
+			CookieJar() http.CookieJar
+		},
 	)
 }
