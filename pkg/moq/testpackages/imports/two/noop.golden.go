@@ -17,7 +17,7 @@ var _ DoSomething = &noopMock{}
 //     func TestSomethingThatUsesDoSomething(t *testing.T) {
 //
 //         // make and configure a mocked DoSomething
-//         mockedDoSomething := &noopMock{ 
+//         mockedDoSomething := &noopMock{
 //             AnotherFunc: func(thing one.Thing) error {
 // 	               panic("mock out the Another method")
 //             },
