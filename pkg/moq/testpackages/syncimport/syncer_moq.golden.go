@@ -14,19 +14,19 @@ var _ Syncer = &SyncerMock{}
 
 // SyncerMock is a mock implementation of Syncer.
 //
-//     func TestSomethingThatUsesSyncer(t *testing.T) {
+// 	func TestSomethingThatUsesSyncer(t *testing.T) {
 //
-//         // make and configure a mocked Syncer
-//         mockedSyncer := &SyncerMock{
-//             BlahFunc: func(s sync.Thing, wg *stdsync.WaitGroup)  {
-// 	               panic("mock out the Blah method")
-//             },
-//         }
+// 		// make and configure a mocked Syncer
+// 		mockedSyncer := &SyncerMock{
+// 			BlahFunc: func(s sync.Thing, wg *stdsync.WaitGroup)  {
+// 				panic("mock out the Blah method")
+// 			},
+// 		}
 //
-//         // use mockedSyncer in code that requires Syncer
-//         // and then make assertions.
+// 		// use mockedSyncer in code that requires Syncer
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type SyncerMock struct {
 	// BlahFunc mocks the Blah method.
 	BlahFunc func(s sync.Thing, wg *stdsync.WaitGroup)

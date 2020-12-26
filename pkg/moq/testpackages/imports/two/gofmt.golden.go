@@ -14,22 +14,22 @@ var _ DoSomething = &gofmtMock{}
 
 // gofmtMock is a mock implementation of DoSomething.
 //
-//     func TestSomethingThatUsesDoSomething(t *testing.T) {
+// 	func TestSomethingThatUsesDoSomething(t *testing.T) {
 //
-//         // make and configure a mocked DoSomething
-//         mockedDoSomething := &gofmtMock{
-//             AnotherFunc: func(thing one.Thing) error {
-// 	               panic("mock out the Another method")
-//             },
-//             DoFunc: func(thing one.Thing) error {
-// 	               panic("mock out the Do method")
-//             },
-//         }
+// 		// make and configure a mocked DoSomething
+// 		mockedDoSomething := &gofmtMock{
+// 			AnotherFunc: func(thing one.Thing) error {
+// 				panic("mock out the Another method")
+// 			},
+// 			DoFunc: func(thing one.Thing) error {
+// 				panic("mock out the Do method")
+// 			},
+// 		}
 //
-//         // use mockedDoSomething in code that requires DoSomething
-//         // and then make assertions.
+// 		// use mockedDoSomething in code that requires DoSomething
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type gofmtMock struct {
 	// AnotherFunc mocks the Another method.
 	AnotherFunc func(thing one.Thing) error

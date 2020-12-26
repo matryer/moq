@@ -13,19 +13,19 @@ var _ Swallower = &SwallowerMock{}
 
 // SwallowerMock is a mock implementation of Swallower.
 //
-//     func TestSomethingThatUsesSwallower(t *testing.T) {
+// 	func TestSomethingThatUsesSwallower(t *testing.T) {
 //
-//         // make and configure a mocked Swallower
-//         mockedSwallower := &SwallowerMock{
-//             SwallowFunc: func(s string)  {
-// 	               panic("mock out the Swallow method")
-//             },
-//         }
+// 		// make and configure a mocked Swallower
+// 		mockedSwallower := &SwallowerMock{
+// 			SwallowFunc: func(s string)  {
+// 				panic("mock out the Swallow method")
+// 			},
+// 		}
 //
-//         // use mockedSwallower in code that requires Swallower
-//         // and then make assertions.
+// 		// use mockedSwallower in code that requires Swallower
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type SwallowerMock struct {
 	// SwallowFunc mocks the Swallow method.
 	SwallowFunc func(s string)

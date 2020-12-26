@@ -15,25 +15,25 @@ var _ Shadower = &ShadowerMock{}
 
 // ShadowerMock is a mock implementation of Shadower.
 //
-//     func TestSomethingThatUsesShadower(t *testing.T) {
+// 	func TestSomethingThatUsesShadower(t *testing.T) {
 //
-//         // make and configure a mocked Shadower
-//         mockedShadower := &ShadowerMock{
-//             ShadowFunc: func(ioMoqParam io.Reader)  {
-// 	               panic("mock out the Shadow method")
-//             },
-//             ShadowThreeFunc: func(httpMoqParam interface{}, srv *http.Server)  {
-// 	               panic("mock out the ShadowThree method")
-//             },
-//             ShadowTwoFunc: func(r io.Reader, ioMoqParam interface{})  {
-// 	               panic("mock out the ShadowTwo method")
-//             },
-//         }
+// 		// make and configure a mocked Shadower
+// 		mockedShadower := &ShadowerMock{
+// 			ShadowFunc: func(ioMoqParam io.Reader)  {
+// 				panic("mock out the Shadow method")
+// 			},
+// 			ShadowThreeFunc: func(httpMoqParam interface{}, srv *http.Server)  {
+// 				panic("mock out the ShadowThree method")
+// 			},
+// 			ShadowTwoFunc: func(r io.Reader, ioMoqParam interface{})  {
+// 				panic("mock out the ShadowTwo method")
+// 			},
+// 		}
 //
-//         // use mockedShadower in code that requires Shadower
-//         // and then make assertions.
+// 		// use mockedShadower in code that requires Shadower
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type ShadowerMock struct {
 	// ShadowFunc mocks the Shadow method.
 	ShadowFunc func(ioMoqParam io.Reader)

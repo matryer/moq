@@ -53,21 +53,21 @@ var _ {{$.SrcPkgQualifier}}{{.InterfaceName}} = &{{.MockName}}{}
 
 // {{.MockName}} is a mock implementation of {{$.SrcPkgQualifier}}{{.InterfaceName}}.
 //
-//     func TestSomethingThatUses{{.InterfaceName}}(t *testing.T) {
+// 	func TestSomethingThatUses{{.InterfaceName}}(t *testing.T) {
 //
-//         // make and configure a mocked {{$.SrcPkgQualifier}}{{.InterfaceName}}
-//         mocked{{.InterfaceName}} := &{{.MockName}}{ 
+// 		// make and configure a mocked {{$.SrcPkgQualifier}}{{.InterfaceName}}
+// 		mocked{{.InterfaceName}} := &{{.MockName}}{ 
 			{{- range .Methods}}
-//             {{.Name}}Func: func({{.ArgList}}) {{.ReturnArgTypeList}} {
-// 	               panic("mock out the {{.Name}} method")
-//             },
+// 			{{.Name}}Func: func({{.ArgList}}) {{.ReturnArgTypeList}} {
+// 				panic("mock out the {{.Name}} method")
+// 			},
 			{{- end}}
-//         }
+// 		}
 //
-//         // use mocked{{.InterfaceName}} in code that requires {{$.SrcPkgQualifier}}{{.InterfaceName}}
-//         // and then make assertions.
+// 		// use mocked{{.InterfaceName}} in code that requires {{$.SrcPkgQualifier}}{{.InterfaceName}}
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type {{.MockName}} struct {
 {{- range .Methods}}
 	// {{.Name}}Func mocks the {{.Name}} method.

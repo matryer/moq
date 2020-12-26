@@ -13,19 +13,19 @@ var _ Interface = &InterfaceMock{}
 
 // InterfaceMock is a mock implementation of Interface.
 //
-//     func TestSomethingThatUsesInterface(t *testing.T) {
+// 	func TestSomethingThatUsesInterface(t *testing.T) {
 //
-//         // make and configure a mocked Interface
-//         mockedInterface := &InterfaceMock{
-//             MethodFunc: func(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64)  {
-// 	               panic("mock out the Method method")
-//             },
-//         }
+// 		// make and configure a mocked Interface
+// 		mockedInterface := &InterfaceMock{
+// 			MethodFunc: func(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64)  {
+// 				panic("mock out the Method method")
+// 			},
+// 		}
 //
-//         // use mockedInterface in code that requires Interface
-//         // and then make assertions.
+// 		// use mockedInterface in code that requires Interface
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type InterfaceMock struct {
 	// MethodFunc mocks the Method method.
 	MethodFunc func(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64)

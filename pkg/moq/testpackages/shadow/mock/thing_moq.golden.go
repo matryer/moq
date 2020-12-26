@@ -15,19 +15,19 @@ var _ shadowhttp.Thing = &ThingMock{}
 
 // ThingMock is a mock implementation of shadowhttp.Thing.
 //
-//     func TestSomethingThatUsesThing(t *testing.T) {
+// 	func TestSomethingThatUsesThing(t *testing.T) {
 //
-//         // make and configure a mocked shadowhttp.Thing
-//         mockedThing := &ThingMock{
-//             BlahFunc: func(w nethttp.ResponseWriter, r *nethttp.Request)  {
-// 	               panic("mock out the Blah method")
-//             },
-//         }
+// 		// make and configure a mocked shadowhttp.Thing
+// 		mockedThing := &ThingMock{
+// 			BlahFunc: func(w nethttp.ResponseWriter, r *nethttp.Request)  {
+// 				panic("mock out the Blah method")
+// 			},
+// 		}
 //
-//         // use mockedThing in code that requires shadowhttp.Thing
-//         // and then make assertions.
+// 		// use mockedThing in code that requires shadowhttp.Thing
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type ThingMock struct {
 	// BlahFunc mocks the Blah method.
 	BlahFunc func(w nethttp.ResponseWriter, r *nethttp.Request)

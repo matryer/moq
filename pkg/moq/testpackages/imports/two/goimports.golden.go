@@ -15,22 +15,22 @@ var _ DoSomething = &goimportsMock{}
 
 // goimportsMock is a mock implementation of DoSomething.
 //
-//     func TestSomethingThatUsesDoSomething(t *testing.T) {
+// 	func TestSomethingThatUsesDoSomething(t *testing.T) {
 //
-//         // make and configure a mocked DoSomething
-//         mockedDoSomething := &goimportsMock{
-//             AnotherFunc: func(thing one.Thing) error {
-// 	               panic("mock out the Another method")
-//             },
-//             DoFunc: func(thing one.Thing) error {
-// 	               panic("mock out the Do method")
-//             },
-//         }
+// 		// make and configure a mocked DoSomething
+// 		mockedDoSomething := &goimportsMock{
+// 			AnotherFunc: func(thing one.Thing) error {
+// 				panic("mock out the Another method")
+// 			},
+// 			DoFunc: func(thing one.Thing) error {
+// 				panic("mock out the Do method")
+// 			},
+// 		}
 //
-//         // use mockedDoSomething in code that requires DoSomething
-//         // and then make assertions.
+// 		// use mockedDoSomething in code that requires DoSomething
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type goimportsMock struct {
 	// AnotherFunc mocks the Another method.
 	AnotherFunc func(thing one.Thing) error
