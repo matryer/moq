@@ -14,22 +14,22 @@ var _ PersonStore = &PersonStoreMock{}
 
 // PersonStoreMock is a mock implementation of PersonStore.
 //
-//     func TestSomethingThatUsesPersonStore(t *testing.T) {
+// 	func TestSomethingThatUsesPersonStore(t *testing.T) {
 //
-//         // make and configure a mocked PersonStore
-//         mockedPersonStore := &PersonStoreMock{
-//             CreateFunc: func(ctx context.Context, person *Person, confirm bool) error {
-// 	               panic("mock out the Create method")
-//             },
-//             GetFunc: func(ctx context.Context, id string) (*Person, error) {
-// 	               panic("mock out the Get method")
-//             },
-//         }
+// 		// make and configure a mocked PersonStore
+// 		mockedPersonStore := &PersonStoreMock{
+// 			CreateFunc: func(ctx context.Context, person *Person, confirm bool) error {
+// 				panic("mock out the Create method")
+// 			},
+// 			GetFunc: func(ctx context.Context, id string) (*Person, error) {
+// 				panic("mock out the Get method")
+// 			},
+// 		}
 //
-//         // use mockedPersonStore in code that requires PersonStore
-//         // and then make assertions.
+// 		// use mockedPersonStore in code that requires PersonStore
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type PersonStoreMock struct {
 	// CreateFunc mocks the Create method.
 	CreateFunc func(ctx context.Context, person *Person, confirm bool) error

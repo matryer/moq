@@ -13,25 +13,25 @@ var _ MyInterface = &MyInterfaceMock{}
 
 // MyInterfaceMock is a mock implementation of MyInterface.
 //
-//     func TestSomethingThatUsesMyInterface(t *testing.T) {
+// 	func TestSomethingThatUsesMyInterface(t *testing.T) {
 //
-//         // make and configure a mocked MyInterface
-//         mockedMyInterface := &MyInterfaceMock{
-//             OneFunc: func() bool {
-// 	               panic("mock out the One method")
-//             },
-//             ThreeFunc: func() string {
-// 	               panic("mock out the Three method")
-//             },
-//             TwoFunc: func() int {
-// 	               panic("mock out the Two method")
-//             },
-//         }
+// 		// make and configure a mocked MyInterface
+// 		mockedMyInterface := &MyInterfaceMock{
+// 			OneFunc: func() bool {
+// 				panic("mock out the One method")
+// 			},
+// 			ThreeFunc: func() string {
+// 				panic("mock out the Three method")
+// 			},
+// 			TwoFunc: func() int {
+// 				panic("mock out the Two method")
+// 			},
+// 		}
 //
-//         // use mockedMyInterface in code that requires MyInterface
-//         // and then make assertions.
+// 		// use mockedMyInterface in code that requires MyInterface
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type MyInterfaceMock struct {
 	// OneFunc mocks the One method.
 	OneFunc func() bool
