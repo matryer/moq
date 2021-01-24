@@ -76,7 +76,7 @@ func (m *MethodScope) addVar(vr *types.Var, name string) *Var {
 		Name:       name,
 	}
 	m.vars = append(m.vars, &v)
-	m.resolveImportVarConflicts(&v, imports)
+	m.resolveImportVarConflicts(&v)
 	return &v
 }
 
@@ -139,7 +139,7 @@ func (m MethodScope) populateImports(t types.Type, imports map[string]*Package) 
 	}
 }
 
-func (m MethodScope) resolveImportVarConflicts(v *Var, imports map[string]*Package) {
+func (m MethodScope) resolveImportVarConflicts(v *Var) {
 	// Ensure that the newly added var does not conflict with a package import
 	// which was added earlier.
 	if _, ok := m.registry.searchImport(v.Name); ok {
@@ -147,7 +147,7 @@ func (m MethodScope) resolveImportVarConflicts(v *Var, imports map[string]*Packa
 	}
 	// Ensure that all the newly added imports do not conflict with any of the
 	// existing vars.
-	for _, imprt := range imports {
+	for _, imprt := range v.imports {
 		if v, ok := m.searchVar(imprt.Qualifier()); ok {
 			v.Name += "MoqParam"
 		}
