@@ -18,7 +18,7 @@ type (
 
 type Interface interface {
 	Method(
-		myType,
+		*myType,
 		[3]json.Number,
 		[]byte,
 		map[sql.NullString]io.Reader,

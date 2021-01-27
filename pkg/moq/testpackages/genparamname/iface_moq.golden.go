@@ -25,7 +25,7 @@ var _ Interface = &InterfaceMock{}
 //
 // 		// make and configure a mocked Interface
 // 		mockedInterface := &InterfaceMock{
-// 			MethodFunc: func(myTypeMoqParam myType, numbers [3]json.Number, bytes []byte, nullStringToReader map[sql.NullString]io.Reader, fn func(conn net.Conn), goMoqParam Go, bufferPoolCh chan *httputil.BufferPool, val struct{URL *url.URL}, ifaceVal interface{CookieJar() http.CookieJar; fmt.Stringer})  {
+// 			MethodFunc: func(myTypeMoqParam *myType, numbers [3]json.Number, bytes []byte, nullStringToReader map[sql.NullString]io.Reader, fn func(conn net.Conn), goMoqParam Go, bufferPoolCh chan *httputil.BufferPool, val struct{URL *url.URL}, ifaceVal interface{CookieJar() http.CookieJar; fmt.Stringer})  {
 // 				panic("mock out the Method method")
 // 			},
 // 		}
@@ -36,7 +36,7 @@ var _ Interface = &InterfaceMock{}
 // 	}
 type InterfaceMock struct {
 	// MethodFunc mocks the Method method.
-	MethodFunc func(myTypeMoqParam myType, numbers [3]json.Number, bytes []byte, nullStringToReader map[sql.NullString]io.Reader, fn func(conn net.Conn), goMoqParam Go, bufferPoolCh chan *httputil.BufferPool, val struct{ URL *url.URL }, ifaceVal interface {
+	MethodFunc func(myTypeMoqParam *myType, numbers [3]json.Number, bytes []byte, nullStringToReader map[sql.NullString]io.Reader, fn func(conn net.Conn), goMoqParam Go, bufferPoolCh chan *httputil.BufferPool, val struct{ URL *url.URL }, ifaceVal interface {
 		CookieJar() http.CookieJar
 		fmt.Stringer
 	})
@@ -46,7 +46,7 @@ type InterfaceMock struct {
 		// Method holds details about calls to the Method method.
 		Method []struct {
 			// MyTypeMoqParam is the myTypeMoqParam argument value.
-			MyTypeMoqParam myType
+			MyTypeMoqParam *myType
 			// Numbers is the numbers argument value.
 			Numbers [3]json.Number
 			// Bytes is the bytes argument value.
@@ -72,7 +72,7 @@ type InterfaceMock struct {
 }
 
 // Method calls MethodFunc.
-func (mock *InterfaceMock) Method(myTypeMoqParam myType, numbers [3]json.Number, bytes []byte, nullStringToReader map[sql.NullString]io.Reader, fn func(conn net.Conn), goMoqParam Go, bufferPoolCh chan *httputil.BufferPool, val struct{ URL *url.URL }, ifaceVal interface {
+func (mock *InterfaceMock) Method(myTypeMoqParam *myType, numbers [3]json.Number, bytes []byte, nullStringToReader map[sql.NullString]io.Reader, fn func(conn net.Conn), goMoqParam Go, bufferPoolCh chan *httputil.BufferPool, val struct{ URL *url.URL }, ifaceVal interface {
 	CookieJar() http.CookieJar
 	fmt.Stringer
 }) {
@@ -80,7 +80,7 @@ func (mock *InterfaceMock) Method(myTypeMoqParam myType, numbers [3]json.Number,
 		panic("InterfaceMock.MethodFunc: method is nil but Interface.Method was just called")
 	}
 	callInfo := struct {
-		MyTypeMoqParam     myType
+		MyTypeMoqParam     *myType
 		Numbers            [3]json.Number
 		Bytes              []byte
 		NullStringToReader map[sql.NullString]io.Reader
@@ -113,7 +113,7 @@ func (mock *InterfaceMock) Method(myTypeMoqParam myType, numbers [3]json.Number,
 // Check the length with:
 //     len(mockedInterface.MethodCalls())
 func (mock *InterfaceMock) MethodCalls() []struct {
-	MyTypeMoqParam     myType
+	MyTypeMoqParam     *myType
 	Numbers            [3]json.Number
 	Bytes              []byte
 	NullStringToReader map[sql.NullString]io.Reader
@@ -127,7 +127,7 @@ func (mock *InterfaceMock) MethodCalls() []struct {
 	}
 } {
 	var calls []struct {
-		MyTypeMoqParam     myType
+		MyTypeMoqParam     *myType
 		Numbers            [3]json.Number
 		Bytes              []byte
 		NullStringToReader map[sql.NullString]io.Reader

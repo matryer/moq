@@ -50,43 +50,40 @@ func (v Var) packageQualifier(pkg *types.Package) string {
 // - error -> err
 // - a.MyType -> myType
 func generateVarName(t types.Type) string {
-	if t, ok := t.(*types.Named); ok {
-		name := deCapitalise(t.Obj().Name())
-		if name == "error" {
-			name = "err"
-		} else if name == t.Obj().Name() {
-			return name + "MoqParam"
-		}
-
-		return name
-	}
-
 	nestedType := func(t types.Type) string {
-		switch t := t.(type) {
-		case *types.Basic:
-			return t.String()
-
-		case *types.Named:
-			return t.Obj().Name()
+		if t, ok := t.(*types.Basic); ok {
+			return deCapitalise(t.String())
 		}
 		return generateVarName(t)
 	}
 
 	switch t := t.(type) {
+	case *types.Named:
+		if t.Obj().Name() == "error" {
+			return "err"
+		}
+
+		name := deCapitalise(t.Obj().Name())
+		if name == t.Obj().Name() {
+			name += "MoqParam"
+		}
+
+		return name
+
 	case *types.Basic:
 		return basicTypeVarName(t)
 
 	case *types.Array:
-		return deCapitalise(nestedType(t.Elem())) + "s"
+		return nestedType(t.Elem()) + "s"
 
 	case *types.Slice:
-		return deCapitalise(nestedType(t.Elem())) + "s"
+		return nestedType(t.Elem()) + "s"
 
 	case *types.Struct: // anonymous struct
 		return "val"
 
 	case *types.Pointer:
-		return deCapitalise(nestedType(t.Elem()))
+		return generateVarName(t.Elem())
 
 	case *types.Signature:
 		return "fn"
@@ -95,10 +92,10 @@ func generateVarName(t types.Type) string {
 		return "ifaceVal"
 
 	case *types.Map:
-		return deCapitalise(nestedType(t.Key())) + "To" + capitalise(nestedType(t.Elem()))
+		return nestedType(t.Key()) + "To" + capitalise(nestedType(t.Elem()))
 
 	case *types.Chan:
-		return deCapitalise(nestedType(t.Elem())) + "Ch"
+		return nestedType(t.Elem()) + "Ch"
 	}
 
 	return "v"
