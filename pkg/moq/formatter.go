@@ -29,5 +29,3 @@ func gofmt(src []byte) ([]byte, error) {
 
 	return formatted, nil
 }
-
-func noopFmt(src []byte) ([]byte, error) { return src, nil }

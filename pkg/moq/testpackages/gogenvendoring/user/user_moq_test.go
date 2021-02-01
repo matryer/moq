@@ -14,58 +14,58 @@ var _ Service = &ServiceMock{}
 
 // ServiceMock is a mock implementation of Service.
 //
-//     func TestSomethingThatUsesService(t *testing.T) {
+// 	func TestSomethingThatUsesService(t *testing.T) {
 //
-//         // make and configure a mocked Service
-//         mockedService := &ServiceMock{
-//             DoSomethingFunc: func(in1 somerepo.SomeType) error {
-// 	               panic("mock out the DoSomething method")
-//             },
-//         }
+// 		// make and configure a mocked Service
+// 		mockedService := &ServiceMock{
+// 			DoSomethingFunc: func(someType somerepo.SomeType) error {
+// 				panic("mock out the DoSomething method")
+// 			},
+// 		}
 //
-//         // use mockedService in code that requires Service
-//         // and then make assertions.
+// 		// use mockedService in code that requires Service
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type ServiceMock struct {
 	// DoSomethingFunc mocks the DoSomething method.
-	DoSomethingFunc func(in1 somerepo.SomeType) error
+	DoSomethingFunc func(someType somerepo.SomeType) error
 
 	// calls tracks calls to the methods.
 	calls struct {
 		// DoSomething holds details about calls to the DoSomething method.
 		DoSomething []struct {
-			// In1 is the in1 argument value.
-			In1 somerepo.SomeType
+			// SomeType is the someType argument value.
+			SomeType somerepo.SomeType
 		}
 	}
 	lockDoSomething sync.RWMutex
 }
 
 // DoSomething calls DoSomethingFunc.
-func (mock *ServiceMock) DoSomething(in1 somerepo.SomeType) error {
+func (mock *ServiceMock) DoSomething(someType somerepo.SomeType) error {
 	if mock.DoSomethingFunc == nil {
 		panic("ServiceMock.DoSomethingFunc: method is nil but Service.DoSomething was just called")
 	}
 	callInfo := struct {
-		In1 somerepo.SomeType
+		SomeType somerepo.SomeType
 	}{
-		In1: in1,
+		SomeType: someType,
 	}
 	mock.lockDoSomething.Lock()
 	mock.calls.DoSomething = append(mock.calls.DoSomething, callInfo)
 	mock.lockDoSomething.Unlock()
-	return mock.DoSomethingFunc(in1)
+	return mock.DoSomethingFunc(someType)
 }
 
 // DoSomethingCalls gets all the calls that were made to DoSomething.
 // Check the length with:
 //     len(mockedService.DoSomethingCalls())
 func (mock *ServiceMock) DoSomethingCalls() []struct {
-	In1 somerepo.SomeType
+	SomeType somerepo.SomeType
 } {
 	var calls []struct {
-		In1 somerepo.SomeType
+		SomeType somerepo.SomeType
 	}
 	mock.lockDoSomething.RLock()
 	calls = mock.calls.DoSomething

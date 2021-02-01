@@ -4,8 +4,8 @@
 package two
 
 import (
-	"sync"
 	"github.com/matryer/moq/pkg/moq/testpackages/imports/one"
+	"sync"
 )
 
 // Ensure, that noopMock does implement DoSomething.
@@ -14,22 +14,22 @@ var _ DoSomething = &noopMock{}
 
 // noopMock is a mock implementation of DoSomething.
 //
-//     func TestSomethingThatUsesDoSomething(t *testing.T) {
+// 	func TestSomethingThatUsesDoSomething(t *testing.T) {
 //
-//         // make and configure a mocked DoSomething
-//         mockedDoSomething := &noopMock{ 
-//             AnotherFunc: func(thing one.Thing) error {
-// 	               panic("mock out the Another method")
-//             },
-//             DoFunc: func(thing one.Thing) error {
-// 	               panic("mock out the Do method")
-//             },
-//         }
+// 		// make and configure a mocked DoSomething
+// 		mockedDoSomething := &noopMock{
+// 			AnotherFunc: func(thing one.Thing) error {
+// 				panic("mock out the Another method")
+// 			},
+// 			DoFunc: func(thing one.Thing) error {
+// 				panic("mock out the Do method")
+// 			},
+// 		}
 //
-//         // use mockedDoSomething in code that requires DoSomething
-//         // and then make assertions.
+// 		// use mockedDoSomething in code that requires DoSomething
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type noopMock struct {
 	// AnotherFunc mocks the Another method.
 	AnotherFunc func(thing one.Thing) error

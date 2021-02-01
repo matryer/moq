@@ -13,22 +13,22 @@ var _ Queuer = &QueuerMock{}
 
 // QueuerMock is a mock implementation of Queuer.
 //
-//     func TestSomethingThatUsesQueuer(t *testing.T) {
+// 	func TestSomethingThatUsesQueuer(t *testing.T) {
 //
-//         // make and configure a mocked Queuer
-//         mockedQueuer := &QueuerMock{
-//             SubFunc: func(topic string) (<-chan Queue, error) {
-// 	               panic("mock out the Sub method")
-//             },
-//             UnsubFunc: func(topic string)  {
-// 	               panic("mock out the Unsub method")
-//             },
-//         }
+// 		// make and configure a mocked Queuer
+// 		mockedQueuer := &QueuerMock{
+// 			SubFunc: func(topic string) (<-chan Queue, error) {
+// 				panic("mock out the Sub method")
+// 			},
+// 			UnsubFunc: func(topic string)  {
+// 				panic("mock out the Unsub method")
+// 			},
+// 		}
 //
-//         // use mockedQueuer in code that requires Queuer
-//         // and then make assertions.
+// 		// use mockedQueuer in code that requires Queuer
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type QueuerMock struct {
 	// SubFunc mocks the Sub method.
 	SubFunc func(topic string) (<-chan Queue, error)
@@ -65,10 +65,10 @@ func (mock *QueuerMock) Sub(topic string) (<-chan Queue, error) {
 	mock.lockSub.Unlock()
 	if mock.SubFunc == nil {
 		var (
-			out1 <-chan Queue
-			out2 error
+			queueChOut <-chan Queue
+			errOut     error
 		)
-		return out1, out2
+		return queueChOut, errOut
 	}
 	return mock.SubFunc(topic)
 }

@@ -13,58 +13,58 @@ var _ Swallower = &SwallowerMock{}
 
 // SwallowerMock is a mock implementation of Swallower.
 //
-//     func TestSomethingThatUsesSwallower(t *testing.T) {
+// 	func TestSomethingThatUsesSwallower(t *testing.T) {
 //
-//         // make and configure a mocked Swallower
-//         mockedSwallower := &SwallowerMock{
-//             SwallowFunc: func(in1 string)  {
-// 	               panic("mock out the Swallow method")
-//             },
-//         }
+// 		// make and configure a mocked Swallower
+// 		mockedSwallower := &SwallowerMock{
+// 			SwallowFunc: func(s string)  {
+// 				panic("mock out the Swallow method")
+// 			},
+// 		}
 //
-//         // use mockedSwallower in code that requires Swallower
-//         // and then make assertions.
+// 		// use mockedSwallower in code that requires Swallower
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type SwallowerMock struct {
 	// SwallowFunc mocks the Swallow method.
-	SwallowFunc func(in1 string)
+	SwallowFunc func(s string)
 
 	// calls tracks calls to the methods.
 	calls struct {
 		// Swallow holds details about calls to the Swallow method.
 		Swallow []struct {
-			// In1 is the in1 argument value.
-			In1 string
+			// S is the s argument value.
+			S string
 		}
 	}
 	lockSwallow sync.RWMutex
 }
 
 // Swallow calls SwallowFunc.
-func (mock *SwallowerMock) Swallow(in1 string) {
+func (mock *SwallowerMock) Swallow(s string) {
 	if mock.SwallowFunc == nil {
 		panic("SwallowerMock.SwallowFunc: method is nil but Swallower.Swallow was just called")
 	}
 	callInfo := struct {
-		In1 string
+		S string
 	}{
-		In1: in1,
+		S: s,
 	}
 	mock.lockSwallow.Lock()
 	mock.calls.Swallow = append(mock.calls.Swallow, callInfo)
 	mock.lockSwallow.Unlock()
-	mock.SwallowFunc(in1)
+	mock.SwallowFunc(s)
 }
 
 // SwallowCalls gets all the calls that were made to Swallow.
 // Check the length with:
 //     len(mockedSwallower.SwallowCalls())
 func (mock *SwallowerMock) SwallowCalls() []struct {
-	In1 string
+	S string
 } {
 	var calls []struct {
-		In1 string
+		S string
 	}
 	mock.lockSwallow.RLock()
 	calls = mock.calls.Swallow

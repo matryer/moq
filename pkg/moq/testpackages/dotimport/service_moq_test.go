@@ -8,29 +8,25 @@ import (
 	"sync"
 )
 
-var (
-	lockServiceMockUser sync.RWMutex
-)
-
 // Ensure, that ServiceMock does implement dotimport.Service.
 // If this is not the case, regenerate this file with moq.
 var _ dotimport.Service = &ServiceMock{}
 
 // ServiceMock is a mock implementation of dotimport.Service.
 //
-//     func TestSomethingThatUsesService(t *testing.T) {
+// 	func TestSomethingThatUsesService(t *testing.T) {
 //
-//         // make and configure a mocked dotimport.Service
-//         mockedService := &ServiceMock{
-//             UserFunc: func(ID string) (dotimport.User, error) {
-// 	               panic("mock out the User method")
-//             },
-//         }
+// 		// make and configure a mocked dotimport.Service
+// 		mockedService := &ServiceMock{
+// 			UserFunc: func(ID string) (dotimport.User, error) {
+// 				panic("mock out the User method")
+// 			},
+// 		}
 //
-//         // use mockedService in code that requires dotimport.Service
-//         // and then make assertions.
+// 		// use mockedService in code that requires dotimport.Service
+// 		// and then make assertions.
 //
-//     }
+// 	}
 type ServiceMock struct {
 	// UserFunc mocks the User method.
 	UserFunc func(ID string) (dotimport.User, error)
@@ -43,6 +39,7 @@ type ServiceMock struct {
 			ID string
 		}
 	}
+	lockUser sync.RWMutex
 }
 
 // User calls UserFunc.
@@ -55,9 +52,9 @@ func (mock *ServiceMock) User(ID string) (dotimport.User, error) {
 	}{
 		ID: ID,
 	}
-	lockServiceMockUser.Lock()
+	mock.lockUser.Lock()
 	mock.calls.User = append(mock.calls.User, callInfo)
-	lockServiceMockUser.Unlock()
+	mock.lockUser.Unlock()
 	return mock.UserFunc(ID)
 }
 
@@ -70,8 +67,8 @@ func (mock *ServiceMock) UserCalls() []struct {
 	var calls []struct {
 		ID string
 	}
-	lockServiceMockUser.RLock()
+	mock.lockUser.RLock()
 	calls = mock.calls.User
-	lockServiceMockUser.RUnlock()
+	mock.lockUser.RUnlock()
 	return calls
 }
