@@ -5,6 +5,7 @@ package paramconflict
 
 import (
 	"sync"
+	"time"
 )
 
 // Ensure, that InterfaceMock does implement Interface.
@@ -17,7 +18,7 @@ var _ Interface = &InterfaceMock{}
 //
 // 		// make and configure a mocked Interface
 // 		mockedInterface := &InterfaceMock{
-// 			MethodFunc: func(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64)  {
+// 			MethodFunc: func(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64, timeMoqParam1 time.Time, timeMoqParam2 time.Time)  {
 // 				panic("mock out the Method method")
 // 			},
 // 		}
@@ -28,7 +29,7 @@ var _ Interface = &InterfaceMock{}
 // 	}
 type InterfaceMock struct {
 	// MethodFunc mocks the Method method.
-	MethodFunc func(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64)
+	MethodFunc func(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64, timeMoqParam1 time.Time, timeMoqParam2 time.Time)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -52,67 +53,79 @@ type InterfaceMock struct {
 			F1 float32
 			// F2 is the f2 argument value.
 			F2 float64
+			// TimeMoqParam1 is the timeMoqParam1 argument value.
+			TimeMoqParam1 time.Time
+			// TimeMoqParam2 is the timeMoqParam2 argument value.
+			TimeMoqParam2 time.Time
 		}
 	}
 	lockMethod sync.RWMutex
 }
 
 // Method calls MethodFunc.
-func (mock *InterfaceMock) Method(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64) {
+func (mock *InterfaceMock) Method(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64, timeMoqParam1 time.Time, timeMoqParam2 time.Time) {
 	if mock.MethodFunc == nil {
 		panic("InterfaceMock.MethodFunc: method is nil but Interface.Method was just called")
 	}
 	callInfo := struct {
-		S1 string
-		B1 bool
-		S2 string
-		B2 bool
-		N1 int
-		N2 int32
-		N3 int64
-		F1 float32
-		F2 float64
+		S1            string
+		B1            bool
+		S2            string
+		B2            bool
+		N1            int
+		N2            int32
+		N3            int64
+		F1            float32
+		F2            float64
+		TimeMoqParam1 time.Time
+		TimeMoqParam2 time.Time
 	}{
-		S1: s1,
-		B1: b1,
-		S2: s2,
-		B2: b2,
-		N1: n1,
-		N2: n2,
-		N3: n3,
-		F1: f1,
-		F2: f2,
+		S1:            s1,
+		B1:            b1,
+		S2:            s2,
+		B2:            b2,
+		N1:            n1,
+		N2:            n2,
+		N3:            n3,
+		F1:            f1,
+		F2:            f2,
+		TimeMoqParam1: timeMoqParam1,
+		TimeMoqParam2: timeMoqParam2,
 	}
 	mock.lockMethod.Lock()
 	mock.calls.Method = append(mock.calls.Method, callInfo)
 	mock.lockMethod.Unlock()
-	mock.MethodFunc(s1, b1, s2, b2, n1, n2, n3, f1, f2)
+	mock.MethodFunc(s1, b1, s2, b2, n1, n2, n3, f1, f2, timeMoqParam1, timeMoqParam2)
 }
 
 // MethodCalls gets all the calls that were made to Method.
 // Check the length with:
 //     len(mockedInterface.MethodCalls())
 func (mock *InterfaceMock) MethodCalls() []struct {
-	S1 string
-	B1 bool
-	S2 string
-	B2 bool
-	N1 int
-	N2 int32
-	N3 int64
-	F1 float32
-	F2 float64
+	S1            string
+	B1            bool
+	S2            string
+	B2            bool
+	N1            int
+	N2            int32
+	N3            int64
+	F1            float32
+	F2            float64
+	TimeMoqParam1 time.Time
+	TimeMoqParam2 time.Time
 } {
 	var calls []struct {
-		S1 string
-		B1 bool
-		S2 string
-		B2 bool
-		N1 int
-		N2 int32
-		N3 int64
-		F1 float32
-		F2 float64
+		S1            string
+		B1            bool
+		S2            string
+		B2            bool
+		N1            int
+		N2            int32
+		N3            int64
+		F1            float32
+		F2            float64
+		TimeMoqParam1 time.Time
+		TimeMoqParam2 time.Time
 	}
 	mock.lockMethod.RLock()
 	calls = mock.calls.Method
