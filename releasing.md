@@ -24,5 +24,5 @@ $ git push origin v0.1.0
 Then:
 
 ```bash
-make release
+GITHUB_TOKEN=xxx goreleaser --rm-dist
 ```
