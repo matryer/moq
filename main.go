@@ -47,7 +47,7 @@ func main() {
 	flags.args = flag.Args()
 
 	if *printVersion {
-		fmt.Printf("moq version %s\n", version)
+		fmt.Printf("moq version %s\n", Version)
 		os.Exit(0)
 	}
 
