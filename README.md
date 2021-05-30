@@ -14,9 +14,18 @@ You can read more in the [Meet Moq blog post](http://bit.ly/meetmoq).
 
 ### Installing
 
-To start using Moq, just run go get:
+To start using latest released version of Moq, just run:
+
+#### Go version < 1.16
+
 ```
 $ go get github.com/matryer/moq
+```
+
+#### Go 1.16+
+
+```
+$ go install github.com/matryer/moq@latest
 ```
 
 ### Usage
@@ -32,7 +41,7 @@ moq [flags] source-dir interface [interface2 [interface3 [...]]]
 	-stub
 		return zero values when no mock implementation is provided, do not panic
 	-skip-ensure
-		suppress mock implementation check, avoid import cycle if mocks 
+		suppress mock implementation check, avoid import cycle if mocks
 		generated outside of the tested package
 
 Specifying an alias for the mock is also supported with the format 'interface:alias'
@@ -40,7 +49,7 @@ Specifying an alias for the mock is also supported with the format 'interface:al
 Example: moq -pkg different . MyInterface:MyMock
 ```
 
-**NOTE:** `source-dir` is the directory where the source code (definition) of the target interface is located. 
+**NOTE:** `source-dir` is the directory where the source code (definition) of the target interface is located.
 It needs to be a path to a directory and not the import statement for a Go package.
 
 In a command line:
@@ -112,9 +121,9 @@ The mocked structure implements the interface, where each method calls the assoc
 * Use closured variables inside your test function to capture details about the calls to the methods
 * Use `.MethodCalls()` to track the calls
 * Use `go:generate` to invoke the `moq` command
-* If Moq fails with a `go/format` error, it indicates the generated code was not valid. 
-  You can run the same command with `-fmt noop` to print the generated source code without attempting to format it. 
-  This can aid in debugging the root cause. 
+* If Moq fails with a `go/format` error, it indicates the generated code was not valid.
+  You can run the same command with `-fmt noop` to print the generated source code without attempting to format it.
+  This can aid in debugging the root cause.
 
 ## License
 
