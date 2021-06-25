@@ -22,6 +22,7 @@ type userFlags struct {
 	formatter  string
 	stubImpl   bool
 	skipEnsure bool
+	remove     bool
 	args       []string
 }
 
@@ -35,6 +36,7 @@ func main() {
 	printVersion := flag.Bool("version", false, "show the version for moq")
 	flag.BoolVar(&flags.skipEnsure, "skip-ensure", false,
 		"suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package")
+	flag.BoolVar(&flags.remove, "rm", false, "first remove output file, if it exists")
 
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
@@ -61,6 +63,14 @@ func main() {
 func run(flags userFlags) error {
 	if len(flags.args) < 2 {
 		return errors.New("not enough arguments")
+	}
+
+	if flags.remove && flags.outFile != "" {
+		if err := os.Remove(flags.outFile); err != nil {
+			if !errors.Is(err, os.ErrNotExist) {
+				return err
+			}
+		}
 	}
 
 	var buf bytes.Buffer
