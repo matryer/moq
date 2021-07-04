@@ -370,6 +370,13 @@ func TestMockGolden(t *testing.T) {
 			interfaces: []string{"Syncer"},
 			goldenFile: filepath.Join("testpackages/syncimport", "syncer_moq.golden.go"),
 		},
+		{
+			// Tests anonymous imports are not included in the generated mock.
+			name:       "AnonymousImport",
+			cfg:        Config{SrcDir: "testpackages/anonimport"},
+			interfaces: []string{"Example"},
+			goldenFile: filepath.Join("testpackages/anonimport", "iface_moq.golden.go"),
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
