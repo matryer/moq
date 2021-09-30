@@ -72,3 +72,21 @@ func (mock *ServiceMock) DoSomethingCalls() []struct {
 	mock.lockDoSomething.RUnlock()
 	return calls
 }
+
+// DoSomethingResetCalls Reset all the calls that were made to DoSomething.
+func (mock *ServiceMock) DoSomethingResetCalls() {
+	mock.lockDoSomething.RLock()
+	mock.calls.DoSomething = []struct {
+		SomeType somerepo.SomeType
+	}{}
+	mock.lockDoSomething.RUnlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *ServiceMock) ResetCalls() {
+	mock.lockDoSomething.RLock()
+	mock.calls.DoSomething = []struct {
+		SomeType somerepo.SomeType
+	}{}
+	mock.lockDoSomething.RUnlock()
+}

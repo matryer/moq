@@ -71,3 +71,21 @@ func (mock *EchoerMock) EchoCalls() []struct {
 	mock.lockEcho.RUnlock()
 	return calls
 }
+
+// EchoResetCalls Reset all the calls that were made to Echo.
+func (mock *EchoerMock) EchoResetCalls() {
+	mock.lockEcho.RLock()
+	mock.calls.Echo = []struct {
+		Ss []string
+	}{}
+	mock.lockEcho.RUnlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *EchoerMock) ResetCalls() {
+	mock.lockEcho.RLock()
+	mock.calls.Echo = []struct {
+		Ss []string
+	}{}
+	mock.lockEcho.RUnlock()
+}

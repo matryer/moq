@@ -78,3 +78,23 @@ func (mock *SyncerMock) BlahCalls() []struct {
 	mock.lockBlah.RUnlock()
 	return calls
 }
+
+// BlahResetCalls Reset all the calls that were made to Blah.
+func (mock *SyncerMock) BlahResetCalls() {
+	mock.lockBlah.RLock()
+	mock.calls.Blah = []struct {
+		S  sync.Thing
+		Wg *stdsync.WaitGroup
+	}{}
+	mock.lockBlah.RUnlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *SyncerMock) ResetCalls() {
+	mock.lockBlah.RLock()
+	mock.calls.Blah = []struct {
+		S  sync.Thing
+		Wg *stdsync.WaitGroup
+	}{}
+	mock.lockBlah.RUnlock()
+}

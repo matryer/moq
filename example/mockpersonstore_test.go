@@ -99,6 +99,17 @@ func (mock *PersonStoreMock) CreateCalls() []struct {
 	return calls
 }
 
+// CreateResetCalls gets all the calls that were made to Create.
+func (mock *PersonStoreMock) CreateResetCalls() {
+	mock.lockCreate.RLock()
+	mock.calls.Create = []struct {
+		Ctx     context.Context
+		Person  *Person
+		Confirm bool
+	}{}
+	mock.lockCreate.RUnlock()
+}
+
 // Get calls GetFunc.
 func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error) {
 	if mock.GetFunc == nil {
@@ -132,4 +143,32 @@ func (mock *PersonStoreMock) GetCalls() []struct {
 	calls = mock.calls.Get
 	mock.lockGet.RUnlock()
 	return calls
+}
+
+// GetResetCalls gets all the calls that were made to Get.
+func (mock *PersonStoreMock) GetResetCalls() {
+	mock.lockGet.RLock()
+	mock.calls.Get = []struct {
+		Ctx context.Context
+		ID  string
+	}{}
+	mock.lockGet.RUnlock()
+}
+
+// ResetCalls gets all the calls that were made.
+func (mock *PersonStoreMock) ResetCalls() {
+	mock.lockCreate.RLock()
+	mock.calls.Create = []struct {
+		Ctx     context.Context
+		Person  *Person
+		Confirm bool
+	}{}
+	mock.lockCreate.RUnlock()
+
+	mock.lockGet.RLock()
+	mock.calls.Get = []struct {
+		Ctx context.Context
+		ID  string
+	}{}
+	mock.lockGet.RUnlock()
 }

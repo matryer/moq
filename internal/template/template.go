@@ -149,8 +149,34 @@ func (mock *{{$mock.MockName}}) {{.Name}}Calls() []struct {
 	mock.lock{{.Name}}.RUnlock()
 	return calls
 }
+
+// {{.Name}}ResetCalls Reset all the calls that were made to {{.Name}}.
+func (mock *{{$mock.MockName}}) {{.Name}}ResetCalls() {
+	mock.lock{{.Name}}.RLock()
+	mock.calls.{{.Name}} = []struct {
+		{{- range .Params}}
+		{{.Name | Exported}} {{.TypeString}}
+		{{- end}}
+	}{}
+	mock.lock{{.Name}}.RUnlock()
+}
 {{end -}}
-{{end -}}`
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *{{$mock.MockName}}) ResetCalls() {
+	{{- range .Methods}}
+	mock.lock{{.Name}}.RLock()
+	mock.calls.{{.Name}} = []struct {
+		{{- range .Params}}
+		{{.Name | Exported}} {{.TypeString}}
+		{{- end}}
+	}{}
+	mock.lock{{.Name}}.RUnlock()
+	{{end -}}
+}
+{{end -}}
+
+`
 
 // This list comes from the golint codebase. Golint will complain about any of
 // these being mixed-case, like "Id" instead of "ID".

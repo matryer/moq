@@ -79,3 +79,23 @@ func (mock *MiddleManMock) ConnectCalls() []struct {
 	mock.lockConnect.RUnlock()
 	return calls
 }
+
+// ConnectResetCalls Reset all the calls that were made to Connect.
+func (mock *MiddleManMock) ConnectResetCalls() {
+	mock.lockConnect.RLock()
+	mock.calls.Connect = []struct {
+		Src srcclient.Client
+		Tgt tgtclient.Client
+	}{}
+	mock.lockConnect.RUnlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *MiddleManMock) ResetCalls() {
+	mock.lockConnect.RLock()
+	mock.calls.Connect = []struct {
+		Src srcclient.Client
+		Tgt tgtclient.Client
+	}{}
+	mock.lockConnect.RUnlock()
+}

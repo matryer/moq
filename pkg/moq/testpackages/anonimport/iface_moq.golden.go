@@ -72,3 +72,21 @@ func (mock *ExampleMock) CtxCalls() []struct {
 	mock.lockCtx.RUnlock()
 	return calls
 }
+
+// CtxResetCalls Reset all the calls that were made to Ctx.
+func (mock *ExampleMock) CtxResetCalls() {
+	mock.lockCtx.RLock()
+	mock.calls.Ctx = []struct {
+		Ctx context.Context
+	}{}
+	mock.lockCtx.RUnlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *ExampleMock) ResetCalls() {
+	mock.lockCtx.RLock()
+	mock.calls.Ctx = []struct {
+		Ctx context.Context
+	}{}
+	mock.lockCtx.RUnlock()
+}

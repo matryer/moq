@@ -86,6 +86,15 @@ func (mock *goimportsMock) AnotherCalls() []struct {
 	return calls
 }
 
+// AnotherResetCalls Reset all the calls that were made to Another.
+func (mock *goimportsMock) AnotherResetCalls() {
+	mock.lockAnother.RLock()
+	mock.calls.Another = []struct {
+		Thing one.Thing
+	}{}
+	mock.lockAnother.RUnlock()
+}
+
 // Do calls DoFunc.
 func (mock *goimportsMock) Do(thing one.Thing) error {
 	if mock.DoFunc == nil {
@@ -115,4 +124,28 @@ func (mock *goimportsMock) DoCalls() []struct {
 	calls = mock.calls.Do
 	mock.lockDo.RUnlock()
 	return calls
+}
+
+// DoResetCalls Reset all the calls that were made to Do.
+func (mock *goimportsMock) DoResetCalls() {
+	mock.lockDo.RLock()
+	mock.calls.Do = []struct {
+		Thing one.Thing
+	}{}
+	mock.lockDo.RUnlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *goimportsMock) ResetCalls() {
+	mock.lockAnother.RLock()
+	mock.calls.Another = []struct {
+		Thing one.Thing
+	}{}
+	mock.lockAnother.RUnlock()
+
+	mock.lockDo.RLock()
+	mock.calls.Do = []struct {
+		Thing one.Thing
+	}{}
+	mock.lockDo.RUnlock()
 }

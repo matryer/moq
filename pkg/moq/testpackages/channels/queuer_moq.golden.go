@@ -88,6 +88,15 @@ func (mock *QueuerMock) SubCalls() []struct {
 	return calls
 }
 
+// SubResetCalls Reset all the calls that were made to Sub.
+func (mock *QueuerMock) SubResetCalls() {
+	mock.lockSub.RLock()
+	mock.calls.Sub = []struct {
+		Topic string
+	}{}
+	mock.lockSub.RUnlock()
+}
+
 // Unsub calls UnsubFunc.
 func (mock *QueuerMock) Unsub(topic string) {
 	callInfo := struct {
@@ -117,4 +126,28 @@ func (mock *QueuerMock) UnsubCalls() []struct {
 	calls = mock.calls.Unsub
 	mock.lockUnsub.RUnlock()
 	return calls
+}
+
+// UnsubResetCalls Reset all the calls that were made to Unsub.
+func (mock *QueuerMock) UnsubResetCalls() {
+	mock.lockUnsub.RLock()
+	mock.calls.Unsub = []struct {
+		Topic string
+	}{}
+	mock.lockUnsub.RUnlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *QueuerMock) ResetCalls() {
+	mock.lockSub.RLock()
+	mock.calls.Sub = []struct {
+		Topic string
+	}{}
+	mock.lockSub.RUnlock()
+
+	mock.lockUnsub.RLock()
+	mock.calls.Unsub = []struct {
+		Topic string
+	}{}
+	mock.lockUnsub.RUnlock()
 }

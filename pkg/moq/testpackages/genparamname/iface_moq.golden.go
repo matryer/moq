@@ -145,3 +145,43 @@ func (mock *InterfaceMock) MethodCalls() []struct {
 	mock.lockMethod.RUnlock()
 	return calls
 }
+
+// MethodResetCalls Reset all the calls that were made to Method.
+func (mock *InterfaceMock) MethodResetCalls() {
+	mock.lockMethod.RLock()
+	mock.calls.Method = []struct {
+		MyTypeMoqParam     *myType
+		Numbers            [3]json.Number
+		Bytes              []byte
+		NullStringToReader map[sql.NullString]io.Reader
+		Fn                 func(conn net.Conn)
+		GoMoqParam         Go
+		BufferPoolCh       chan *httputil.BufferPool
+		Val                struct{ URL *url.URL }
+		IfaceVal           interface {
+			CookieJar() http.CookieJar
+			fmt.Stringer
+		}
+	}{}
+	mock.lockMethod.RUnlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *InterfaceMock) ResetCalls() {
+	mock.lockMethod.RLock()
+	mock.calls.Method = []struct {
+		MyTypeMoqParam     *myType
+		Numbers            [3]json.Number
+		Bytes              []byte
+		NullStringToReader map[sql.NullString]io.Reader
+		Fn                 func(conn net.Conn)
+		GoMoqParam         Go
+		BufferPoolCh       chan *httputil.BufferPool
+		Val                struct{ URL *url.URL }
+		IfaceVal           interface {
+			CookieJar() http.CookieJar
+			fmt.Stringer
+		}
+	}{}
+	mock.lockMethod.RUnlock()
+}

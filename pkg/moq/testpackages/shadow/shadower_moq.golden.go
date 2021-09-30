@@ -102,6 +102,15 @@ func (mock *ShadowerMock) ShadowCalls() []struct {
 	return calls
 }
 
+// ShadowResetCalls Reset all the calls that were made to Shadow.
+func (mock *ShadowerMock) ShadowResetCalls() {
+	mock.lockShadow.RLock()
+	mock.calls.Shadow = []struct {
+		IoMoqParam io.Reader
+	}{}
+	mock.lockShadow.RUnlock()
+}
+
 // ShadowThree calls ShadowThreeFunc.
 func (mock *ShadowerMock) ShadowThree(httpMoqParam interface{}, srv *http.Server) {
 	if mock.ShadowThreeFunc == nil {
@@ -137,6 +146,16 @@ func (mock *ShadowerMock) ShadowThreeCalls() []struct {
 	return calls
 }
 
+// ShadowThreeResetCalls Reset all the calls that were made to ShadowThree.
+func (mock *ShadowerMock) ShadowThreeResetCalls() {
+	mock.lockShadowThree.RLock()
+	mock.calls.ShadowThree = []struct {
+		HttpMoqParam interface{}
+		Srv          *http.Server
+	}{}
+	mock.lockShadowThree.RUnlock()
+}
+
 // ShadowTwo calls ShadowTwoFunc.
 func (mock *ShadowerMock) ShadowTwo(r io.Reader, ioMoqParam interface{}) {
 	if mock.ShadowTwoFunc == nil {
@@ -170,4 +189,37 @@ func (mock *ShadowerMock) ShadowTwoCalls() []struct {
 	calls = mock.calls.ShadowTwo
 	mock.lockShadowTwo.RUnlock()
 	return calls
+}
+
+// ShadowTwoResetCalls Reset all the calls that were made to ShadowTwo.
+func (mock *ShadowerMock) ShadowTwoResetCalls() {
+	mock.lockShadowTwo.RLock()
+	mock.calls.ShadowTwo = []struct {
+		R          io.Reader
+		IoMoqParam interface{}
+	}{}
+	mock.lockShadowTwo.RUnlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *ShadowerMock) ResetCalls() {
+	mock.lockShadow.RLock()
+	mock.calls.Shadow = []struct {
+		IoMoqParam io.Reader
+	}{}
+	mock.lockShadow.RUnlock()
+
+	mock.lockShadowThree.RLock()
+	mock.calls.ShadowThree = []struct {
+		HttpMoqParam interface{}
+		Srv          *http.Server
+	}{}
+	mock.lockShadowThree.RUnlock()
+
+	mock.lockShadowTwo.RLock()
+	mock.calls.ShadowTwo = []struct {
+		R          io.Reader
+		IoMoqParam interface{}
+	}{}
+	mock.lockShadowTwo.RUnlock()
 }

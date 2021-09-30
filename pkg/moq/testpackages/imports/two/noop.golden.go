@@ -85,6 +85,15 @@ func (mock *noopMock) AnotherCalls() []struct {
 	return calls
 }
 
+// AnotherResetCalls Reset all the calls that were made to Another.
+func (mock *noopMock) AnotherResetCalls() {
+	mock.lockAnother.RLock()
+	mock.calls.Another = []struct {
+		Thing one.Thing
+	}{}
+	mock.lockAnother.RUnlock()
+}
+
 // Do calls DoFunc.
 func (mock *noopMock) Do(thing one.Thing) error {
 	if mock.DoFunc == nil {
@@ -115,3 +124,26 @@ func (mock *noopMock) DoCalls() []struct {
 	mock.lockDo.RUnlock()
 	return calls
 }
+
+// DoResetCalls Reset all the calls that were made to Do.
+func (mock *noopMock) DoResetCalls() {
+	mock.lockDo.RLock()
+	mock.calls.Do = []struct {
+		Thing one.Thing
+	}{}
+	mock.lockDo.RUnlock()
+}
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *noopMock) ResetCalls() {
+	mock.lockAnother.RLock()
+	mock.calls.Another = []struct {
+		Thing one.Thing
+	}{}
+	mock.lockAnother.RUnlock()
+	
+	mock.lockDo.RLock()
+	mock.calls.Do = []struct {
+		Thing one.Thing
+	}{}
+	mock.lockDo.RUnlock()
+	}

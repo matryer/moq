@@ -132,3 +132,41 @@ func (mock *InterfaceMock) MethodCalls() []struct {
 	mock.lockMethod.RUnlock()
 	return calls
 }
+
+// MethodResetCalls Reset all the calls that were made to Method.
+func (mock *InterfaceMock) MethodResetCalls() {
+	mock.lockMethod.RLock()
+	mock.calls.Method = []struct {
+		S1            string
+		B1            bool
+		S2            string
+		B2            bool
+		N1            int
+		N2            int32
+		N3            int64
+		F1            float32
+		F2            float64
+		TimeMoqParam1 time.Time
+		TimeMoqParam2 time.Time
+	}{}
+	mock.lockMethod.RUnlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *InterfaceMock) ResetCalls() {
+	mock.lockMethod.RLock()
+	mock.calls.Method = []struct {
+		S1            string
+		B1            bool
+		S2            string
+		B2            bool
+		N1            int
+		N2            int32
+		N3            int64
+		F1            float32
+		F2            float64
+		TimeMoqParam1 time.Time
+		TimeMoqParam2 time.Time
+	}{}
+	mock.lockMethod.RUnlock()
+}

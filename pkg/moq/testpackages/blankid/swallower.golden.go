@@ -71,3 +71,21 @@ func (mock *SwallowerMock) SwallowCalls() []struct {
 	mock.lockSwallow.RUnlock()
 	return calls
 }
+
+// SwallowResetCalls Reset all the calls that were made to Swallow.
+func (mock *SwallowerMock) SwallowResetCalls() {
+	mock.lockSwallow.RLock()
+	mock.calls.Swallow = []struct {
+		S string
+	}{}
+	mock.lockSwallow.RUnlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *SwallowerMock) ResetCalls() {
+	mock.lockSwallow.RLock()
+	mock.calls.Swallow = []struct {
+		S string
+	}{}
+	mock.lockSwallow.RUnlock()
+}
