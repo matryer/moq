@@ -377,6 +377,14 @@ func TestMockGolden(t *testing.T) {
 			interfaces: []string{"Example"},
 			goldenFile: filepath.Join("testpackages/anonimport", "iface_moq.golden.go"),
 		},
+		{
+			// Tests import of package for aliased type.
+			// See https://github.com/matryer/moq/issues/153.
+			name:       "TypeAliasPkgImport",
+			cfg:        Config{SrcDir: "testpackages/typealiaspkgimport"},
+			interfaces: []string{"Processor"},
+			goldenFile: filepath.Join("testpackages/typealiaspkgimport", "processor_moq.golden.go"),
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

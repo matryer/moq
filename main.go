@@ -14,7 +14,7 @@ import (
 )
 
 // Version is the command version, injected at build time.
-var Version string = "dev"
+var Version = "dev"
 
 type userFlags struct {
 	outFile    string
