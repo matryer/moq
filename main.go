@@ -17,13 +17,14 @@ import (
 var Version string = "dev"
 
 type userFlags struct {
-	outFile    string
-	pkgName    string
-	formatter  string
-	stubImpl   bool
-	skipEnsure bool
-	remove     bool
-	args       []string
+	outFile        string
+	pkgName        string
+	formatter      string
+	stubImpl       bool
+	includeHydrate bool
+	skipEnsure     bool
+	remove         bool
+	args           []string
 }
 
 func main() {
@@ -33,6 +34,8 @@ func main() {
 	flag.StringVar(&flags.formatter, "fmt", "", "go pretty-printer: gofmt, goimports or noop (default gofmt)")
 	flag.BoolVar(&flags.stubImpl, "stub", false,
 		"return zero values when no mock implementation is provided, do not panic")
+	flag.BoolVar(&flags.includeHydrate, "hydrate", false,
+		"include Hydrate(Interface) which replaces non-mocked methods with methods from the given implementation")
 	printVersion := flag.Bool("version", false, "show the version for moq")
 	flag.BoolVar(&flags.skipEnsure, "skip-ensure", false,
 		"suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package")
@@ -81,11 +84,12 @@ func run(flags userFlags) error {
 
 	srcDir, args := flags.args[0], flags.args[1:]
 	m, err := moq.New(moq.Config{
-		SrcDir:     srcDir,
-		PkgName:    flags.pkgName,
-		Formatter:  flags.formatter,
-		StubImpl:   flags.stubImpl,
-		SkipEnsure: flags.skipEnsure,
+		SrcDir:         srcDir,
+		PkgName:        flags.pkgName,
+		Formatter:      flags.formatter,
+		StubImpl:       flags.stubImpl,
+		IncludeHydrate: flags.includeHydrate,
+		SkipEnsure:     flags.skipEnsure,
 	})
 	if err != nil {
 		return err

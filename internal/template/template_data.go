@@ -14,6 +14,7 @@ type Data struct {
 	Imports         []*registry.Package
 	Mocks           []MockData
 	StubImpl        bool
+	IncludeHydrate  bool
 	SkipEnsure      bool
 }
 

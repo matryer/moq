@@ -56,7 +56,7 @@ var _ {{$.SrcPkgQualifier}}{{.InterfaceName}} = &{{.MockName}}{}
 // 	func TestSomethingThatUses{{.InterfaceName}}(t *testing.T) {
 //
 // 		// make and configure a mocked {{$.SrcPkgQualifier}}{{.InterfaceName}}
-// 		mocked{{.InterfaceName}} := &{{.MockName}}{ 
+// 		mocked{{.InterfaceName}} := &{{.MockName}}{
 			{{- range .Methods}}
 // 			{{.Name}}Func: func({{.ArgList}}) {{.ReturnArgTypeList}} {
 // 				panic("mock out the {{.Name}} method")
@@ -148,6 +148,17 @@ func (mock *{{$mock.MockName}}) {{.Name}}Calls() []struct {
 	calls = mock.calls.{{.Name}}
 	mock.lock{{.Name}}.RUnlock()
 	return calls
+}
+{{end -}}
+
+{{- if $.IncludeHydrate}}
+// Hydrate replaces any non-mocked methods with the corresponding method from the given implementation.
+func (mock *{{$mock.MockName}}) Hydrate(i {{$mock.InterfaceName}}) {
+        {{range .Methods -}}
+        if mock.{{.Name}}Func == nil {
+                mock.{{.Name}}Func = i.{{.Name}}
+        }
+        {{end -}}
 }
 {{end -}}
 {{end -}}`
