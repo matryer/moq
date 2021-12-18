@@ -377,6 +377,12 @@ func TestMockGolden(t *testing.T) {
 			interfaces: []string{"Example"},
 			goldenFile: filepath.Join("testpackages/anonimport", "iface_moq.golden.go"),
 		},
+		{
+			name:       "ShadowTypes",
+			cfg:        Config{SrcDir: "testpackages/shadowtypes"},
+			interfaces: []string{"ShadowTypes"},
+			goldenFile: filepath.Join("testpackages/shadowtypes", "shadowtypes_moq.golden.go"),
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -684,45 +690,4 @@ func normalize(d []byte) []byte {
 	// replace CF \r (mac) with LF \n (unix)
 	d = bytes.Replace(d, []byte{13}, []byte{10}, -1)
 	return d
-}
-
-func TestShadowTypesArgs(t *testing.T) {
-	m, err := New(Config{SrcDir: "testpackages/shadowtypes"})
-	if err != nil {
-		t.Fatalf("moq.New: %s", err)
-	}
-	var buf bytes.Buffer
-	err = m.Mock(&buf, "ShadowTypes")
-	if err != nil {
-		t.Errorf("m.Mock: %s", err)
-	}
-	s := buf.String()
-	// assertions of things that should be mentioned
-	var strs = []string{
-		"package shadowtypes",
-		"ShadowStringFunc func(s string, stringMoqParam types.String)",
-		"ShadowIntFunc func(n int, intMoqParam types.Int)",
-		"ShadowInt8Func func(n int8, int8MoqParam types.Int8)",
-		"ShadowInt16Func func(n int16, int16MoqParam types.Int16)",
-		"ShadowInt32Func func(n int32, int32MoqParam types.Int32)",
-		"ShadowInt64Func func(n int64, int64MoqParam types.Int64)",
-		"ShadowUintFunc func(v uint, uintMoqParam types.Uint)",
-		"ShadowUint8Func func(v uint8, uint8MoqParam types.Uint8)",
-		"ShadowUint16Func func(v uint16, uint16MoqParam types.Uint16)",
-		"ShadowUint32Func func(v uint32, uint32MoqParam types.Uint32)",
-		"ShadowUint64Func func(v uint64, uint64MoqParam types.Uint64)",
-		"ShadowFloat32Func func(f float32, float32MoqParam types.Float32)",
-		"ShadowFloat64Func func(f float64, float64MoqParam types.Float64)",
-		"ShadowByteFunc func(v byte, byteMoqParam types.Byte)",
-		"ShadowRuneFunc func(n rune, runeMoqParam types.Rune)",
-		"ShadowBoolFunc func(b bool, boolMoqParam types.Bool)",
-		"ShadowComplex64Func func(v complex64, complex64MoqParam types.Complex64)",
-		"ShadowComplex128Func func(v complex128, complex128MoqParam types.Complex128)",
-		"ShadowUintptrFunc func(v uintptr, uintptrMoqParam types.Uintptr)",
-	}
-	for _, str := range strs {
-		if !strings.Contains(s, str) {
-			t.Errorf("expected but missing: \"%s\"", str)
-		}
-	}
 }
