@@ -25,6 +25,7 @@ type Config struct {
 	SrcDir     string
 	PkgName    string
 	Formatter  string
+	BuildTags  []string
 	StubImpl   bool
 	SkipEnsure bool
 }
@@ -76,6 +77,7 @@ func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
 
 	data := template.Data{
 		PkgName:    m.mockPkgName(),
+		BuildTags:  m.cfg.BuildTags,
 		Mocks:      mocks,
 		StubImpl:   m.cfg.StubImpl,
 		SkipEnsure: m.cfg.SkipEnsure,

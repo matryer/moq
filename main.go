@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/matryer/moq/pkg/moq"
 )
@@ -24,6 +25,7 @@ type userFlags struct {
 	skipEnsure bool
 	remove     bool
 	args       []string
+	buildTags  string
 }
 
 func main() {
@@ -37,6 +39,8 @@ func main() {
 	flag.BoolVar(&flags.skipEnsure, "skip-ensure", false,
 		"suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package")
 	flag.BoolVar(&flags.remove, "rm", false, "first remove output file, if it exists")
+
+	flag.StringVar(&flags.buildTags, "tags", "", "comma seperated build tags (default none)")
 
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
@@ -79,11 +83,17 @@ func run(flags userFlags) error {
 		out = &buf
 	}
 
+	var buildTags []string
+	if len(strings.TrimSpace(flags.buildTags)) > 0 {
+		buildTags = strings.Split(flags.buildTags, ",")
+	}
+
 	srcDir, args := flags.args[0], flags.args[1:]
 	m, err := moq.New(moq.Config{
 		SrcDir:     srcDir,
 		PkgName:    flags.pkgName,
 		Formatter:  flags.formatter,
+		BuildTags:  buildTags,
 		StubImpl:   flags.stubImpl,
 		SkipEnsure: flags.skipEnsure,
 	})

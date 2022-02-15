@@ -11,6 +11,7 @@ import (
 type Data struct {
 	PkgName         string
 	SrcPkgQualifier string
+	BuildTags       []string
 	Imports         []*registry.Package
 	Mocks           []MockData
 	StubImpl        bool
