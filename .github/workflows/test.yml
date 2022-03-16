@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        go-version: [1.14.x, 1.15.x]
+        go-version: [1.14.x, 1.15.x, 1.17.x, 1.18.x]
         # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#example-including-new-combinations
         include:
           - os: windows-latest
