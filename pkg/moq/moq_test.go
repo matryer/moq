@@ -383,6 +383,12 @@ func TestMockGolden(t *testing.T) {
 			interfaces: []string{"ShadowTypes"},
 			goldenFile: filepath.Join("testpackages/shadowtypes", "shadowtypes_moq.golden.go"),
 		},
+		{
+			name:       "Generics",
+			cfg:        Config{SrcDir: "testpackages/generics"},
+			interfaces: []string{"GenericStore1", "GenericStore2", "AliasStore"},
+			goldenFile: filepath.Join("testpackages/generics", "generics_moq.golden.go"),
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

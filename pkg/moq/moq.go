@@ -3,6 +3,7 @@ package moq
 import (
 	"bytes"
 	"errors"
+	"go/token"
 	"go/types"
 	"io"
 	"strings"
@@ -57,7 +58,7 @@ func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
 	mocks := make([]template.MockData, len(namePairs))
 	for i, np := range namePairs {
 		name, mockName := parseInterfaceName(np)
-		iface, err := m.registry.LookupInterface(name)
+		iface, tparams, err := m.registry.LookupInterface(name)
 		if err != nil {
 			return err
 		}
@@ -71,6 +72,7 @@ func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
 			InterfaceName: name,
 			MockName:      mockName,
 			Methods:       methods,
+			TypeParams:    m.typeParams(tparams),
 		}
 	}
 
@@ -106,6 +108,43 @@ func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
 
 	if _, err := w.Write(formatted); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (m *Mocker) typeParams(tparams *types.TypeParamList) []template.TypeParamData {
+	var tpd []template.TypeParamData
+	if tparams == nil {
+		return tpd
+	}
+
+	tpd = make([]template.TypeParamData, tparams.Len())
+
+	scope := m.registry.MethodScope()
+	for i := 0; i < len(tpd); i++ {
+		tp := tparams.At(i)
+		typeParam := types.NewParam(token.Pos(i), tp.Obj().Pkg(), tp.Obj().Name(), tp.Constraint())
+		tpd[i] = template.TypeParamData{
+			ParamData:  template.ParamData{Var: scope.AddVar(typeParam, "")},
+			Constraint: explicitConstraintType(typeParam),
+		}
+	}
+
+	return tpd
+}
+
+func explicitConstraintType(typeParam *types.Var) (t types.Type) {
+	underlying := typeParam.Type().Underlying().(*types.Interface)
+	// check if any of the embedded types is either a basic type or a union,
+	// because the generic type has to be an alias for one of those types then
+	for j := 0; j < underlying.NumEmbeddeds(); j++ {
+		t := underlying.EmbeddedType(j)
+		switch t := t.(type) {
+		case *types.Basic:
+			return t
+		case *types.Union: // only unions of basic types are allowed, so just take the first one as a valid type constraint
+			return t.Term(0).Type()
+		}
 	}
 	return nil
 }
