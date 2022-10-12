@@ -23,6 +23,7 @@ type userFlags struct {
 	stubImpl   bool
 	skipEnsure bool
 	remove     bool
+	force      bool
 	args       []string
 }
 
@@ -37,6 +38,7 @@ func main() {
 	flag.BoolVar(&flags.skipEnsure, "skip-ensure", false,
 		"suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package")
 	flag.BoolVar(&flags.remove, "rm", false, "first remove output file, if it exists")
+	flag.BoolVar(&flags.force, "force", false, "force generation, otherwise check if go generate file is newer than output file")
 
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
@@ -63,6 +65,19 @@ func main() {
 func run(flags userFlags) error {
 	if len(flags.args) < 2 {
 		return errors.New("not enough arguments")
+	}
+
+	if !flags.force && flags.outFile != "" {
+		inFile := os.Getenv("GOFILE")
+		if inStat, err := os.Stat(inFile); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		} else if outStat, err := os.Stat(flags.outFile); err != nil {
+			if !errors.Is(err, os.ErrNotExist) {
+				fmt.Fprintln(os.Stderr, err)
+			}
+		} else if !inStat.ModTime().After(outStat.ModTime()) {
+			return nil // Assume no changes thus no need to regenerate.
+		}
 	}
 
 	if flags.remove && flags.outFile != "" {
