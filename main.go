@@ -17,13 +17,14 @@ import (
 var Version string = "dev"
 
 type userFlags struct {
-	outFile    string
-	pkgName    string
-	formatter  string
-	stubImpl   bool
-	skipEnsure bool
-	remove     bool
-	args       []string
+	outFile      string
+	pkgName      string
+	formatter    string
+	stubImpl     bool
+	skipEnsure   bool
+	enableResets bool
+	remove       bool
+	args         []string
 }
 
 func main() {
@@ -37,6 +38,8 @@ func main() {
 	flag.BoolVar(&flags.skipEnsure, "skip-ensure", false,
 		"suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package")
 	flag.BoolVar(&flags.remove, "rm", false, "first remove output file, if it exists")
+	flag.BoolVar(&flags.enableResets, "enable-resets", false,
+		"generate functions to facilitate resetting calls made to a mock")
 
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
@@ -81,11 +84,12 @@ func run(flags userFlags) error {
 
 	srcDir, args := flags.args[0], flags.args[1:]
 	m, err := moq.New(moq.Config{
-		SrcDir:     srcDir,
-		PkgName:    flags.pkgName,
-		Formatter:  flags.formatter,
-		StubImpl:   flags.stubImpl,
-		SkipEnsure: flags.skipEnsure,
+		SrcDir:       srcDir,
+		PkgName:      flags.pkgName,
+		Formatter:    flags.formatter,
+		StubImpl:     flags.stubImpl,
+		SkipEnsure:   flags.skipEnsure,
+		EnableResets: flags.enableResets,
 	})
 	if err != nil {
 		return err

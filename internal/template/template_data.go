@@ -16,6 +16,7 @@ type Data struct {
 	Mocks           []MockData
 	StubImpl        bool
 	SkipEnsure      bool
+	EnableResets    bool
 }
 
 // MocksSomeMethod returns true of any one of the Mocks has at least 1
