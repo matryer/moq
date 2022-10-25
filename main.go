@@ -95,7 +95,9 @@ func run(flags userFlags) error {
 
 	if !flags.force {
 		if !needsRegeneration(inFile, flags.outFile) {
-			fmt.Fprintln(os.Stderr, "Skipping mock generation as the input file hasn't changed since the mock was generated")
+			if flags.verbose {
+				fmt.Fprintln(os.Stderr, "Skipping mock generation as the input file hasn't changed since the mock was generated")
+			}
 			return nil
 		}
 	}
