@@ -67,16 +67,11 @@ func run(flags userFlags) error {
 		return errors.New("not enough arguments")
 	}
 
-	if !flags.force && flags.outFile != "" {
-		inFile := os.Getenv("GOFILE")
-		if inStat, err := os.Stat(inFile); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-		} else if outStat, err := os.Stat(flags.outFile); err != nil {
-			if !errors.Is(err, os.ErrNotExist) {
-				fmt.Fprintln(os.Stderr, err)
 			}
-		} else if !inStat.ModTime().After(outStat.ModTime()) {
-			return nil // Assume no changes thus no need to regenerate.
+	if !flags.force {
+		if !needsRegeneration(inFile, flags.outFile) {
+			fmt.Fprintln(os.Stderr, "Skipping mock generation as the input file hasn't changed since the mock was generated")
+			return nil
 		}
 	}
 
@@ -121,4 +116,48 @@ func run(flags userFlags) error {
 	}
 
 	return ioutil.WriteFile(flags.outFile, buf.Bytes(), 0600)
+func needsRegeneration(inFile, outFile string) bool {
+	if outFile == "" {
+		// Assume that the user wants to print to stdout thus we have nothing to
+		// compare files and timestamps with.
+		return true
+	}
+
+	if inFile == "" {
+		// We were not called via go generate, so we have nothing to compare
+		// with.
+		return true
+	}
+
+	inInfo, err := os.Stat(inFile)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			// Somehow the input file does not exist, which is weird as it's
+			// only provided by Go generate and there it should always exists,
+			// but let's assume it's run manually with wrong configuration.
+			return true
+		}
+
+		// Something went wrong stating the input file, so let's hope
+		// regeneration should be done and will work.
+		fmt.Fprintln(os.Stderr, err)
+		return true
+	}
+
+	outInfo, err := os.Stat(outFile)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			// Likely the output file does not exist yet/anymore, so we should
+			// regenerate.
+			return true
+		}
+
+		// Something went wrong stating the output file, so let's hope
+		// regeneration should be done and will work.
+		fmt.Fprintln(os.Stderr, err)
+		return true
+	}
+
+	// The actual comparison.
+	return inInfo.ModTime().After(outInfo.ModTime())
 }
