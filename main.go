@@ -24,6 +24,7 @@ type userFlags struct {
 	skipEnsure bool
 	remove     bool
 	force      bool
+	verbose    bool
 	args       []string
 }
 
@@ -39,6 +40,7 @@ func main() {
 		"suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package")
 	flag.BoolVar(&flags.remove, "rm", false, "first remove output file, if it exists")
 	flag.BoolVar(&flags.force, "force", false, "force generation, otherwise check if go generate file is newer than output file")
+	flag.BoolVar(&flags.verbose, "verbose", false, "verbose mode")
 
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
@@ -67,7 +69,30 @@ func run(flags userFlags) error {
 		return errors.New("not enough arguments")
 	}
 
+	inFile := os.Getenv("GOFILE")
+
+	if flags.verbose {
+		if inFile == "" {
+			fmt.Fprintln(os.Stderr, "Mock in-file is unknown")
+		} else {
+			p, err := filepath.Abs(inFile)
+			if err != nil {
+				p = flags.outFile
 			}
+			fmt.Fprintln(os.Stderr, "Mock in-file is "+p)
+		}
+
+		if flags.outFile == "" {
+			fmt.Fprintln(os.Stderr, "Mock out-file is stdout")
+		} else {
+			p, err := filepath.Abs(flags.outFile)
+			if err != nil {
+				p = flags.outFile
+			}
+			fmt.Fprintln(os.Stderr, "Mock out-file is "+p)
+		}
+	}
+
 	if !flags.force {
 		if !needsRegeneration(inFile, flags.outFile) {
 			fmt.Fprintln(os.Stderr, "Skipping mock generation as the input file hasn't changed since the mock was generated")
@@ -106,6 +131,7 @@ func run(flags userFlags) error {
 	}
 
 	if flags.outFile == "" {
+		fmt.Fprintln(os.Stderr, "Mock written.")
 		return nil
 	}
 
@@ -115,7 +141,15 @@ func run(flags userFlags) error {
 		return err
 	}
 
-	return ioutil.WriteFile(flags.outFile, buf.Bytes(), 0600)
+	err = ioutil.WriteFile(flags.outFile, buf.Bytes(), 0600)
+
+	if flags.verbose {
+		fmt.Fprintln(os.Stderr, "Mock written.")
+	}
+
+	return err
+}
+
 func needsRegeneration(inFile, outFile string) bool {
 	if outFile == "" {
 		// Assume that the user wants to print to stdout thus we have nothing to
