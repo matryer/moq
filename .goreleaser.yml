@@ -12,7 +12,7 @@ builds:
   - arm
   - arm64
   ldflags:
-  - -X main.Version={{.Version}}
+  - -X main.version={{.Version}}
 archives:
 - replacements:
     darwin: macOS
