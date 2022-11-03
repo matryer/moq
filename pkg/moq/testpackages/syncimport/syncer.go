@@ -3,7 +3,7 @@ package syncimport
 import (
 	stdsync "sync"
 
-	"github.com/matryer/moq/pkg/moq/testpackages/syncimport/sync"
+	"github.com/rewardStyle/moq/pkg/moq/testpackages/syncimport/sync"
 )
 
 type Syncer interface {

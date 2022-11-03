@@ -8,8 +8,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/matryer/moq/internal/registry"
-	"github.com/matryer/moq/internal/template"
+	"github.com/rewardStyle/moq/internal/registry"
+	"github.com/rewardStyle/moq/internal/template"
 )
 
 // Mocker can generate mock structs.

@@ -247,7 +247,7 @@ func TestNotCreatingEmptyDirWhenPkgIsGiven(t *testing.T) {
 
 // TestVariadicArguments tests to ensure variadic work as
 // expected.
-// see https://github.com/matryer/moq/issues/5
+// see https://github.com/rewardStyle/moq/issues/5
 func TestVariadicArguments(t *testing.T) {
 	m, err := New(Config{SrcDir: "testpackages/variadic"})
 	if err != nil {
@@ -311,7 +311,7 @@ func TestImports(t *testing.T) {
 	s := buf.String()
 	strs := []string{
 		`	"sync"`,
-		`	"github.com/matryer/moq/pkg/moq/testpackages/imports/one"`,
+		`	"github.com/rewardStyle/moq/pkg/moq/testpackages/imports/one"`,
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
@@ -332,7 +332,7 @@ func TestMockGolden(t *testing.T) {
 	}{
 		{
 			// Tests to ensure slice return data type works as expected.
-			// See https://github.com/matryer/moq/issues/124
+			// See https://github.com/rewardStyle/moq/issues/124
 			name:       "SliceResult",
 			cfg:        Config{SrcDir: "testpackages/variadic"},
 			interfaces: []string{"Echoer"},
@@ -341,7 +341,7 @@ func TestMockGolden(t *testing.T) {
 		{
 			// Tests generation of mock where a method on the interface uses a
 			// blank identifier.
-			// See https://github.com/matryer/moq/issues/70
+			// See https://github.com/rewardStyle/moq/issues/70
 			name:       "BlankID",
 			cfg:        Config{SrcDir: "testpackages/blankid"},
 			interfaces: []string{"Swallower"},
@@ -356,7 +356,7 @@ func TestMockGolden(t *testing.T) {
 		{
 			// Tests generation of mock when the interface imports a different
 			// package by the same name as it's own.
-			// See https://github.com/matryer/moq/issues/94
+			// See https://github.com/rewardStyle/moq/issues/94
 			name:       "PkgShadow",
 			cfg:        Config{SrcDir: "testpackages/shadow/http", PkgName: "mock"},
 			interfaces: []string{"Thing"},
@@ -468,7 +468,7 @@ func TestFormatter(t *testing.T) {
 
 func matchGoldenFile(goldenFile string, actual []byte) error {
 	// To update golden files, run the following:
-	// go test -v -run '^<Test-Name>$' github.com/matryer/moq/pkg/moq -update
+	// go test -v -run '^<Test-Name>$' github.com/rewardStyle/moq/pkg/moq -update
 	if *update {
 		if err := os.MkdirAll(filepath.Dir(goldenFile), 0o750); err != nil {
 			return fmt.Errorf("create dir: %s", err)
@@ -549,7 +549,7 @@ func TestVendoredInterface(t *testing.T) {
 			t.Errorf("expected but missing: \"%s\"", str)
 		}
 	}
-	incorrectImport := `"github.com/matryer/moq/pkg/moq/testpackages/vendoring/vendor/github.com/sudo-suhas/moq-test-pkgs/somerepo"`
+	incorrectImport := `"github.com/rewardStyle/moq/pkg/moq/testpackages/vendoring/vendor/github.com/sudo-suhas/moq-test-pkgs/somerepo"`
 	if strings.Contains(s, incorrectImport) {
 		t.Errorf("unexpected import: %s", incorrectImport)
 	}
@@ -577,7 +577,7 @@ func TestVendoredBuildConstraints(t *testing.T) {
 	}
 }
 
-// TestDotImports tests for https://github.com/matryer/moq/issues/21.
+// TestDotImports tests for https://github.com/rewardStyle/moq/issues/21.
 func TestDotImports(t *testing.T) {
 	preDir, err := os.Getwd()
 	if err != nil {
@@ -697,7 +697,7 @@ func TestMockError(t *testing.T) {
 		{
 			name:     "UnexpectedType",
 			namePair: "Person",
-			wantErr:  "Person (github.com/matryer/moq/pkg/moq/testpackages/example.Person) is not an interface",
+			wantErr:  "Person (github.com/rewardStyle/moq/pkg/moq/testpackages/example.Person) is not an interface",
 		},
 	}
 	for _, tc := range cases {

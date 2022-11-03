@@ -5,7 +5,7 @@ import (
 	"go/types"
 	"strings"
 
-	"github.com/matryer/moq/internal/registry"
+	"github.com/rewardStyle/moq/internal/registry"
 )
 
 // Data is the template data used to render the Moq template.

@@ -1,4 +1,4 @@
-![moq logo](moq-logo-small.png) [![build](https://github.com/matryer/moq/workflows/build/badge.svg)](https://github.com/matryer/moq/actions?query=branch%3Amaster) [![Go Report Card](https://goreportcard.com/badge/github.com/matryer/moq)](https://goreportcard.com/report/github.com/matryer/moq)
+![moq logo](moq-logo-small.png) [![build](https://github.com/rewardStyle/moq/workflows/build/badge.svg)](https://github.com/rewardStyle/moq/actions?query=branch%3Amaster) [![Go Report Card](https://goreportcard.com/badge/github.com/rewardStyle/moq)](https://goreportcard.com/report/github.com/rewardStyle/moq)
 
 Interface mocking tool for go generate.
 
@@ -19,13 +19,13 @@ To start using latest released version of Moq, just run:
 #### Go version < 1.16
 
 ```
-$ go get github.com/matryer/moq
+$ go get github.com/rewardStyle/moq
 ```
 
 #### Go 1.16+
 
 ```
-$ go install github.com/matryer/moq@latest
+$ go install github.com/rewardStyle/moq@latest
 ```
 
 ### Usage

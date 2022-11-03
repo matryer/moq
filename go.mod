@@ -1,4 +1,4 @@
-module github.com/matryer/moq
+module github.com/rewardStyle/moq
 
 go 1.18
 

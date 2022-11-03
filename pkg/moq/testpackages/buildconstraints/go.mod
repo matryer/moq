@@ -1,4 +1,4 @@
-module github.com/matryer/moq/pkg/moq/testpackages/buildconstraints
+module github.com/rewardStyle/moq/pkg/moq/testpackages/buildconstraints
 
 go 1.14
 

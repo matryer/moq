@@ -1,8 +1,8 @@
 package importalias
 
 import (
-	srcclient "github.com/matryer/moq/pkg/moq/testpackages/importalias/source/client"
-	tgtclient "github.com/matryer/moq/pkg/moq/testpackages/importalias/target/client"
+	srcclient "github.com/rewardStyle/moq/pkg/moq/testpackages/importalias/source/client"
+	tgtclient "github.com/rewardStyle/moq/pkg/moq/testpackages/importalias/target/client"
 )
 
 type MiddleMan interface {
