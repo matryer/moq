@@ -22,6 +22,7 @@ type userFlags struct {
 	formatter  string
 	stubImpl   bool
 	skipEnsure bool
+	withResets bool
 	remove     bool
 	args       []string
 }
@@ -37,6 +38,8 @@ func main() {
 	flag.BoolVar(&flags.skipEnsure, "skip-ensure", false,
 		"suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package")
 	flag.BoolVar(&flags.remove, "rm", false, "first remove output file, if it exists")
+	flag.BoolVar(&flags.withResets, "with-resets", false,
+		"generate functions to facilitate resetting calls made to a mock")
 
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
@@ -86,6 +89,7 @@ func run(flags userFlags) error {
 		Formatter:  flags.formatter,
 		StubImpl:   flags.stubImpl,
 		SkipEnsure: flags.skipEnsure,
+		WithResets: flags.withResets,
 	})
 	if err != nil {
 		return err
@@ -100,10 +104,10 @@ func run(flags userFlags) error {
 	}
 
 	// create the file
-	err = os.MkdirAll(filepath.Dir(flags.outFile), 0750)
+	err = os.MkdirAll(filepath.Dir(flags.outFile), 0o750)
 	if err != nil {
 		return err
 	}
 
-	return ioutil.WriteFile(flags.outFile, buf.Bytes(), 0600)
+	return ioutil.WriteFile(flags.outFile, buf.Bytes(), 0o600)
 }

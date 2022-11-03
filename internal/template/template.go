@@ -181,6 +181,32 @@ func (mock *{{$mock.MockName}}
 	mock.lock{{.Name}}.RUnlock()
 	return calls
 }
+{{- if $.WithResets}}
+	// {{.Name}}ResetCalls Reset all the calls that were made to {{.Name}}.
+	func (mock *{{$mock.MockName}}) {{.Name}}ResetCalls() {
+		mock.lock{{.Name}}.RLock()
+		mock.calls.{{.Name}} = []struct {
+			{{- range .Params}}
+			{{.Name | Exported}} {{.TypeString}}
+			{{- end}}
+		}{}
+		mock.lock{{.Name}}.RUnlock()
+	}
+{{end -}}
+{{end -}}
+{{- if $.WithResets}}
+	// ResetCalls reset all the calls that were made to all mocked methods.
+	func (mock *{{$mock.MockName}}) ResetCalls() {
+		{{- range .Methods}}
+		mock.lock{{.Name}}.RLock()
+		mock.calls.{{.Name}} = []struct {
+			{{- range .Params}}
+			{{.Name | Exported}} {{.TypeString}}
+			{{- end}}
+		}{}
+		mock.lock{{.Name}}.RUnlock()
+		{{end -}}
+	}
 {{end -}}
 {{end -}}`
 

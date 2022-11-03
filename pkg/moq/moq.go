@@ -28,6 +28,7 @@ type Config struct {
 	Formatter  string
 	StubImpl   bool
 	SkipEnsure bool
+	WithResets bool
 }
 
 // New makes a new Mocker for the specified package directory.
@@ -81,6 +82,7 @@ func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
 		Mocks:      mocks,
 		StubImpl:   m.cfg.StubImpl,
 		SkipEnsure: m.cfg.SkipEnsure,
+		WithResets: m.cfg.WithResets,
 	}
 
 	if data.MocksSomeMethod() {

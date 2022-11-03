@@ -29,7 +29,7 @@ func TestMoq(t *testing.T) {
 	}
 	s := buf.String()
 	// assertions of things that should be mentioned
-	var strs = []string{
+	strs := []string{
 		"package example",
 		"type PersonStoreMock struct",
 		"CreateFunc func(ctx context.Context, person *Person, confirm bool) error",
@@ -62,7 +62,7 @@ func TestMoqWithStaticCheck(t *testing.T) {
 	}
 	s := buf.String()
 	// assertions of things that should be mentioned
-	var strs = []string{
+	strs := []string{
 		"package example",
 		"var _ PersonStore = &PersonStoreMock{}",
 		"type PersonStoreMock struct",
@@ -96,7 +96,7 @@ func TestMoqWithAlias(t *testing.T) {
 	}
 	s := buf.String()
 	// assertions of things that should be mentioned
-	var strs = []string{
+	strs := []string{
 		"package example",
 		"type AnotherPersonStoreMock struct",
 		"CreateFunc func(ctx context.Context, person *Person, confirm bool) error",
@@ -129,7 +129,7 @@ func TestMoqExplicitPackage(t *testing.T) {
 	}
 	s := buf.String()
 	// assertions of things that should be mentioned
-	var strs = []string{
+	strs := []string{
 		"package different",
 		"type PersonStoreMock struct",
 		"CreateFunc func(ctx context.Context, person *example.Person, confirm bool) error",
@@ -156,7 +156,7 @@ func TestMoqExplicitPackageWithStaticCheck(t *testing.T) {
 	}
 	s := buf.String()
 	// assertions of things that should be mentioned
-	var strs = []string{
+	strs := []string{
 		"package different",
 		"var _ example.PersonStore = &PersonStoreMock{}",
 		"type PersonStoreMock struct",
@@ -184,13 +184,40 @@ func TestMoqSkipEnsure(t *testing.T) {
 	}
 	s := buf.String()
 	// assertions of things that should be mentioned
-	var strs = []string{
+	strs := []string{
 		"package different",
 		"type PersonStoreMock struct",
 		"CreateFunc func(ctx context.Context, person *example.Person, confirm bool) error",
 		"GetFunc func(ctx context.Context, id string) (*example.Person, error)",
 		"func (mock *PersonStoreMock) Create(ctx context.Context, person *example.Person, confirm bool) error",
 		"func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*example.Person, error)",
+	}
+	for _, str := range strs {
+		if !strings.Contains(s, str) {
+			t.Errorf("expected but missing: \"%s\"", str)
+		}
+	}
+}
+
+func TestMoqWithResets(t *testing.T) {
+	m, err := New(Config{SrcDir: "testpackages/example", PkgName: "different", WithResets: true})
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "PersonStore")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+	// assertions of things that should be mentioned
+	strs := []string{
+		"package different",
+		"type PersonStoreMock struct",
+		"CreateFunc func(ctx context.Context, person *example.Person, confirm bool) error",
+		"GetFunc func(ctx context.Context, id string) (*example.Person, error)",
+		"func (mock *PersonStoreMock) CreateResetCalls()",
+		"func (mock *PersonStoreMock) ResetCalls()",
 	}
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
@@ -233,7 +260,7 @@ func TestVariadicArguments(t *testing.T) {
 	}
 	s := buf.String()
 	// assertions of things that should be mentioned
-	var strs = []string{
+	strs := []string{
 		"package variadic",
 		"type GreeterMock struct",
 		"GreetFunc func(ctx context.Context, names ...string) string",
@@ -261,7 +288,7 @@ func TestNothingToReturn(t *testing.T) {
 		t.Errorf("should not have return for items that have no return arguments")
 	}
 	// assertions of things that should be mentioned
-	var strs = []string{
+	strs := []string{
 		"mock.ClearCacheFunc(id)",
 	}
 	for _, str := range strs {
@@ -282,7 +309,7 @@ func TestImports(t *testing.T) {
 		t.Errorf("m.Mock: %s", err)
 	}
 	s := buf.String()
-	var strs = []string{
+	strs := []string{
 		`	"sync"`,
 		`	"github.com/matryer/moq/pkg/moq/testpackages/imports/one"`,
 	}
@@ -443,10 +470,10 @@ func matchGoldenFile(goldenFile string, actual []byte) error {
 	// To update golden files, run the following:
 	// go test -v -run '^<Test-Name>$' github.com/matryer/moq/pkg/moq -update
 	if *update {
-		if err := os.MkdirAll(filepath.Dir(goldenFile), 0750); err != nil {
+		if err := os.MkdirAll(filepath.Dir(goldenFile), 0o750); err != nil {
 			return fmt.Errorf("create dir: %s", err)
 		}
-		if err := ioutil.WriteFile(goldenFile, actual, 0600); err != nil {
+		if err := ioutil.WriteFile(goldenFile, actual, 0o600); err != nil {
 			return fmt.Errorf("write: %s", err)
 		}
 
@@ -489,7 +516,7 @@ func TestVendoredPackages(t *testing.T) {
 	}
 	s := buf.String()
 	// assertions of things that should be mentioned
-	var strs = []string{
+	strs := []string{
 		`"github.com/sudo-suhas/moq-test-pkgs/somerepo"`,
 	}
 	for _, str := range strs {
@@ -514,7 +541,7 @@ func TestVendoredInterface(t *testing.T) {
 	}
 	s := buf.String()
 	// assertions of things that should be mentioned
-	var strs = []string{
+	strs := []string{
 		`"github.com/sudo-suhas/moq-test-pkgs/somerepo"`,
 	}
 	for _, str := range strs {
@@ -540,7 +567,7 @@ func TestVendoredBuildConstraints(t *testing.T) {
 	}
 	s := buf.String()
 	// assertions of things that should be mentioned
-	var strs = []string{
+	strs := []string{
 		`"github.com/sudo-suhas/moq-test-pkgs/buildconstraints"`,
 	}
 	for _, str := range strs {
