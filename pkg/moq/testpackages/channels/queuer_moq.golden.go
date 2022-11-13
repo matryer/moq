@@ -13,22 +13,22 @@ var _ Queuer = &QueuerMock{}
 
 // QueuerMock is a mock implementation of Queuer.
 //
-// 	func TestSomethingThatUsesQueuer(t *testing.T) {
+//	func TestSomethingThatUsesQueuer(t *testing.T) {
 //
-// 		// make and configure a mocked Queuer
-// 		mockedQueuer := &QueuerMock{
-// 			SubFunc: func(topic string) (<-chan Queue, error) {
-// 				panic("mock out the Sub method")
-// 			},
-// 			UnsubFunc: func(topic string)  {
-// 				panic("mock out the Unsub method")
-// 			},
-// 		}
+//		// make and configure a mocked Queuer
+//		mockedQueuer := &QueuerMock{
+//			SubFunc: func(topic string) (<-chan Queue, error) {
+//				panic("mock out the Sub method")
+//			},
+//			UnsubFunc: func(topic string)  {
+//				panic("mock out the Unsub method")
+//			},
+//		}
 //
-// 		// use mockedQueuer in code that requires Queuer
-// 		// and then make assertions.
+//		// use mockedQueuer in code that requires Queuer
+//		// and then make assertions.
 //
-// 	}
+//	}
 type QueuerMock struct {
 	// SubFunc mocks the Sub method.
 	SubFunc func(topic string) (<-chan Queue, error)
@@ -75,7 +75,8 @@ func (mock *QueuerMock) Sub(topic string) (<-chan Queue, error) {
 
 // SubCalls gets all the calls that were made to Sub.
 // Check the length with:
-//     len(mockedQueuer.SubCalls())
+//
+//	len(mockedQueuer.SubCalls())
 func (mock *QueuerMock) SubCalls() []struct {
 	Topic string
 } {
@@ -106,7 +107,8 @@ func (mock *QueuerMock) Unsub(topic string) {
 
 // UnsubCalls gets all the calls that were made to Unsub.
 // Check the length with:
-//     len(mockedQueuer.UnsubCalls())
+//
+//	len(mockedQueuer.UnsubCalls())
 func (mock *QueuerMock) UnsubCalls() []struct {
 	Topic string
 } {

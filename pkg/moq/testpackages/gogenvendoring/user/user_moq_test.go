@@ -14,19 +14,19 @@ var _ Service = &ServiceMock{}
 
 // ServiceMock is a mock implementation of Service.
 //
-// 	func TestSomethingThatUsesService(t *testing.T) {
+//	func TestSomethingThatUsesService(t *testing.T) {
 //
-// 		// make and configure a mocked Service
-// 		mockedService := &ServiceMock{
-// 			DoSomethingFunc: func(someType somerepo.SomeType) error {
-// 				panic("mock out the DoSomething method")
-// 			},
-// 		}
+//		// make and configure a mocked Service
+//		mockedService := &ServiceMock{
+//			DoSomethingFunc: func(someType somerepo.SomeType) error {
+//				panic("mock out the DoSomething method")
+//			},
+//		}
 //
-// 		// use mockedService in code that requires Service
-// 		// and then make assertions.
+//		// use mockedService in code that requires Service
+//		// and then make assertions.
 //
-// 	}
+//	}
 type ServiceMock struct {
 	// DoSomethingFunc mocks the DoSomething method.
 	DoSomethingFunc func(someType somerepo.SomeType) error
@@ -60,7 +60,8 @@ func (mock *ServiceMock) DoSomething(someType somerepo.SomeType) error {
 
 // DoSomethingCalls gets all the calls that were made to DoSomething.
 // Check the length with:
-//     len(mockedService.DoSomethingCalls())
+//
+//	len(mockedService.DoSomethingCalls())
 func (mock *ServiceMock) DoSomethingCalls() []struct {
 	SomeType somerepo.SomeType
 } {

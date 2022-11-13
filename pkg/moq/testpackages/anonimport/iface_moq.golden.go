@@ -14,19 +14,19 @@ var _ Example = &ExampleMock{}
 
 // ExampleMock is a mock implementation of Example.
 //
-// 	func TestSomethingThatUsesExample(t *testing.T) {
+//	func TestSomethingThatUsesExample(t *testing.T) {
 //
-// 		// make and configure a mocked Example
-// 		mockedExample := &ExampleMock{
-// 			CtxFunc: func(ctx context.Context)  {
-// 				panic("mock out the Ctx method")
-// 			},
-// 		}
+//		// make and configure a mocked Example
+//		mockedExample := &ExampleMock{
+//			CtxFunc: func(ctx context.Context)  {
+//				panic("mock out the Ctx method")
+//			},
+//		}
 //
-// 		// use mockedExample in code that requires Example
-// 		// and then make assertions.
+//		// use mockedExample in code that requires Example
+//		// and then make assertions.
 //
-// 	}
+//	}
 type ExampleMock struct {
 	// CtxFunc mocks the Ctx method.
 	CtxFunc func(ctx context.Context)
@@ -60,7 +60,8 @@ func (mock *ExampleMock) Ctx(ctx context.Context) {
 
 // CtxCalls gets all the calls that were made to Ctx.
 // Check the length with:
-//     len(mockedExample.CtxCalls())
+//
+//	len(mockedExample.CtxCalls())
 func (mock *ExampleMock) CtxCalls() []struct {
 	Ctx context.Context
 } {

@@ -13,19 +13,19 @@ var _ Echoer = &EchoerMock{}
 
 // EchoerMock is a mock implementation of Echoer.
 //
-// 	func TestSomethingThatUsesEchoer(t *testing.T) {
+//	func TestSomethingThatUsesEchoer(t *testing.T) {
 //
-// 		// make and configure a mocked Echoer
-// 		mockedEchoer := &EchoerMock{
-// 			EchoFunc: func(ss ...string) []string {
-// 				panic("mock out the Echo method")
-// 			},
-// 		}
+//		// make and configure a mocked Echoer
+//		mockedEchoer := &EchoerMock{
+//			EchoFunc: func(ss ...string) []string {
+//				panic("mock out the Echo method")
+//			},
+//		}
 //
-// 		// use mockedEchoer in code that requires Echoer
-// 		// and then make assertions.
+//		// use mockedEchoer in code that requires Echoer
+//		// and then make assertions.
 //
-// 	}
+//	}
 type EchoerMock struct {
 	// EchoFunc mocks the Echo method.
 	EchoFunc func(ss ...string) []string
@@ -59,7 +59,8 @@ func (mock *EchoerMock) Echo(ss ...string) []string {
 
 // EchoCalls gets all the calls that were made to Echo.
 // Check the length with:
-//     len(mockedEchoer.EchoCalls())
+//
+//	len(mockedEchoer.EchoCalls())
 func (mock *EchoerMock) EchoCalls() []struct {
 	Ss []string
 } {

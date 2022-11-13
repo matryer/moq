@@ -21,19 +21,19 @@ var _ Interface = &InterfaceMock{}
 
 // InterfaceMock is a mock implementation of Interface.
 //
-// 	func TestSomethingThatUsesInterface(t *testing.T) {
+//	func TestSomethingThatUsesInterface(t *testing.T) {
 //
-// 		// make and configure a mocked Interface
-// 		mockedInterface := &InterfaceMock{
-// 			MethodFunc: func(myTypeMoqParam *myType, numbers [3]json.Number, bytes []byte, nullStringToReader map[sql.NullString]io.Reader, fn func(conn net.Conn), goMoqParam Go, bufferPoolCh chan *httputil.BufferPool, val struct{URL *url.URL}, ifaceVal interface{CookieJar() http.CookieJar; fmt.Stringer})  {
-// 				panic("mock out the Method method")
-// 			},
-// 		}
+//		// make and configure a mocked Interface
+//		mockedInterface := &InterfaceMock{
+//			MethodFunc: func(myTypeMoqParam *myType, numbers [3]json.Number, bytes []byte, nullStringToReader map[sql.NullString]io.Reader, fn func(conn net.Conn), goMoqParam Go, bufferPoolCh chan *httputil.BufferPool, val struct{URL *url.URL}, ifaceVal interface{CookieJar() http.CookieJar; fmt.Stringer})  {
+//				panic("mock out the Method method")
+//			},
+//		}
 //
-// 		// use mockedInterface in code that requires Interface
-// 		// and then make assertions.
+//		// use mockedInterface in code that requires Interface
+//		// and then make assertions.
 //
-// 	}
+//	}
 type InterfaceMock struct {
 	// MethodFunc mocks the Method method.
 	MethodFunc func(myTypeMoqParam *myType, numbers [3]json.Number, bytes []byte, nullStringToReader map[sql.NullString]io.Reader, fn func(conn net.Conn), goMoqParam Go, bufferPoolCh chan *httputil.BufferPool, val struct{ URL *url.URL }, ifaceVal interface {
@@ -111,7 +111,8 @@ func (mock *InterfaceMock) Method(myTypeMoqParam *myType, numbers [3]json.Number
 
 // MethodCalls gets all the calls that were made to Method.
 // Check the length with:
-//     len(mockedInterface.MethodCalls())
+//
+//	len(mockedInterface.MethodCalls())
 func (mock *InterfaceMock) MethodCalls() []struct {
 	MyTypeMoqParam     *myType
 	Numbers            [3]json.Number

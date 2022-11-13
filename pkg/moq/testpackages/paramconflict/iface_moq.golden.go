@@ -14,19 +14,19 @@ var _ Interface = &InterfaceMock{}
 
 // InterfaceMock is a mock implementation of Interface.
 //
-// 	func TestSomethingThatUsesInterface(t *testing.T) {
+//	func TestSomethingThatUsesInterface(t *testing.T) {
 //
-// 		// make and configure a mocked Interface
-// 		mockedInterface := &InterfaceMock{
-// 			MethodFunc: func(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64, timeMoqParam1 time.Time, timeMoqParam2 time.Time)  {
-// 				panic("mock out the Method method")
-// 			},
-// 		}
+//		// make and configure a mocked Interface
+//		mockedInterface := &InterfaceMock{
+//			MethodFunc: func(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64, timeMoqParam1 time.Time, timeMoqParam2 time.Time)  {
+//				panic("mock out the Method method")
+//			},
+//		}
 //
-// 		// use mockedInterface in code that requires Interface
-// 		// and then make assertions.
+//		// use mockedInterface in code that requires Interface
+//		// and then make assertions.
 //
-// 	}
+//	}
 type InterfaceMock struct {
 	// MethodFunc mocks the Method method.
 	MethodFunc func(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64, timeMoqParam1 time.Time, timeMoqParam2 time.Time)
@@ -100,7 +100,8 @@ func (mock *InterfaceMock) Method(s1 string, b1 bool, s2 string, b2 bool, n1 int
 
 // MethodCalls gets all the calls that were made to Method.
 // Check the length with:
-//     len(mockedInterface.MethodCalls())
+//
+//	len(mockedInterface.MethodCalls())
 func (mock *InterfaceMock) MethodCalls() []struct {
 	S1            string
 	B1            bool

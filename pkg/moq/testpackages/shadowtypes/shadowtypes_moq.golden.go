@@ -14,73 +14,73 @@ var _ ShadowTypes = &ShadowTypesMock{}
 
 // ShadowTypesMock is a mock implementation of ShadowTypes.
 //
-// 	func TestSomethingThatUsesShadowTypes(t *testing.T) {
+//	func TestSomethingThatUsesShadowTypes(t *testing.T) {
 //
-// 		// make and configure a mocked ShadowTypes
-// 		mockedShadowTypes := &ShadowTypesMock{
-// 			ShadowBoolFunc: func(b bool, boolMoqParam types.Bool)  {
-// 				panic("mock out the ShadowBool method")
-// 			},
-// 			ShadowByteFunc: func(v byte, byteMoqParam types.Byte)  {
-// 				panic("mock out the ShadowByte method")
-// 			},
-// 			ShadowComplex128Func: func(v complex128, complex128MoqParam types.Complex128)  {
-// 				panic("mock out the ShadowComplex128 method")
-// 			},
-// 			ShadowComplex64Func: func(v complex64, complex64MoqParam types.Complex64)  {
-// 				panic("mock out the ShadowComplex64 method")
-// 			},
-// 			ShadowFloat32Func: func(f float32, float32MoqParam types.Float32)  {
-// 				panic("mock out the ShadowFloat32 method")
-// 			},
-// 			ShadowFloat64Func: func(f float64, float64MoqParam types.Float64)  {
-// 				panic("mock out the ShadowFloat64 method")
-// 			},
-// 			ShadowIntFunc: func(n int, intMoqParam types.Int)  {
-// 				panic("mock out the ShadowInt method")
-// 			},
-// 			ShadowInt16Func: func(n int16, int16MoqParam types.Int16)  {
-// 				panic("mock out the ShadowInt16 method")
-// 			},
-// 			ShadowInt32Func: func(n int32, int32MoqParam types.Int32)  {
-// 				panic("mock out the ShadowInt32 method")
-// 			},
-// 			ShadowInt64Func: func(n int64, int64MoqParam types.Int64)  {
-// 				panic("mock out the ShadowInt64 method")
-// 			},
-// 			ShadowInt8Func: func(n int8, int8MoqParam types.Int8)  {
-// 				panic("mock out the ShadowInt8 method")
-// 			},
-// 			ShadowRuneFunc: func(n rune, runeMoqParam types.Rune)  {
-// 				panic("mock out the ShadowRune method")
-// 			},
-// 			ShadowStringFunc: func(s string, stringMoqParam types.String)  {
-// 				panic("mock out the ShadowString method")
-// 			},
-// 			ShadowUintFunc: func(v uint, uintMoqParam types.Uint)  {
-// 				panic("mock out the ShadowUint method")
-// 			},
-// 			ShadowUint16Func: func(v uint16, uint16MoqParam types.Uint16)  {
-// 				panic("mock out the ShadowUint16 method")
-// 			},
-// 			ShadowUint32Func: func(v uint32, uint32MoqParam types.Uint32)  {
-// 				panic("mock out the ShadowUint32 method")
-// 			},
-// 			ShadowUint64Func: func(v uint64, uint64MoqParam types.Uint64)  {
-// 				panic("mock out the ShadowUint64 method")
-// 			},
-// 			ShadowUint8Func: func(v uint8, uint8MoqParam types.Uint8)  {
-// 				panic("mock out the ShadowUint8 method")
-// 			},
-// 			ShadowUintptrFunc: func(v uintptr, uintptrMoqParam types.Uintptr)  {
-// 				panic("mock out the ShadowUintptr method")
-// 			},
-// 		}
+//		// make and configure a mocked ShadowTypes
+//		mockedShadowTypes := &ShadowTypesMock{
+//			ShadowBoolFunc: func(b bool, boolMoqParam types.Bool)  {
+//				panic("mock out the ShadowBool method")
+//			},
+//			ShadowByteFunc: func(v byte, byteMoqParam types.Byte)  {
+//				panic("mock out the ShadowByte method")
+//			},
+//			ShadowComplex128Func: func(v complex128, complex128MoqParam types.Complex128)  {
+//				panic("mock out the ShadowComplex128 method")
+//			},
+//			ShadowComplex64Func: func(v complex64, complex64MoqParam types.Complex64)  {
+//				panic("mock out the ShadowComplex64 method")
+//			},
+//			ShadowFloat32Func: func(f float32, float32MoqParam types.Float32)  {
+//				panic("mock out the ShadowFloat32 method")
+//			},
+//			ShadowFloat64Func: func(f float64, float64MoqParam types.Float64)  {
+//				panic("mock out the ShadowFloat64 method")
+//			},
+//			ShadowIntFunc: func(n int, intMoqParam types.Int)  {
+//				panic("mock out the ShadowInt method")
+//			},
+//			ShadowInt16Func: func(n int16, int16MoqParam types.Int16)  {
+//				panic("mock out the ShadowInt16 method")
+//			},
+//			ShadowInt32Func: func(n int32, int32MoqParam types.Int32)  {
+//				panic("mock out the ShadowInt32 method")
+//			},
+//			ShadowInt64Func: func(n int64, int64MoqParam types.Int64)  {
+//				panic("mock out the ShadowInt64 method")
+//			},
+//			ShadowInt8Func: func(n int8, int8MoqParam types.Int8)  {
+//				panic("mock out the ShadowInt8 method")
+//			},
+//			ShadowRuneFunc: func(n rune, runeMoqParam types.Rune)  {
+//				panic("mock out the ShadowRune method")
+//			},
+//			ShadowStringFunc: func(s string, stringMoqParam types.String)  {
+//				panic("mock out the ShadowString method")
+//			},
+//			ShadowUintFunc: func(v uint, uintMoqParam types.Uint)  {
+//				panic("mock out the ShadowUint method")
+//			},
+//			ShadowUint16Func: func(v uint16, uint16MoqParam types.Uint16)  {
+//				panic("mock out the ShadowUint16 method")
+//			},
+//			ShadowUint32Func: func(v uint32, uint32MoqParam types.Uint32)  {
+//				panic("mock out the ShadowUint32 method")
+//			},
+//			ShadowUint64Func: func(v uint64, uint64MoqParam types.Uint64)  {
+//				panic("mock out the ShadowUint64 method")
+//			},
+//			ShadowUint8Func: func(v uint8, uint8MoqParam types.Uint8)  {
+//				panic("mock out the ShadowUint8 method")
+//			},
+//			ShadowUintptrFunc: func(v uintptr, uintptrMoqParam types.Uintptr)  {
+//				panic("mock out the ShadowUintptr method")
+//			},
+//		}
 //
-// 		// use mockedShadowTypes in code that requires ShadowTypes
-// 		// and then make assertions.
+//		// use mockedShadowTypes in code that requires ShadowTypes
+//		// and then make assertions.
 //
-// 	}
+//	}
 type ShadowTypesMock struct {
 	// ShadowBoolFunc mocks the ShadowBool method.
 	ShadowBoolFunc func(b bool, boolMoqParam types.Bool)
@@ -316,7 +316,8 @@ func (mock *ShadowTypesMock) ShadowBool(b bool, boolMoqParam types.Bool) {
 
 // ShadowBoolCalls gets all the calls that were made to ShadowBool.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowBoolCalls())
+//
+//	len(mockedShadowTypes.ShadowBoolCalls())
 func (mock *ShadowTypesMock) ShadowBoolCalls() []struct {
 	B            bool
 	BoolMoqParam types.Bool
@@ -351,7 +352,8 @@ func (mock *ShadowTypesMock) ShadowByte(v byte, byteMoqParam types.Byte) {
 
 // ShadowByteCalls gets all the calls that were made to ShadowByte.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowByteCalls())
+//
+//	len(mockedShadowTypes.ShadowByteCalls())
 func (mock *ShadowTypesMock) ShadowByteCalls() []struct {
 	V            byte
 	ByteMoqParam types.Byte
@@ -386,7 +388,8 @@ func (mock *ShadowTypesMock) ShadowComplex128(v complex128, complex128MoqParam t
 
 // ShadowComplex128Calls gets all the calls that were made to ShadowComplex128.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowComplex128Calls())
+//
+//	len(mockedShadowTypes.ShadowComplex128Calls())
 func (mock *ShadowTypesMock) ShadowComplex128Calls() []struct {
 	V                  complex128
 	Complex128MoqParam types.Complex128
@@ -421,7 +424,8 @@ func (mock *ShadowTypesMock) ShadowComplex64(v complex64, complex64MoqParam type
 
 // ShadowComplex64Calls gets all the calls that were made to ShadowComplex64.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowComplex64Calls())
+//
+//	len(mockedShadowTypes.ShadowComplex64Calls())
 func (mock *ShadowTypesMock) ShadowComplex64Calls() []struct {
 	V                 complex64
 	Complex64MoqParam types.Complex64
@@ -456,7 +460,8 @@ func (mock *ShadowTypesMock) ShadowFloat32(f float32, float32MoqParam types.Floa
 
 // ShadowFloat32Calls gets all the calls that were made to ShadowFloat32.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowFloat32Calls())
+//
+//	len(mockedShadowTypes.ShadowFloat32Calls())
 func (mock *ShadowTypesMock) ShadowFloat32Calls() []struct {
 	F               float32
 	Float32MoqParam types.Float32
@@ -491,7 +496,8 @@ func (mock *ShadowTypesMock) ShadowFloat64(f float64, float64MoqParam types.Floa
 
 // ShadowFloat64Calls gets all the calls that were made to ShadowFloat64.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowFloat64Calls())
+//
+//	len(mockedShadowTypes.ShadowFloat64Calls())
 func (mock *ShadowTypesMock) ShadowFloat64Calls() []struct {
 	F               float64
 	Float64MoqParam types.Float64
@@ -526,7 +532,8 @@ func (mock *ShadowTypesMock) ShadowInt(n int, intMoqParam types.Int) {
 
 // ShadowIntCalls gets all the calls that were made to ShadowInt.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowIntCalls())
+//
+//	len(mockedShadowTypes.ShadowIntCalls())
 func (mock *ShadowTypesMock) ShadowIntCalls() []struct {
 	N           int
 	IntMoqParam types.Int
@@ -561,7 +568,8 @@ func (mock *ShadowTypesMock) ShadowInt16(n int16, int16MoqParam types.Int16) {
 
 // ShadowInt16Calls gets all the calls that were made to ShadowInt16.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowInt16Calls())
+//
+//	len(mockedShadowTypes.ShadowInt16Calls())
 func (mock *ShadowTypesMock) ShadowInt16Calls() []struct {
 	N             int16
 	Int16MoqParam types.Int16
@@ -596,7 +604,8 @@ func (mock *ShadowTypesMock) ShadowInt32(n int32, int32MoqParam types.Int32) {
 
 // ShadowInt32Calls gets all the calls that were made to ShadowInt32.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowInt32Calls())
+//
+//	len(mockedShadowTypes.ShadowInt32Calls())
 func (mock *ShadowTypesMock) ShadowInt32Calls() []struct {
 	N             int32
 	Int32MoqParam types.Int32
@@ -631,7 +640,8 @@ func (mock *ShadowTypesMock) ShadowInt64(n int64, int64MoqParam types.Int64) {
 
 // ShadowInt64Calls gets all the calls that were made to ShadowInt64.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowInt64Calls())
+//
+//	len(mockedShadowTypes.ShadowInt64Calls())
 func (mock *ShadowTypesMock) ShadowInt64Calls() []struct {
 	N             int64
 	Int64MoqParam types.Int64
@@ -666,7 +676,8 @@ func (mock *ShadowTypesMock) ShadowInt8(n int8, int8MoqParam types.Int8) {
 
 // ShadowInt8Calls gets all the calls that were made to ShadowInt8.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowInt8Calls())
+//
+//	len(mockedShadowTypes.ShadowInt8Calls())
 func (mock *ShadowTypesMock) ShadowInt8Calls() []struct {
 	N            int8
 	Int8MoqParam types.Int8
@@ -701,7 +712,8 @@ func (mock *ShadowTypesMock) ShadowRune(n rune, runeMoqParam types.Rune) {
 
 // ShadowRuneCalls gets all the calls that were made to ShadowRune.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowRuneCalls())
+//
+//	len(mockedShadowTypes.ShadowRuneCalls())
 func (mock *ShadowTypesMock) ShadowRuneCalls() []struct {
 	N            rune
 	RuneMoqParam types.Rune
@@ -736,7 +748,8 @@ func (mock *ShadowTypesMock) ShadowString(s string, stringMoqParam types.String)
 
 // ShadowStringCalls gets all the calls that were made to ShadowString.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowStringCalls())
+//
+//	len(mockedShadowTypes.ShadowStringCalls())
 func (mock *ShadowTypesMock) ShadowStringCalls() []struct {
 	S              string
 	StringMoqParam types.String
@@ -771,7 +784,8 @@ func (mock *ShadowTypesMock) ShadowUint(v uint, uintMoqParam types.Uint) {
 
 // ShadowUintCalls gets all the calls that were made to ShadowUint.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowUintCalls())
+//
+//	len(mockedShadowTypes.ShadowUintCalls())
 func (mock *ShadowTypesMock) ShadowUintCalls() []struct {
 	V            uint
 	UintMoqParam types.Uint
@@ -806,7 +820,8 @@ func (mock *ShadowTypesMock) ShadowUint16(v uint16, uint16MoqParam types.Uint16)
 
 // ShadowUint16Calls gets all the calls that were made to ShadowUint16.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowUint16Calls())
+//
+//	len(mockedShadowTypes.ShadowUint16Calls())
 func (mock *ShadowTypesMock) ShadowUint16Calls() []struct {
 	V              uint16
 	Uint16MoqParam types.Uint16
@@ -841,7 +856,8 @@ func (mock *ShadowTypesMock) ShadowUint32(v uint32, uint32MoqParam types.Uint32)
 
 // ShadowUint32Calls gets all the calls that were made to ShadowUint32.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowUint32Calls())
+//
+//	len(mockedShadowTypes.ShadowUint32Calls())
 func (mock *ShadowTypesMock) ShadowUint32Calls() []struct {
 	V              uint32
 	Uint32MoqParam types.Uint32
@@ -876,7 +892,8 @@ func (mock *ShadowTypesMock) ShadowUint64(v uint64, uint64MoqParam types.Uint64)
 
 // ShadowUint64Calls gets all the calls that were made to ShadowUint64.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowUint64Calls())
+//
+//	len(mockedShadowTypes.ShadowUint64Calls())
 func (mock *ShadowTypesMock) ShadowUint64Calls() []struct {
 	V              uint64
 	Uint64MoqParam types.Uint64
@@ -911,7 +928,8 @@ func (mock *ShadowTypesMock) ShadowUint8(v uint8, uint8MoqParam types.Uint8) {
 
 // ShadowUint8Calls gets all the calls that were made to ShadowUint8.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowUint8Calls())
+//
+//	len(mockedShadowTypes.ShadowUint8Calls())
 func (mock *ShadowTypesMock) ShadowUint8Calls() []struct {
 	V             uint8
 	Uint8MoqParam types.Uint8
@@ -946,7 +964,8 @@ func (mock *ShadowTypesMock) ShadowUintptr(v uintptr, uintptrMoqParam types.Uint
 
 // ShadowUintptrCalls gets all the calls that were made to ShadowUintptr.
 // Check the length with:
-//     len(mockedShadowTypes.ShadowUintptrCalls())
+//
+//	len(mockedShadowTypes.ShadowUintptrCalls())
 func (mock *ShadowTypesMock) ShadowUintptrCalls() []struct {
 	V               uintptr
 	UintptrMoqParam types.Uintptr

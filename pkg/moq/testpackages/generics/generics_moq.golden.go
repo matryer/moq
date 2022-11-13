@@ -14,22 +14,22 @@ var _ GenericStore1[Key1, any] = &GenericStore1Mock[Key1, any]{}
 
 // GenericStore1Mock is a mock implementation of GenericStore1.
 //
-// 	func TestSomethingThatUsesGenericStore1(t *testing.T) {
+//	func TestSomethingThatUsesGenericStore1(t *testing.T) {
 //
-// 		// make and configure a mocked GenericStore1
-// 		mockedGenericStore1 := &GenericStore1Mock{
-// 			CreateFunc: func(ctx context.Context, id T, value S) error {
-// 				panic("mock out the Create method")
-// 			},
-// 			GetFunc: func(ctx context.Context, id T) (S, error) {
-// 				panic("mock out the Get method")
-// 			},
-// 		}
+//		// make and configure a mocked GenericStore1
+//		mockedGenericStore1 := &GenericStore1Mock{
+//			CreateFunc: func(ctx context.Context, id T, value S) error {
+//				panic("mock out the Create method")
+//			},
+//			GetFunc: func(ctx context.Context, id T) (S, error) {
+//				panic("mock out the Get method")
+//			},
+//		}
 //
-// 		// use mockedGenericStore1 in code that requires GenericStore1
-// 		// and then make assertions.
+//		// use mockedGenericStore1 in code that requires GenericStore1
+//		// and then make assertions.
 //
-// 	}
+//	}
 type GenericStore1Mock[T Key1, S any] struct {
 	// CreateFunc mocks the Create method.
 	CreateFunc func(ctx context.Context, id T, value S) error
@@ -82,7 +82,8 @@ func (mock *GenericStore1Mock[T, S]) Create(ctx context.Context, id T, value S) 
 
 // CreateCalls gets all the calls that were made to Create.
 // Check the length with:
-//     len(mockedGenericStore1.CreateCalls())
+//
+//	len(mockedGenericStore1.CreateCalls())
 func (mock *GenericStore1Mock[T, S]) CreateCalls() []struct {
 	Ctx   context.Context
 	ID    T
@@ -119,7 +120,8 @@ func (mock *GenericStore1Mock[T, S]) Get(ctx context.Context, id T) (S, error) {
 
 // GetCalls gets all the calls that were made to Get.
 // Check the length with:
-//     len(mockedGenericStore1.GetCalls())
+//
+//	len(mockedGenericStore1.GetCalls())
 func (mock *GenericStore1Mock[T, S]) GetCalls() []struct {
 	Ctx context.Context
 	ID  T
@@ -140,22 +142,22 @@ var _ GenericStore2[[]byte, any] = &GenericStore2Mock[[]byte, any]{}
 
 // GenericStore2Mock is a mock implementation of GenericStore2.
 //
-// 	func TestSomethingThatUsesGenericStore2(t *testing.T) {
+//	func TestSomethingThatUsesGenericStore2(t *testing.T) {
 //
-// 		// make and configure a mocked GenericStore2
-// 		mockedGenericStore2 := &GenericStore2Mock{
-// 			CreateFunc: func(ctx context.Context, id T, value S) error {
-// 				panic("mock out the Create method")
-// 			},
-// 			GetFunc: func(ctx context.Context, id T) (S, error) {
-// 				panic("mock out the Get method")
-// 			},
-// 		}
+//		// make and configure a mocked GenericStore2
+//		mockedGenericStore2 := &GenericStore2Mock{
+//			CreateFunc: func(ctx context.Context, id T, value S) error {
+//				panic("mock out the Create method")
+//			},
+//			GetFunc: func(ctx context.Context, id T) (S, error) {
+//				panic("mock out the Get method")
+//			},
+//		}
 //
-// 		// use mockedGenericStore2 in code that requires GenericStore2
-// 		// and then make assertions.
+//		// use mockedGenericStore2 in code that requires GenericStore2
+//		// and then make assertions.
 //
-// 	}
+//	}
 type GenericStore2Mock[T Key2, S any] struct {
 	// CreateFunc mocks the Create method.
 	CreateFunc func(ctx context.Context, id T, value S) error
@@ -208,7 +210,8 @@ func (mock *GenericStore2Mock[T, S]) Create(ctx context.Context, id T, value S) 
 
 // CreateCalls gets all the calls that were made to Create.
 // Check the length with:
-//     len(mockedGenericStore2.CreateCalls())
+//
+//	len(mockedGenericStore2.CreateCalls())
 func (mock *GenericStore2Mock[T, S]) CreateCalls() []struct {
 	Ctx   context.Context
 	ID    T
@@ -245,7 +248,8 @@ func (mock *GenericStore2Mock[T, S]) Get(ctx context.Context, id T) (S, error) {
 
 // GetCalls gets all the calls that were made to Get.
 // Check the length with:
-//     len(mockedGenericStore2.GetCalls())
+//
+//	len(mockedGenericStore2.GetCalls())
 func (mock *GenericStore2Mock[T, S]) GetCalls() []struct {
 	Ctx context.Context
 	ID  T
@@ -266,22 +270,22 @@ var _ AliasStore = &AliasStoreMock{}
 
 // AliasStoreMock is a mock implementation of AliasStore.
 //
-// 	func TestSomethingThatUsesAliasStore(t *testing.T) {
+//	func TestSomethingThatUsesAliasStore(t *testing.T) {
 //
-// 		// make and configure a mocked AliasStore
-// 		mockedAliasStore := &AliasStoreMock{
-// 			CreateFunc: func(ctx context.Context, id KeyImpl, value bool) error {
-// 				panic("mock out the Create method")
-// 			},
-// 			GetFunc: func(ctx context.Context, id KeyImpl) (bool, error) {
-// 				panic("mock out the Get method")
-// 			},
-// 		}
+//		// make and configure a mocked AliasStore
+//		mockedAliasStore := &AliasStoreMock{
+//			CreateFunc: func(ctx context.Context, id KeyImpl, value bool) error {
+//				panic("mock out the Create method")
+//			},
+//			GetFunc: func(ctx context.Context, id KeyImpl) (bool, error) {
+//				panic("mock out the Get method")
+//			},
+//		}
 //
-// 		// use mockedAliasStore in code that requires AliasStore
-// 		// and then make assertions.
+//		// use mockedAliasStore in code that requires AliasStore
+//		// and then make assertions.
 //
-// 	}
+//	}
 type AliasStoreMock struct {
 	// CreateFunc mocks the Create method.
 	CreateFunc func(ctx context.Context, id KeyImpl, value bool) error
@@ -334,7 +338,8 @@ func (mock *AliasStoreMock) Create(ctx context.Context, id KeyImpl, value bool) 
 
 // CreateCalls gets all the calls that were made to Create.
 // Check the length with:
-//     len(mockedAliasStore.CreateCalls())
+//
+//	len(mockedAliasStore.CreateCalls())
 func (mock *AliasStoreMock) CreateCalls() []struct {
 	Ctx   context.Context
 	ID    KeyImpl
@@ -371,7 +376,8 @@ func (mock *AliasStoreMock) Get(ctx context.Context, id KeyImpl) (bool, error) {
 
 // GetCalls gets all the calls that were made to Get.
 // Check the length with:
-//     len(mockedAliasStore.GetCalls())
+//
+//	len(mockedAliasStore.GetCalls())
 func (mock *AliasStoreMock) GetCalls() []struct {
 	Ctx context.Context
 	ID  KeyImpl
