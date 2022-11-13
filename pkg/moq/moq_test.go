@@ -470,10 +470,10 @@ func matchGoldenFile(goldenFile string, actual []byte) error {
 	// To update golden files, run the following:
 	// go test -v -run '^<Test-Name>$' github.com/matryer/moq/pkg/moq -update
 	if *update {
-		if err := os.MkdirAll(filepath.Dir(goldenFile), 0o750); err != nil {
+		if err := os.MkdirAll(filepath.Dir(goldenFile), 0750); err != nil {
 			return fmt.Errorf("create dir: %s", err)
 		}
-		if err := ioutil.WriteFile(goldenFile, actual, 0o600); err != nil {
+		if err := ioutil.WriteFile(goldenFile, actual, 0600); err != nil {
 			return fmt.Errorf("write: %s", err)
 		}
 
