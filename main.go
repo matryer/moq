@@ -104,10 +104,10 @@ func run(flags userFlags) error {
 	}
 
 	// create the file
-	err = os.MkdirAll(filepath.Dir(flags.outFile), 0750)
+	err = os.MkdirAll(filepath.Dir(flags.outFile), 0o750)
 	if err != nil {
 		return err
 	}
 
-	return ioutil.WriteFile(flags.outFile, buf.Bytes(), 0600)
+	return ioutil.WriteFile(flags.outFile, buf.Bytes(), 0o600)
 }
