@@ -5,7 +5,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/matryer/moq/internal/registry"
+	"github.com/djui/moq/internal/registry"
 )
 
 // Template is the Moq template. It is capable of generating the Moq
