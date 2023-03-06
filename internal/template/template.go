@@ -199,11 +199,7 @@ func (mock *{{$mock.MockName}}) {{.Name}}ResetCalls() {
 func (mock *{{$mock.MockName}}) ResetCalls() {
 	{{- range .Methods}}
 	mock.lock{{.Name}}.Lock()
-	mock.calls.{{.Name}} = []struct {
-		{{- range .Params}}
-		{{.Name | Exported}} {{.TypeString}}
-		{{- end}}
-	}{}
+	mock.calls.{{.Name}} = nil
 	mock.lock{{.Name}}.Unlock()
 	{{end -}}
 }
