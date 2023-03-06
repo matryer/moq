@@ -182,8 +182,8 @@ func (mock *{{$mock.MockName}}
 	return calls
 }
 {{- if $.WithResets}}
-// {{.Name}}ResetCalls Reset all the calls that were made to {{.Name}}.
-func (mock *{{$mock.MockName}}) {{.Name}}ResetCalls() {
+// Reset{{.Name}}Calls reset all the calls that were made to {{.Name}}.
+func (mock *{{$mock.MockName}}) Reset{{.Name}}Calls() {
 	mock.lock{{.Name}}.Lock()
 	mock.calls.{{.Name}} = nil
 	mock.lock{{.Name}}.Unlock()
