@@ -73,21 +73,3 @@ func (mock *ServiceMock) UserCalls() []struct {
 	mock.lockUser.RUnlock()
 	return calls
 }
-
-// UserResetCalls Reset all the calls that were made to User.
-func (mock *ServiceMock) UserResetCalls() {
-	mock.lockUser.Lock()
-	mock.calls.User = []struct {
-		ID string
-	}{}
-	mock.lockUser.Unlock()
-}
-
-// ResetCalls reset all the calls that were made to all mocked methods.
-func (mock *ServiceMock) ResetCalls() {
-	mock.lockUser.Lock()
-	mock.calls.User = []struct {
-		ID string
-	}{}
-	mock.lockUser.Unlock()
-}
