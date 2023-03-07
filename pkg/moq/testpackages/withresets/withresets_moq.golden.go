@@ -8,40 +8,40 @@ import (
 	"sync"
 )
 
-// Ensure, that PersonStoreMock does implement PersonStore.
+// Ensure, that ResetStoreMock does implement ResetStore.
 // If this is not the case, regenerate this file with moq.
-var _ PersonStore = &PersonStoreMock{}
+var _ ResetStore = &ResetStoreMock{}
 
-// PersonStoreMock is a mock implementation of PersonStore.
+// ResetStoreMock is a mock implementation of ResetStore.
 //
-//	func TestSomethingThatUsesPersonStore(t *testing.T) {
+//	func TestSomethingThatUsesResetStore(t *testing.T) {
 //
-//		// make and configure a mocked PersonStore
-//		mockedPersonStore := &PersonStoreMock{
+//		// make and configure a mocked ResetStore
+//		mockedResetStore := &ResetStoreMock{
 //			ClearCacheFunc: func(id string)  {
 //				panic("mock out the ClearCache method")
 //			},
-//			CreateFunc: func(ctx context.Context, person *Person, confirm bool) error {
+//			CreateFunc: func(ctx context.Context, person *Reset, confirm bool) error {
 //				panic("mock out the Create method")
 //			},
-//			GetFunc: func(ctx context.Context, id string) (*Person, error) {
+//			GetFunc: func(ctx context.Context, id string) (*Reset, error) {
 //				panic("mock out the Get method")
 //			},
 //		}
 //
-//		// use mockedPersonStore in code that requires PersonStore
+//		// use mockedResetStore in code that requires ResetStore
 //		// and then make assertions.
 //
 //	}
-type PersonStoreMock struct {
+type ResetStoreMock struct {
 	// ClearCacheFunc mocks the ClearCache method.
 	ClearCacheFunc func(id string)
 
 	// CreateFunc mocks the Create method.
-	CreateFunc func(ctx context.Context, person *Person, confirm bool) error
+	CreateFunc func(ctx context.Context, person *Reset, confirm bool) error
 
 	// GetFunc mocks the Get method.
-	GetFunc func(ctx context.Context, id string) (*Person, error)
+	GetFunc func(ctx context.Context, id string) (*Reset, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -55,7 +55,7 @@ type PersonStoreMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Person is the person argument value.
-			Person *Person
+			Person *Reset
 			// Confirm is the confirm argument value.
 			Confirm bool
 		}
@@ -73,9 +73,9 @@ type PersonStoreMock struct {
 }
 
 // ClearCache calls ClearCacheFunc.
-func (mock *PersonStoreMock) ClearCache(id string) {
+func (mock *ResetStoreMock) ClearCache(id string) {
 	if mock.ClearCacheFunc == nil {
-		panic("PersonStoreMock.ClearCacheFunc: method is nil but PersonStore.ClearCache was just called")
+		panic("ResetStoreMock.ClearCacheFunc: method is nil but ResetStore.ClearCache was just called")
 	}
 	callInfo := struct {
 		ID string
@@ -91,8 +91,8 @@ func (mock *PersonStoreMock) ClearCache(id string) {
 // ClearCacheCalls gets all the calls that were made to ClearCache.
 // Check the length with:
 //
-//	len(mockedPersonStore.ClearCacheCalls())
-func (mock *PersonStoreMock) ClearCacheCalls() []struct {
+//	len(mockedResetStore.ClearCacheCalls())
+func (mock *ResetStoreMock) ClearCacheCalls() []struct {
 	ID string
 } {
 	var calls []struct {
@@ -105,20 +105,20 @@ func (mock *PersonStoreMock) ClearCacheCalls() []struct {
 }
 
 // ResetClearCacheCalls reset all the calls that were made to ClearCache.
-func (mock *PersonStoreMock) ResetClearCacheCalls() {
+func (mock *ResetStoreMock) ResetClearCacheCalls() {
 	mock.lockClearCache.Lock()
 	mock.calls.ClearCache = nil
 	mock.lockClearCache.Unlock()
 }
 
 // Create calls CreateFunc.
-func (mock *PersonStoreMock) Create(ctx context.Context, person *Person, confirm bool) error {
+func (mock *ResetStoreMock) Create(ctx context.Context, person *Reset, confirm bool) error {
 	if mock.CreateFunc == nil {
-		panic("PersonStoreMock.CreateFunc: method is nil but PersonStore.Create was just called")
+		panic("ResetStoreMock.CreateFunc: method is nil but ResetStore.Create was just called")
 	}
 	callInfo := struct {
 		Ctx     context.Context
-		Person  *Person
+		Person  *Reset
 		Confirm bool
 	}{
 		Ctx:     ctx,
@@ -134,15 +134,15 @@ func (mock *PersonStoreMock) Create(ctx context.Context, person *Person, confirm
 // CreateCalls gets all the calls that were made to Create.
 // Check the length with:
 //
-//	len(mockedPersonStore.CreateCalls())
-func (mock *PersonStoreMock) CreateCalls() []struct {
+//	len(mockedResetStore.CreateCalls())
+func (mock *ResetStoreMock) CreateCalls() []struct {
 	Ctx     context.Context
-	Person  *Person
+	Person  *Reset
 	Confirm bool
 } {
 	var calls []struct {
 		Ctx     context.Context
-		Person  *Person
+		Person  *Reset
 		Confirm bool
 	}
 	mock.lockCreate.RLock()
@@ -152,16 +152,16 @@ func (mock *PersonStoreMock) CreateCalls() []struct {
 }
 
 // ResetCreateCalls reset all the calls that were made to Create.
-func (mock *PersonStoreMock) ResetCreateCalls() {
+func (mock *ResetStoreMock) ResetCreateCalls() {
 	mock.lockCreate.Lock()
 	mock.calls.Create = nil
 	mock.lockCreate.Unlock()
 }
 
 // Get calls GetFunc.
-func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error) {
+func (mock *ResetStoreMock) Get(ctx context.Context, id string) (*Reset, error) {
 	if mock.GetFunc == nil {
-		panic("PersonStoreMock.GetFunc: method is nil but PersonStore.Get was just called")
+		panic("ResetStoreMock.GetFunc: method is nil but ResetStore.Get was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
@@ -179,8 +179,8 @@ func (mock *PersonStoreMock) Get(ctx context.Context, id string) (*Person, error
 // GetCalls gets all the calls that were made to Get.
 // Check the length with:
 //
-//	len(mockedPersonStore.GetCalls())
-func (mock *PersonStoreMock) GetCalls() []struct {
+//	len(mockedResetStore.GetCalls())
+func (mock *ResetStoreMock) GetCalls() []struct {
 	Ctx context.Context
 	ID  string
 } {
@@ -195,14 +195,14 @@ func (mock *PersonStoreMock) GetCalls() []struct {
 }
 
 // ResetGetCalls reset all the calls that were made to Get.
-func (mock *PersonStoreMock) ResetGetCalls() {
+func (mock *ResetStoreMock) ResetGetCalls() {
 	mock.lockGet.Lock()
 	mock.calls.Get = nil
 	mock.lockGet.Unlock()
 }
 
 // ResetCalls reset all the calls that were made to all mocked methods.
-func (mock *PersonStoreMock) ResetCalls() {
+func (mock *ResetStoreMock) ResetCalls() {
 	mock.lockClearCache.Lock()
 	mock.calls.ClearCache = nil
 	mock.lockClearCache.Unlock()

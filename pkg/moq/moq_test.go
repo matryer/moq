@@ -199,33 +199,6 @@ func TestMoqSkipEnsure(t *testing.T) {
 	}
 }
 
-func TestMoqWithResets(t *testing.T) {
-	m, err := New(Config{SrcDir: "testpackages/example", PkgName: "withresets", WithResets: true})
-	if err != nil {
-		t.Fatalf("moq.New: %s", err)
-	}
-	var buf bytes.Buffer
-	err = m.Mock(&buf, "PersonStore")
-	if err != nil {
-		t.Errorf("m.Mock: %s", err)
-	}
-	s := buf.String()
-	// assertions of things that should be mentioned
-	strs := []string{
-		"package withresets",
-		"type PersonStoreMock struct",
-		"CreateFunc func(ctx context.Context, person *example.Person, confirm bool) error",
-		"GetFunc func(ctx context.Context, id string) (*example.Person, error)",
-		"func (mock *PersonStoreMock) ResetCreateCalls()",
-		"func (mock *PersonStoreMock) ResetCalls()",
-	}
-	for _, str := range strs {
-		if !strings.Contains(s, str) {
-			t.Errorf("expected but missing: \"%s\"", str)
-		}
-	}
-}
-
 func TestNotCreatingEmptyDirWhenPkgIsGiven(t *testing.T) {
 	m, err := New(Config{SrcDir: "testpackages/example", PkgName: "different"})
 	if err != nil {
@@ -415,6 +388,12 @@ func TestMockGolden(t *testing.T) {
 			cfg:        Config{SrcDir: "testpackages/generics"},
 			interfaces: []string{"GenericStore1", "GenericStore2", "AliasStore"},
 			goldenFile: filepath.Join("testpackages/generics", "generics_moq.golden.go"),
+		},
+		{
+			name:       "WithResets",
+			cfg:        Config{SrcDir: "testpackages/withresets", WithResets: true},
+			interfaces: []string{"ResetStore"},
+			goldenFile: filepath.Join("testpackages/withresets", "withresets_moq.golden.go"),
 		},
 	}
 	for _, tc := range cases {

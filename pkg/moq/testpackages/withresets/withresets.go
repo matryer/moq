@@ -2,19 +2,17 @@ package withresets
 
 import "context"
 
-// Person is a person.
-type Person struct {
+// Reset is a reset.
+type Reset struct {
 	ID      string
 	Name    string
 	Company string
 	Website string
 }
 
-//go:generate moq -with-resets -out with_resets_moq_test.go . PersonStore
-
-// PersonStore stores people.
-type PersonStore interface {
-	Get(ctx context.Context, id string) (*Person, error)
-	Create(ctx context.Context, person *Person, confirm bool) error
+// ResetStore stores resets.
+type ResetStore interface {
+	Get(ctx context.Context, id string) (*Reset, error)
+	Create(ctx context.Context, person *Reset, confirm bool) error
 	ClearCache(id string)
 }
