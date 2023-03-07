@@ -15,25 +15,25 @@ var _ Shadower = &ShadowerMock{}
 
 // ShadowerMock is a mock implementation of Shadower.
 //
-// 	func TestSomethingThatUsesShadower(t *testing.T) {
+//	func TestSomethingThatUsesShadower(t *testing.T) {
 //
-// 		// make and configure a mocked Shadower
-// 		mockedShadower := &ShadowerMock{
-// 			ShadowFunc: func(ioMoqParam io.Reader)  {
-// 				panic("mock out the Shadow method")
-// 			},
-// 			ShadowThreeFunc: func(httpMoqParam interface{}, srv *http.Server)  {
-// 				panic("mock out the ShadowThree method")
-// 			},
-// 			ShadowTwoFunc: func(r io.Reader, ioMoqParam interface{})  {
-// 				panic("mock out the ShadowTwo method")
-// 			},
-// 		}
+//		// make and configure a mocked Shadower
+//		mockedShadower := &ShadowerMock{
+//			ShadowFunc: func(ioMoqParam io.Reader)  {
+//				panic("mock out the Shadow method")
+//			},
+//			ShadowThreeFunc: func(httpMoqParam interface{}, srv *http.Server)  {
+//				panic("mock out the ShadowThree method")
+//			},
+//			ShadowTwoFunc: func(r io.Reader, ioMoqParam interface{})  {
+//				panic("mock out the ShadowTwo method")
+//			},
+//		}
 //
-// 		// use mockedShadower in code that requires Shadower
-// 		// and then make assertions.
+//		// use mockedShadower in code that requires Shadower
+//		// and then make assertions.
 //
-// 	}
+//	}
 type ShadowerMock struct {
 	// ShadowFunc mocks the Shadow method.
 	ShadowFunc func(ioMoqParam io.Reader)
@@ -89,7 +89,8 @@ func (mock *ShadowerMock) Shadow(ioMoqParam io.Reader) {
 
 // ShadowCalls gets all the calls that were made to Shadow.
 // Check the length with:
-//     len(mockedShadower.ShadowCalls())
+//
+//	len(mockedShadower.ShadowCalls())
 func (mock *ShadowerMock) ShadowCalls() []struct {
 	IoMoqParam io.Reader
 } {
@@ -122,7 +123,8 @@ func (mock *ShadowerMock) ShadowThree(httpMoqParam interface{}, srv *http.Server
 
 // ShadowThreeCalls gets all the calls that were made to ShadowThree.
 // Check the length with:
-//     len(mockedShadower.ShadowThreeCalls())
+//
+//	len(mockedShadower.ShadowThreeCalls())
 func (mock *ShadowerMock) ShadowThreeCalls() []struct {
 	HttpMoqParam interface{}
 	Srv          *http.Server
@@ -157,7 +159,8 @@ func (mock *ShadowerMock) ShadowTwo(r io.Reader, ioMoqParam interface{}) {
 
 // ShadowTwoCalls gets all the calls that were made to ShadowTwo.
 // Check the length with:
-//     len(mockedShadower.ShadowTwoCalls())
+//
+//	len(mockedShadower.ShadowTwoCalls())
 func (mock *ShadowerMock) ShadowTwoCalls() []struct {
 	R          io.Reader
 	IoMoqParam interface{}

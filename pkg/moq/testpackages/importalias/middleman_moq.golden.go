@@ -15,19 +15,19 @@ var _ MiddleMan = &MiddleManMock{}
 
 // MiddleManMock is a mock implementation of MiddleMan.
 //
-// 	func TestSomethingThatUsesMiddleMan(t *testing.T) {
+//	func TestSomethingThatUsesMiddleMan(t *testing.T) {
 //
-// 		// make and configure a mocked MiddleMan
-// 		mockedMiddleMan := &MiddleManMock{
-// 			ConnectFunc: func(src srcclient.Client, tgt tgtclient.Client)  {
-// 				panic("mock out the Connect method")
-// 			},
-// 		}
+//		// make and configure a mocked MiddleMan
+//		mockedMiddleMan := &MiddleManMock{
+//			ConnectFunc: func(src srcclient.Client, tgt tgtclient.Client)  {
+//				panic("mock out the Connect method")
+//			},
+//		}
 //
-// 		// use mockedMiddleMan in code that requires MiddleMan
-// 		// and then make assertions.
+//		// use mockedMiddleMan in code that requires MiddleMan
+//		// and then make assertions.
 //
-// 	}
+//	}
 type MiddleManMock struct {
 	// ConnectFunc mocks the Connect method.
 	ConnectFunc func(src srcclient.Client, tgt tgtclient.Client)
@@ -65,7 +65,8 @@ func (mock *MiddleManMock) Connect(src srcclient.Client, tgt tgtclient.Client) {
 
 // ConnectCalls gets all the calls that were made to Connect.
 // Check the length with:
-//     len(mockedMiddleMan.ConnectCalls())
+//
+//	len(mockedMiddleMan.ConnectCalls())
 func (mock *MiddleManMock) ConnectCalls() []struct {
 	Src srcclient.Client
 	Tgt tgtclient.Client
