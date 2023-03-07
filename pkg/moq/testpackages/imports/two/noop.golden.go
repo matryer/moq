@@ -14,22 +14,22 @@ var _ DoSomething = &noopMock{}
 
 // noopMock is a mock implementation of DoSomething.
 //
-// 	func TestSomethingThatUsesDoSomething(t *testing.T) {
+//	func TestSomethingThatUsesDoSomething(t *testing.T) {
 //
-// 		// make and configure a mocked DoSomething
-// 		mockedDoSomething := &noopMock{
-// 			AnotherFunc: func(thing one.Thing) error {
-// 				panic("mock out the Another method")
-// 			},
-// 			DoFunc: func(thing one.Thing) error {
-// 				panic("mock out the Do method")
-// 			},
-// 		}
+//		// make and configure a mocked DoSomething
+//		mockedDoSomething := &noopMock{
+//			AnotherFunc: func(thing one.Thing) error {
+//				panic("mock out the Another method")
+//			},
+//			DoFunc: func(thing one.Thing) error {
+//				panic("mock out the Do method")
+//			},
+//		}
 //
-// 		// use mockedDoSomething in code that requires DoSomething
-// 		// and then make assertions.
+//		// use mockedDoSomething in code that requires DoSomething
+//		// and then make assertions.
 //
-// 	}
+//	}
 type noopMock struct {
 	// AnotherFunc mocks the Another method.
 	AnotherFunc func(thing one.Thing) error
@@ -72,7 +72,8 @@ func (mock *noopMock) Another(thing one.Thing) error {
 
 // AnotherCalls gets all the calls that were made to Another.
 // Check the length with:
-//     len(mockedDoSomething.AnotherCalls())
+//
+//	len(mockedDoSomething.AnotherCalls())
 func (mock *noopMock) AnotherCalls() []struct {
 		Thing one.Thing
 	} {
@@ -103,7 +104,8 @@ func (mock *noopMock) Do(thing one.Thing) error {
 
 // DoCalls gets all the calls that were made to Do.
 // Check the length with:
-//     len(mockedDoSomething.DoCalls())
+//
+//	len(mockedDoSomething.DoCalls())
 func (mock *noopMock) DoCalls() []struct {
 		Thing one.Thing
 	} {
