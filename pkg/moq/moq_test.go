@@ -200,7 +200,7 @@ func TestMoqSkipEnsure(t *testing.T) {
 }
 
 func TestMoqWithResets(t *testing.T) {
-	m, err := New(Config{SrcDir: "testpackages/example", PkgName: "different", WithResets: true})
+	m, err := New(Config{SrcDir: "testpackages/example", PkgName: "withresets", WithResets: true})
 	if err != nil {
 		t.Fatalf("moq.New: %s", err)
 	}
@@ -212,11 +212,11 @@ func TestMoqWithResets(t *testing.T) {
 	s := buf.String()
 	// assertions of things that should be mentioned
 	strs := []string{
-		"package different",
+		"package withresets",
 		"type PersonStoreMock struct",
 		"CreateFunc func(ctx context.Context, person *example.Person, confirm bool) error",
 		"GetFunc func(ctx context.Context, id string) (*example.Person, error)",
-		"func (mock *PersonStoreMock) CreateResetCalls()",
+		"func (mock *PersonStoreMock) ResetCreateCalls()",
 		"func (mock *PersonStoreMock) ResetCalls()",
 	}
 	for _, str := range strs {
