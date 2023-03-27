@@ -232,8 +232,9 @@ var templateFuncs = template.FuncMap{
 		if s == "" {
 			return ""
 		}
+		sUpper := strings.ToUpper(s)
 		for _, initialism := range golintInitialisms {
-			if strings.ToUpper(s) == initialism {
+			if sUpper == initialism {
 				return initialism
 			}
 		}
