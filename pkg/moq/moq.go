@@ -7,6 +7,7 @@ import (
 	"go/types"
 	"io"
 	"strings"
+	"unicode"
 
 	"github.com/matryer/moq/internal/registry"
 	"github.com/matryer/moq/internal/template"
@@ -114,6 +115,19 @@ func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
 	return nil
 }
 
+// FileMockName generates file name for mock from interface
+func (m *Mocker) FileMockName(namePair string) string {
+	ifaceName, mockName := parseInterfaceName(namePair)
+
+	var mockFile string
+	if strings.HasPrefix(mockName, ifaceName) {
+		mockFile = toSnakeCase(ifaceName)
+	} else {
+		mockFile = toSnakeCase(mockName)
+	}
+	return mockFile + ".go"
+}
+
 func (m *Mocker) typeParams(tparams *types.TypeParamList) []template.TypeParamData {
 	var tpd []template.TypeParamData
 	if tparams == nil {
@@ -209,4 +223,50 @@ func parseInterfaceName(namePair string) (ifaceName, mockName string) {
 
 	ifaceName = parts[0]
 	return ifaceName, ifaceName + "Mock"
+}
+
+func toSnakeCase(name string) string {
+	var buf bytes.Buffer
+
+	fUpper := -1
+	for i, r := range name {
+		if unicode.IsUpper(r) {
+			if fUpper < 0 {
+				fUpper = i
+			}
+			continue
+		}
+
+		if fUpper < 0 {
+			// just next low rune
+			buf.WriteRune(r)
+			continue
+		}
+
+		if fUpper == 0 && name[0] == 'I' {
+			// special case for interface preffix
+			buf.WriteString("i")
+			fUpper++
+		}
+		if fUpper > 0 {
+			buf.WriteRune('_')
+		}
+		if i-fUpper >= 2 {
+			buf.WriteString(strings.ToLower(name[fUpper : i-1]))
+			buf.WriteRune('_')
+		}
+
+		buf.WriteString(strings.ToLower(name[i-1 : i]))
+		buf.WriteRune(r)
+		fUpper = -1
+	}
+
+	if fUpper > 0 {
+		buf.WriteRune('_')
+	}
+
+	if fUpper >= 0 {
+		buf.WriteString(strings.ToLower(name[fUpper:]))
+	}
+	return buf.String()
 }

@@ -699,6 +699,31 @@ func TestMockError(t *testing.T) {
 	}
 }
 
+func TestToSnakeCase(t *testing.T) {
+	cases := []struct {
+		arg, want string
+	}{
+		{"allcased", "allcased"},
+		{"ALLUPPER", "allupper"},
+		{"ICache", "i_cache"},
+		{"IJournalService", "i_journal_service"},
+		{"ITJournalService", "i_t_journal_service"},
+		{"IAddressAPI", "i_address_api"},
+		{"IABClient", "i_ab_client"},
+		{"APIClient", "api_client"},
+		{"IAPIClient", "i_api_client"},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.arg, func(t *testing.T) {
+			actual := toSnakeCase(tc.arg)
+			if actual != tc.want {
+				t.Errorf("expect: %v, actual: %v", tc.want, actual)
+			}
+		})
+	}
+}
+
 // normalize normalizes \r\n (windows) and \r (mac)
 // into \n (unix)
 func normalize(d []byte) []byte {

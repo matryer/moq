@@ -18,6 +18,7 @@ var Version string = "dev"
 
 type userFlags struct {
 	outFile    string
+	outDir     string
 	pkgName    string
 	formatter  string
 	stubImpl   bool
@@ -30,6 +31,7 @@ type userFlags struct {
 func main() {
 	var flags userFlags
 	flag.StringVar(&flags.outFile, "out", "", "output file (default stdout)")
+	flag.StringVar(&flags.outDir, "out-dir", "", "output dir (exclusive with -out)")
 	flag.StringVar(&flags.pkgName, "pkg", "", "package name (default will infer)")
 	flag.StringVar(&flags.formatter, "fmt", "", "go pretty-printer: gofmt, goimports or noop (default gofmt)")
 	flag.BoolVar(&flags.stubImpl, "stub", false,
@@ -76,12 +78,6 @@ func run(flags userFlags) error {
 		}
 	}
 
-	var buf bytes.Buffer
-	var out io.Writer = os.Stdout
-	if flags.outFile != "" {
-		out = &buf
-	}
-
 	srcDir, args := flags.args[0], flags.args[1:]
 	m, err := moq.New(moq.Config{
 		SrcDir:     srcDir,
@@ -95,19 +91,52 @@ func run(flags userFlags) error {
 		return err
 	}
 
-	if err = m.Mock(out, args...); err != nil {
+	switch {
+	case flags.outDir != "" && flags.outFile != "":
+		return errors.New("use only one from -out and -out-dir arguments")
+	case flags.outDir != "":
+		return mockToDir(m, flags.outDir, args...)
+	case flags.outFile != "":
+		return mockToFile(m, flags.outFile, args...)
+	default:
+		// mock to stdout
+		return m.Mock(os.Stdout, args...)
+	}
+}
+
+func mockToDir(m *moq.Mocker, outDir string, args ...string) error {
+	if err := os.MkdirAll(outDir, 0o750); err != nil {
 		return err
 	}
 
-	if flags.outFile == "" {
-		return nil
+	var buf bytes.Buffer
+	for _, arg := range args {
+		if err := m.Mock(&buf, arg); err != nil {
+			return err
+		}
+
+		filename := filepath.Join(outDir, m.FileMockName(arg))
+		if err := ioutil.WriteFile(filename, buf.Bytes(), 0o600); err != nil {
+			return err
+		}
+
+		buf.Reset()
 	}
 
-	// create the file
-	err = os.MkdirAll(filepath.Dir(flags.outFile), 0o750)
-	if err != nil {
+	return nil
+}
+
+func mockToFile(m *moq.Mocker, outFile string, args ...string) error {
+	var buf bytes.Buffer
+	var out io.Writer = &buf
+
+	if err := m.Mock(out, args...); err != nil {
 		return err
 	}
 
-	return ioutil.WriteFile(flags.outFile, buf.Bytes(), 0o600)
+	if err := os.MkdirAll(filepath.Dir(outFile), 0o750); err != nil {
+		return err
+	}
+
+	return ioutil.WriteFile(outFile, buf.Bytes(), 0o600)
 }
