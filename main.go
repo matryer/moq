@@ -13,8 +13,8 @@ import (
 	"github.com/matryer/moq/pkg/moq"
 )
 
-// Version is the command version, injected at build time.
-var Version string = "dev"
+// version is the command version, injected at build time.
+var version string = "dev"
 
 type userFlags struct {
 	outFile    string
@@ -52,7 +52,7 @@ func main() {
 	flags.args = flag.Args()
 
 	if *printVersion {
-		fmt.Printf("moq version %s\n", Version)
+		fmt.Printf("moq version %s\n", version)
 		os.Exit(0)
 	}
 
