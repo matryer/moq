@@ -93,7 +93,7 @@ func run(flags userFlags) error {
 
 	switch {
 	case flags.outDir != "" && flags.outFile != "":
-		return errors.New("use only one from -out and -out-dir arguments")
+		return errors.New("use only one  of the flags -out and -out-dir")
 	case flags.outDir != "":
 		return mockToDir(m, flags.outDir, args...)
 	case flags.outFile != "":
