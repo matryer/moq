@@ -48,7 +48,7 @@ import (
 {{- if not $.SkipEnsure -}}
 // Ensure, that {{.MockName}} does implement {{$.SrcPkgQualifier}}{{.InterfaceName}}.
 // If this is not the case, regenerate this file with moq.
-var _ {{$.SrcPkgQualifier}}{{.InterfaceName -}} 
+var _ {{$.SrcPkgQualifier}}{{.InterfaceName -}}
 	{{- if .TypeParams }}[
 		{{- range $index, $param := .TypeParams}}
 			{{- if $index}}, {{end -}}
@@ -56,7 +56,7 @@ var _ {{$.SrcPkgQualifier}}{{.InterfaceName -}}
 		{{- end -}}
 		]
 	{{- end }} = &{{.MockName}}
-	 {{- if .TypeParams }}[
+	{{- if .TypeParams }}[
 		{{- range $index, $param := .TypeParams}}
 			{{- if $index}}, {{end -}}
 			{{if $param.Constraint}}{{$param.Constraint.String}}{{else}}{{$param.TypeString}}{{end}}
@@ -83,7 +83,7 @@ var _ {{$.SrcPkgQualifier}}{{.InterfaceName -}}
 //		// and then make assertions.
 //
 //	}
-type {{.MockName}} 
+type {{.MockName}}
 {{- if .TypeParams -}}
 	[{{- range $index, $param := .TypeParams}}
 			{{- if $index}}, {{end}}{{$param.Name | Exported}} {{$param.TypeString}}
