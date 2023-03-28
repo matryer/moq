@@ -36,6 +36,8 @@ moq [flags] source-dir interface [interface2 [interface3 [...]]]
 		go pretty-printer: gofmt, goimports or noop (default gofmt)
 	-out string
 		output file (default stdout)
+	-out-dir string
+		output dir (exclusive with -out)
 	-pkg string
 		package name (default will infer)
 	-stub
