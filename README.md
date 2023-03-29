@@ -32,14 +32,17 @@ $ go install github.com/matryer/moq@latest
 
 ```
 moq [flags] source-dir interface [interface2 [interface3 [...]]]
-	-fmt string
-		go pretty-printer: gofmt, goimports or noop (default gofmt)
-	-out string
-		output file (default stdout)
-	-pkg string
-		package name (default will infer)
-	-stub
-		return zero values when no mock implementation is provided, do not panic
+
+  -fmt string
+    	go pretty-printer: gofmt, goimports or noop (default gofmt)
+  -out string
+    	output file (default stdout)
+  -pkg string
+    	package name (default will infer)
+  -rm
+    	first remove output file, if it exists
+  -stub
+    	return zero values when no mock implementation is provided, do not panic
 	-skip-ensure
 		suppress mock implementation check, avoid import cycle if mocks
 		generated outside of the tested package
@@ -47,8 +50,7 @@ moq [flags] source-dir interface [interface2 [interface3 [...]]]
 		generate functions to facilitate resetting calls made to a mock
 
 Specifying an alias for the mock is also supported with the format 'interface:alias'
-
-Example: moq -pkg different . MyInterface:MyMock
+Ex: moq -pkg different . MyInterface:MyMock
 ```
 
 **NOTE:** `source-dir` is the directory where the source code (definition) of the target interface is located.
