@@ -16,17 +16,13 @@ You can read more in the [Meet Moq blog post](http://bit.ly/meetmoq).
 
 To start using latest released version of Moq, just run:
 
-#### Go version < 1.16
-
-```
-$ go get github.com/matryer/moq
-```
-
-#### Go 1.16+
-
 ```
 $ go install github.com/matryer/moq@latest
 ```
+
+Note that Go 1.18+ is needed for installing from source. For using Moq with
+older Go versions, use the pre-built binaries published with 
+[Moq releases](https://github.com/matryer/moq/releases). 
 
 ### Usage
 
