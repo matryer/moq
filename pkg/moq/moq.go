@@ -86,6 +86,7 @@ func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
 	if data.MocksSomeMethod() {
 		m.registry.AddImport(types.NewPackage("sync", "sync"))
 	}
+
 	if m.registry.SrcPkgName() != m.mockPkgName() {
 		data.SrcPkgQualifier = m.registry.SrcPkgName() + "."
 		if !m.cfg.SkipEnsure {
@@ -124,9 +125,22 @@ func (m *Mocker) typeParams(tparams *types.TypeParamList) []template.TypeParamDa
 	for i := 0; i < len(tpd); i++ {
 		tp := tparams.At(i)
 		typeParam := types.NewParam(token.Pos(i), tp.Obj().Pkg(), tp.Obj().Name(), tp.Constraint())
+
+		constraint := explicitConstraintType(typeParam)
+		if registry.ConstraintAppearsImported(constraint.String()) {
+			// generate a new type
+			t := registry.NewGenericConstraint(constraint.String())
+
+			// since our constraint is from a package, we need to add it to the registry
+			m.registry.AddImport(
+				types.NewPackage(t.Path, t.Pkg),
+			)
+			constraint = t
+		}
+
 		tpd[i] = template.TypeParamData{
 			ParamData:  template.ParamData{Var: scope.AddVar(typeParam, "")},
-			Constraint: explicitConstraintType(typeParam),
+			Constraint: constraint,
 		}
 	}
 
@@ -135,6 +149,7 @@ func (m *Mocker) typeParams(tparams *types.TypeParamList) []template.TypeParamDa
 
 func explicitConstraintType(typeParam *types.Var) (t types.Type) {
 	underlying := typeParam.Type().Underlying().(*types.Interface)
+
 	// check if any of the embedded types is either a basic type or a union,
 	// because the generic type has to be an alias for one of those types then
 	for j := 0; j < underlying.NumEmbeddeds(); j++ {
