@@ -14,19 +14,19 @@ var _ dotimport.Service = &ServiceMock{}
 
 // ServiceMock is a mock implementation of dotimport.Service.
 //
-// 	func TestSomethingThatUsesService(t *testing.T) {
+//	func TestSomethingThatUsesService(t *testing.T) {
 //
-// 		// make and configure a mocked dotimport.Service
-// 		mockedService := &ServiceMock{
-// 			UserFunc: func(ID string) (dotimport.User, error) {
-// 				panic("mock out the User method")
-// 			},
-// 		}
+//		// make and configure a mocked dotimport.Service
+//		mockedService := &ServiceMock{
+//			UserFunc: func(ID string) (dotimport.User, error) {
+//				panic("mock out the User method")
+//			},
+//		}
 //
-// 		// use mockedService in code that requires dotimport.Service
-// 		// and then make assertions.
+//		// use mockedService in code that requires dotimport.Service
+//		// and then make assertions.
 //
-// 	}
+//	}
 type ServiceMock struct {
 	// UserFunc mocks the User method.
 	UserFunc func(ID string) (dotimport.User, error)
@@ -60,7 +60,8 @@ func (mock *ServiceMock) User(ID string) (dotimport.User, error) {
 
 // UserCalls gets all the calls that were made to User.
 // Check the length with:
-//     len(mockedService.UserCalls())
+//
+//	len(mockedService.UserCalls())
 func (mock *ServiceMock) UserCalls() []struct {
 	ID string
 } {

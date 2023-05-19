@@ -16,37 +16,38 @@ You can read more in the [Meet Moq blog post](http://bit.ly/meetmoq).
 
 To start using latest released version of Moq, just run:
 
-#### Go version < 1.16
-
-```
-$ go get github.com/matryer/moq
-```
-
-#### Go 1.16+
-
 ```
 $ go install github.com/matryer/moq@latest
 ```
+
+Note that Go 1.18+ is needed for installing from source. For using Moq with
+older Go versions, use the pre-built binaries published with 
+[Moq releases](https://github.com/matryer/moq/releases). 
 
 ### Usage
 
 ```
 moq [flags] source-dir interface [interface2 [interface3 [...]]]
-	-fmt string
-		go pretty-printer: gofmt, goimports or noop (default gofmt)
-	-out string
-		output file (default stdout)
-	-pkg string
-		package name (default will infer)
-	-stub
-		return zero values when no mock implementation is provided, do not panic
-	-skip-ensure
-		suppress mock implementation check, avoid import cycle if mocks
-		generated outside of the tested package
+  -fmt string
+    	go pretty-printer: gofmt, goimports or noop (default gofmt)
+  -out string
+    	output file (default stdout)
+  -pkg string
+    	package name (default will infer)
+  -rm
+    	first remove output file, if it exists
+  -skip-ensure
+    	suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package
+  -stub
+    	return zero values when no mock implementation is provided, do not panic
+  -version
+    	show the version for moq
+  -with-resets
+    	generate functions to facilitate resetting calls made to a mock
 
 Specifying an alias for the mock is also supported with the format 'interface:alias'
 
-Example: moq -pkg different . MyInterface:MyMock
+Ex: moq -pkg different . MyInterface:MyMock
 ```
 
 **NOTE:** `source-dir` is the directory where the source code (definition) of the target interface is located.
@@ -120,6 +121,7 @@ The mocked structure implements the interface, where each method calls the assoc
 * Name arguments in the interface for a better experience
 * Use closured variables inside your test function to capture details about the calls to the methods
 * Use `.MethodCalls()` to track the calls
+* Use `.ResetCalls()` to reset calls within an invidual mock's context
 * Use `go:generate` to invoke the `moq` command
 * If Moq fails with a `go/format` error, it indicates the generated code was not valid.
   You can run the same command with `-fmt noop` to print the generated source code without attempting to format it.

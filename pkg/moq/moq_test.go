@@ -396,6 +396,12 @@ func TestMockGolden(t *testing.T) {
 			goldenFile: filepath.Join("testpackages/transientimport", "transient_moq.golden.go"),
 		},
 		{
+			name:       "WithResets",
+			cfg:        Config{SrcDir: "testpackages/withresets", WithResets: true},
+			interfaces: []string{"ResetStore"},
+			goldenFile: filepath.Join("testpackages/withresets", "withresets_moq.golden.go"),
+		},
+		{
 			name:       "GenericsImportedConstraint",
 			cfg:        Config{SrcDir: "testpackages/generics_imported_constraint"},
 			interfaces: []string{"GenericStore1"},
