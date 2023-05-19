@@ -7,12 +7,15 @@ import (
 	"strings"
 )
 
+// GenericConstraint is used as a wrapper to instantiate a new type
+// for use with the registry type params
 type GenericConstraint struct {
 	Pkg  string
 	Path string
 	Name string
 }
 
+// NewGenericConstraint returns a pointer to a new GenericContstraint instance
 func NewGenericConstraint(constraint string) *GenericConstraint {
 	return &GenericConstraint{
 		Pkg:  getPkgName(constraint),
@@ -33,6 +36,8 @@ func (g GenericConstraint) String() string {
 
 var appearsImportedRegex = regexp.MustCompile(`.+\/.+\.[^\.\/]`)
 
+// ConstraintAppearsImported checks a constraints against a regular expression
+// to loosely tell if it follows an imported type pattern
 func ConstraintAppearsImported(constraint string) bool {
 	return appearsImportedRegex.Match([]byte(constraint))
 }
