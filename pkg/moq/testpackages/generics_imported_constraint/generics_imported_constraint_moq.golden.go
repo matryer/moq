@@ -5,22 +5,21 @@ package generics_imported_constraint
 
 import (
 	"context"
-	"github.com/matryer/moq/pkg/moq/testpackages/generics_imported_constraint"
 	"github.com/matryer/moq/pkg/moq/testpackages/generics_imported_constraint/extern"
 	"github.com/matryer/moq/pkg/moq/testpackages/generics_imported_constraint/extern2"
 	"io/fs"
 	"sync"
 )
 
-// Ensure, that GenericStore1Mock does implement generics_imported_constraint.GenericStore1.
+// Ensure, that GenericStore1Mock does implement GenericStore1.
 // If this is not the case, regenerate this file with moq.
-var _ generics_imported_constraint.GenericStore1[*extern2.SomeType, *fs.PathError, fs.PathError, extern.Local, *extern2.SomeType] = &GenericStore1Mock[*extern2.SomeType, *fs.PathError, fs.PathError, extern.Local, *extern2.SomeType]{}
+var _ GenericStore1[*extern2.SomeType, *fs.PathError, fs.PathError, extern.Local, *extern2.SomeType] = &GenericStore1Mock[*extern2.SomeType, *fs.PathError, fs.PathError, extern.Local, *extern2.SomeType]{}
 
-// GenericStore1Mock is a mock implementation of generics_imported_constraint.GenericStore1.
+// GenericStore1Mock is a mock implementation of GenericStore1.
 //
 //	func TestSomethingThatUsesGenericStore1(t *testing.T) {
 //
-//		// make and configure a mocked generics_imported_constraint.GenericStore1
+//		// make and configure a mocked GenericStore1
 //		mockedGenericStore1 := &GenericStore1Mock{
 //			EetFunc: func(ctx context.Context, handler E) error {
 //				panic("mock out the Eet method")
@@ -39,7 +38,7 @@ var _ generics_imported_constraint.GenericStore1[*extern2.SomeType, *fs.PathErro
 //			},
 //		}
 //
-//		// use mockedGenericStore1 in code that requires generics_imported_constraint.GenericStore1
+//		// use mockedGenericStore1 in code that requires GenericStore1
 //		// and then make assertions.
 //
 //	}

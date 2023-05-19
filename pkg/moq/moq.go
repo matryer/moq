@@ -129,7 +129,7 @@ func (m *Mocker) typeParams(tparams *types.TypeParamList) []template.TypeParamDa
 		typeParam := types.NewParam(token.Pos(i), tp.Obj().Pkg(), tp.Obj().Name(), tp.Constraint())
 
 		constraint := explicitConstraintType(typeParam)
-		if registry.ConstraintAppearsImported(constraint.String()) {
+		if constraint != nil && registry.ConstraintAppearsImported(constraint.String()) {
 			// generate a new type
 			t := registry.NewGenericConstraint(constraint.String())
 
