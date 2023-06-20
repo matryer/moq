@@ -390,6 +390,12 @@ func TestMockGolden(t *testing.T) {
 			goldenFile: filepath.Join("testpackages/generics", "generics_moq.golden.go"),
 		},
 		{
+			name:       "Generic Return Argument Type",
+			cfg:        Config{SrcDir: "testpackages/genericreturn"},
+			interfaces: []string{"IFooBar"},
+			goldenFile: filepath.Join("testpackages/genericreturn", "genericreturn.golden.go"),
+		},
+		{
 			name:       "TransientImport",
 			cfg:        Config{SrcDir: "testpackages/transientimport"},
 			interfaces: []string{"Transient"},
