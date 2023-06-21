@@ -3,7 +3,7 @@ name: build
 on:
   push:
     tags: [v*]
-    branches: [master]
+    branches: [main]
   pull_request:
 
 jobs:
