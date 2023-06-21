@@ -665,7 +665,8 @@ func TestParseError(t *testing.T) {
 		t.Errorf("expected error but got nil")
 		return
 	}
-	if !strings.Contains(err.Error(), `could not import github.com/matryer/notexist (invalid package name: "")`) {
+	// The first clause is the common error. Only in go version 1.19.10 the error differs
+	if !strings.Contains(err.Error(), `could not import github.com/matryer/notexist (invalid package name: "")`) && !strings.Contains(err.Error(), "stderr: go build github.com/matryer/notexist") {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
 }
