@@ -199,6 +199,27 @@ func TestMoqSkipEnsure(t *testing.T) {
 	}
 }
 
+func TestMoqWritePkgComment(t *testing.T) {
+	m, err := New(Config{SrcDir: "testpackages/example", WritePkgComment: true})
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "PersonStore")
+	if err != nil {
+		t.Errorf("m.Mock: %s", err)
+	}
+	s := buf.String()
+
+	want := "// github.com/matryer/moq\n\n" +
+		"// Package example is a generated Moq package.\n" +
+		"package example"
+
+	if !strings.Contains(s, want) {
+		t.Errorf("expected but missing: \"%s\"", want)
+	}
+}
+
 func TestNotCreatingEmptyDirWhenPkgIsGiven(t *testing.T) {
 	m, err := New(Config{SrcDir: "testpackages/example", PkgName: "different"})
 	if err != nil {

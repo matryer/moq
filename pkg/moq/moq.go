@@ -23,12 +23,13 @@ type Mocker struct {
 // Config specifies details about how interfaces should be mocked.
 // SrcDir is the only field which needs be specified.
 type Config struct {
-	SrcDir     string
-	PkgName    string
-	Formatter  string
-	StubImpl   bool
-	SkipEnsure bool
-	WithResets bool
+	SrcDir          string
+	PkgName         string
+	Formatter       string
+	StubImpl        bool
+	SkipEnsure      bool
+	WithResets      bool
+	WritePkgComment bool
 }
 
 // New makes a new Mocker for the specified package directory.
@@ -78,11 +79,12 @@ func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
 	}
 
 	data := template.Data{
-		PkgName:    m.mockPkgName(),
-		Mocks:      mocks,
-		StubImpl:   m.cfg.StubImpl,
-		SkipEnsure: m.cfg.SkipEnsure,
-		WithResets: m.cfg.WithResets,
+		PkgName:         m.mockPkgName(),
+		Mocks:           mocks,
+		StubImpl:        m.cfg.StubImpl,
+		SkipEnsure:      m.cfg.SkipEnsure,
+		WithResets:      m.cfg.WithResets,
+		WritePkgComment: m.cfg.WritePkgComment,
 	}
 
 	if data.MocksSomeMethod() {

@@ -21,8 +21,8 @@ $ go install github.com/matryer/moq@latest
 ```
 
 Note that Go 1.18+ is needed for installing from source. For using Moq with
-older Go versions, use the pre-built binaries published with 
-[Moq releases](https://github.com/matryer/moq/releases). 
+older Go versions, use the pre-built binaries published with
+[Moq releases](https://github.com/matryer/moq/releases).
 
 ### Usage
 
@@ -44,6 +44,8 @@ moq [flags] source-dir interface [interface2 [interface3 [...]]]
     	show the version for moq
   -with-resets
     	generate functions to facilitate resetting calls made to a mock
+  -write-pkg-comment
+    	write package documentation comment (default false)
 
 Specifying an alias for the mock is also supported with the format 'interface:alias'
 
@@ -134,4 +136,3 @@ The Moq project (and all code) is licensed under the [MIT License](LICENSE).
 Moq was created by [Mat Ryer](https://twitter.com/matryer) and [David Hernandez](https://github.com/dahernan), with ideas lovingly stolen from [Ernesto Jimenez](https://github.com/ernesto-jimenez). Featuring a major refactor by @sudo-suhas, as well as lots of other contributors.
 
 The Moq logo was created by [Chris Ryer](http://chrisryer.co.uk) and is licensed under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/).
-
