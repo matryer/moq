@@ -14,12 +14,16 @@ builds:
   ldflags:
   - -X main.Version={{.Version}}
 archives:
-- replacements:
-    darwin: macOS
-    linux: Linux
-    windows: Windows
-    386: i386
-    amd64: x86_64
+- name_template: >-
+    {{- .ProjectName }}_
+    {{- if eq .Os "darwin"}}macOS
+    {{- else if eq .Os "linux"}}Linux
+    {{- else if eq .Os "windows"}}Windows
+    {{- else }}{{ .Os }}{{ end }}_
+    {{- if eq .Arch "amd64" }}x86_64
+    {{- else if eq .Arch "386" }}i386
+    {{- else }}{{ .Arch }}{{ end }}
+    {{- if .Arm }}v{{ .Arm }}{{ end -}}
 universal_binaries:
   - replace: false
 checksum:

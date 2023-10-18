@@ -24,7 +24,7 @@ $ git push origin v0.1.0
 Then:
 
 ```bash
-GITHUB_TOKEN=xxx goreleaser --rm-dist
+GITHUB_TOKEN=xxx goreleaser --clean
 ```
 
 ## Testing
@@ -32,5 +32,5 @@ GITHUB_TOKEN=xxx goreleaser --rm-dist
 To test and verify changes to Go Releaser config, use the following:
 
 ```bash
-goreleaser --snapshot --skip-publish --rm-dist
+goreleaser --snapshot --skip=publish --clean
 ```
