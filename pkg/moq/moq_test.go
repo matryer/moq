@@ -623,21 +623,24 @@ func TestGoGenerateVendoredPackages(t *testing.T) {
 		t.Errorf("StdoutPipe: %s", err)
 	}
 	defer stdout.Close()
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		t.Errorf("StderrPipe: %s", err)
+	}
+	defer stderr.Close()
 	err = cmd.Start()
 	if err != nil {
 		t.Errorf("Start: %s", err)
 	}
-	buf := bytes.NewBuffer(nil)
-	io.Copy(buf, stdout)
+	stdoutBuf := bytes.NewBuffer(nil)
+	io.Copy(stdoutBuf, stdout)
+	stderrBuf := bytes.NewBuffer(nil)
+	io.Copy(stderrBuf, stderr)
 	err = cmd.Wait()
 	if err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
-			t.Errorf("Wait: %s %s", exitErr, string(exitErr.Stderr))
-		} else {
-			t.Errorf("Wait: %s", err)
-		}
+		t.Errorf("Wait: %s %s", err, stderrBuf.String())
 	}
-	s := buf.String()
+	s := stdoutBuf.String()
 	if strings.Contains(s, `vendor/`) {
 		t.Error("contains vendor directory in import path")
 	}
