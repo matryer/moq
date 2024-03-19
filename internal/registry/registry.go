@@ -92,6 +92,10 @@ func (r *Registry) AddImport(pkg *types.Package) *Package {
 		return nil
 	}
 
+	if strings.Contains(pkg.Path(), "moq_force_local_interface_mode_") {
+		path = pkg.Imports()[0].Path() // moq_force_local_interface_mode only have 1 import dependency and is the one we are looking for
+	}
+
 	if imprt, ok := r.imports[path]; ok {
 		return imprt
 	}
@@ -111,6 +115,14 @@ func (r *Registry) AddImport(pkg *types.Package) *Package {
 func (r Registry) Imports() []*Package {
 	imports := make([]*Package, 0, len(r.imports))
 	for _, imprt := range r.imports {
+		if strings.Contains(imprt.Path(), "moq_force_local_interface_mode_") {
+			imports = append(imports, &Package{
+				pkg:   imprt.pkg.Imports()[0], // moq_force_local_interface_mode only have 1 dependency
+				Alias: imprt.pkg.Imports()[0].Name(),
+			})
+
+			continue
+		}
 		imports = append(imports, imprt)
 	}
 	sort.Slice(imports, func(i, j int) bool {
