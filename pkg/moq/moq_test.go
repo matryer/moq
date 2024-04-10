@@ -615,6 +615,22 @@ func TestEmptyInterface(t *testing.T) {
 	}
 }
 
+func TestEmptyInterfaceWithBuildTag(t *testing.T) {
+	m, err := New(Config{SrcDir: "testpackages/emptyinterface", BuildTag: "test"})
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Empty")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	s := buf.String()
+	if !strings.HasPrefix(s, "//go:build test\n\n") {
+		t.Error("missing `//go:build test` prefix on:", s)
+	}
+}
+
 func TestGoGenerateVendoredPackages(t *testing.T) {
 	cmd := exec.Command("go", "generate", "./...")
 	cmd.Dir = "testpackages/gogenvendoring"
