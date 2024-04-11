@@ -41,7 +41,7 @@ func main() {
 	flag.BoolVar(&flags.remove, "rm", false, "first remove output file, if it exists")
 	flag.BoolVar(&flags.withResets, "with-resets", false,
 		"generate functions to facilitate resetting calls made to a mock")
-	flag.StringVar(&flags.buildTag, "build-tag", "go:build tag to inject into the mock, e.g. `test`", "")
+	flag.StringVar(&flags.buildTag, "build-tag", "", "go:build tag to inject into the mock, e.g. `test`")
 
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
