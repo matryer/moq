@@ -424,7 +424,8 @@ func TestMockGolden(t *testing.T) {
 				t.Errorf("m.Mock: %s", err)
 				return
 			}
-
+			// todo: delete this line
+			fmt.Println(buf.String())
 			if err := matchGoldenFile(tc.goldenFile, buf.Bytes()); err != nil {
 				t.Errorf("check golden file: %s", err)
 			}
@@ -481,6 +482,7 @@ func matchGoldenFile(goldenFile string, actual []byte) error {
 	}
 
 	// Normalise newlines
+
 	actual, expected = normalize(actual), normalize(expected)
 	if !bytes.Equal(expected, actual) {
 		diff, err := difflib.GetUnifiedDiffString(difflib.UnifiedDiff{

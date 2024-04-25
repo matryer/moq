@@ -26,6 +26,7 @@ var _ Swallower = &SwallowerMock{}
 //		// and then make assertions.
 //
 //	}
+
 type SwallowerMock struct {
 	// SwallowFunc mocks the Swallow method.
 	SwallowFunc func(s string)
@@ -33,12 +34,15 @@ type SwallowerMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// Swallow holds details about calls to the Swallow method.
-		Swallow []struct {
-			// S is the s argument value.
-			S string
-		}
+		Swallow []SwallowerMockSwallowCalls
 	}
 	lockSwallow sync.RWMutex
+}
+
+// SwallowerMockSwallowCalls holds details about calls to the Swallow method.
+type SwallowerMockSwallowCalls struct {
+	// S is the s argument value.
+	S string
 }
 
 // Swallow calls SwallowFunc.
@@ -46,9 +50,7 @@ func (mock *SwallowerMock) Swallow(s string) {
 	if mock.SwallowFunc == nil {
 		panic("SwallowerMock.SwallowFunc: method is nil but Swallower.Swallow was just called")
 	}
-	callInfo := struct {
-		S string
-	}{
+	callInfo := SwallowerMockSwallowCalls{
 		S: s,
 	}
 	mock.lockSwallow.Lock()
@@ -61,12 +63,8 @@ func (mock *SwallowerMock) Swallow(s string) {
 // Check the length with:
 //
 //	len(mockedSwallower.SwallowCalls())
-func (mock *SwallowerMock) SwallowCalls() []struct {
-	S string
-} {
-	var calls []struct {
-		S string
-	}
+func (mock *SwallowerMock) SwallowCalls() []SwallowerMockSwallowCalls {
+	var calls []SwallowerMockSwallowCalls
 	mock.lockSwallow.RLock()
 	calls = mock.calls.Swallow
 	mock.lockSwallow.RUnlock()
