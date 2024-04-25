@@ -49,6 +49,7 @@ import (
 	//		// and then make assertions.
 	//
 	//	}
+	{{/* Begin of main type struct */}}
 	type {{.MockName}}
 	{{- if .TypeParams -}}
 		[{{- range $index, $param := .TypeParams}}
@@ -75,6 +76,20 @@ import (
 		lock{{.Name}} {{$.Imports | SyncPkgQualifier}}.RWMutex
 	{{- end}}
 	}
+	{{/* End of main type struct */}}
+	{{/* Begin of calls type struct */}}
+	{{- range .Methods}}
+		// {{$mock.MockName}}{{.Name}}Calls holds details about calls to the {{.Name}} method.
+		type {{$mock.MockName}}{{.Name}}Calls struct {
+		{{- range .Params}}
+			// {{.Name | Exported}} is the {{.Name}} argument value.
+			{{.Name | Exported}} {{.TypeString}}
+		{{- end}}
+		}
+	{{- end}}
+	{{/* End of main type */}}
+
+	{{/* Begin of functions */}}
 	{{range .Methods}}
 		// {{.Name}} calls {{.Name}}Func.
 		func (mock *{{$mock.MockName}}
@@ -167,4 +182,5 @@ import (
 		{{end -}}
 		}
 	{{end -}}
+	{{/* End of functions */}}
 {{end -}}
