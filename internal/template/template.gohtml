@@ -99,11 +99,7 @@ import (
 			panic("{{$mock.MockName}}.{{.Name}}Func: method is nil but {{$mock.InterfaceName}}.{{.Name}} was just called")
 			}
 		{{- end}}
-		callInfo := struct {
-		{{- range .Params}}
-			{{.Name | Exported}} {{.TypeString}}
-		{{- end}}
-		}{
+		callInfo := {{$mock.MockName}}{{.Name}}Calls {
 		{{- range .Params}}
 			{{.Name | Exported}}: {{.Name}},
 		{{- end}}
@@ -143,16 +139,8 @@ import (
 				{{- if $index}}, {{end}}{{$param.Name | Exported}}
 			{{- end -}}]
 		{{- end -}}
-		) {{.Name}}Calls() []struct {
-		{{- range .Params}}
-			{{.Name | Exported}} {{.TypeString}}
-		{{- end}}
-		} {
-		var calls []struct {
-		{{- range .Params}}
-			{{.Name | Exported}} {{.TypeString}}
-		{{- end}}
-		}
+		) {{.Name}}Calls() []{{$mock.MockName}}{{.Name}}Calls {
+		var calls []{{$mock.MockName}}{{.Name}}Calls
 		mock.lock{{.Name}}.RLock()
 		calls = mock.calls.{{.Name}}
 		mock.lock{{.Name}}.RUnlock()
