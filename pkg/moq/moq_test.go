@@ -79,6 +79,8 @@ func TestMoqWithStaticCheck(t *testing.T) {
 		"mock.lockGet.Unlock()",
 		"// ID is the id argument value",
 	}
+	//
+	fmt.Println(s)
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
 			t.Errorf("expected but missing: \"%s\"", str)
