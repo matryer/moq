@@ -64,12 +64,7 @@ import (
 	calls struct {
 	{{- range .Methods}}
 		// {{.Name}} holds details about calls to the {{.Name}} method.
-		{{.Name}} []struct {
-		{{- range .Params}}
-			// {{.Name | Exported}} is the {{.Name}} argument value.
-			{{.Name | Exported}} {{.TypeString}}
-		{{- end}}
-		}
+		{{.Name}} []{{$mock.MockName}}{{.Name}}Calls
 	{{- end}}
 	}
 	{{- range .Methods}}
