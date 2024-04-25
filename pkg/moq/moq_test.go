@@ -43,6 +43,8 @@ func TestMoq(t *testing.T) {
 		"mock.lockGet.Unlock()",
 		"// ID is the id argument value",
 	}
+	// TODO: check the result here:
+	fmt.Println(s)
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
 			t.Errorf("expected but missing: \"%s\"", str)
