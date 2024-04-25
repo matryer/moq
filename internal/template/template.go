@@ -83,6 +83,7 @@ var _ {{$.SrcPkgQualifier}}{{.InterfaceName -}}
 //		// and then make assertions.
 //
 //	}
+{{/* Begin of main type struct */}}
 type {{.MockName}} 
 {{- if .TypeParams -}}
 	[{{- range $index, $param := .TypeParams}}
@@ -97,18 +98,28 @@ type {{.MockName}}
 	calls struct {
 {{- range .Methods}}
 		// {{.Name}} holds details about calls to the {{.Name}} method.
-		{{.Name}} []struct {
-			{{- range .Params}}
-			// {{.Name | Exported}} is the {{.Name}} argument value.
-			{{.Name | Exported}} {{.TypeString}}
-			{{- end}}
-		}
+		{{.Name}} []{{$mock.MockName}}{{.Name}}Calls
 {{- end}}
 	}
 {{- range .Methods}}
 	lock{{.Name}} {{$.Imports | SyncPkgQualifier}}.RWMutex
 {{- end}}
 }
+{{/* End of main type struct */}}
+
+{{/* Begin of calls type struct */}}
+{{- range .Methods}}
+		// {{$mock.MockName}}{{.Name}}Calls holds details about calls to the {{.Name}} method.
+		type {{$mock.MockName}}{{.Name}}Calls []struct {
+			{{- range .Params}}
+			// {{.Name | Exported}} is the {{.Name}} argument value.
+			{{.Name | Exported}} {{.TypeString}}
+			{{- end}}
+		}
+{{- end}}
+{{/* End of main type */}}
+
+
 {{range .Methods}}
 // {{.Name}} calls {{.Name}}Func.
 func (mock *{{$mock.MockName}}
@@ -123,11 +134,7 @@ func (mock *{{$mock.MockName}}
 		panic("{{$mock.MockName}}.{{.Name}}Func: method is nil but {{$mock.InterfaceName}}.{{.Name}} was just called")
 	}
 {{- end}}
-	callInfo := struct {
-		{{- range .Params}}
-		{{.Name | Exported}} {{.TypeString}}
-		{{- end}}
-	}{
+	callInfo := {{$mock.MockName}}{{.Name}}Calls{
 		{{- range .Params}}
 		{{.Name | Exported}}: {{.Name}},
 		{{- end}}
