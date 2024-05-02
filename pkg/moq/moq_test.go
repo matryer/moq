@@ -308,6 +308,12 @@ func TestMockGolden(t *testing.T) {
 		goldenFile string
 	}{
 		{
+			name:       "PersonStore",
+			cfg:        Config{SrcDir: "testpackages/example"},
+			interfaces: []string{"PersonStore"},
+			goldenFile: filepath.Join("testpackages/example", "example.golden.go"),
+		},
+		{
 			// Tests to ensure slice return data type works as expected.
 			// See https://github.com/matryer/moq/issues/124
 			name:       "SliceResult",
