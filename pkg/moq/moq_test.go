@@ -43,8 +43,6 @@ func TestMoq(t *testing.T) {
 		"mock.lockGet.Unlock()",
 		"// ID is the id argument value",
 	}
-	// TODO: check the result here:
-	fmt.Println(s)
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
 			t.Errorf("expected but missing: \"%s\"", str)
@@ -79,8 +77,6 @@ func TestMoqWithStaticCheck(t *testing.T) {
 		"mock.lockGet.Unlock()",
 		"// ID is the id argument value",
 	}
-	//
-	fmt.Println(s)
 	for _, str := range strs {
 		if !strings.Contains(s, str) {
 			t.Errorf("expected but missing: \"%s\"", str)
@@ -486,7 +482,6 @@ func matchGoldenFile(goldenFile string, actual []byte) error {
 	}
 
 	// Normalise newlines
-
 	actual, expected = normalize(actual), normalize(expected)
 	if !bytes.Equal(expected, actual) {
 		diff, err := difflib.GetUnifiedDiffString(difflib.UnifiedDiff{
