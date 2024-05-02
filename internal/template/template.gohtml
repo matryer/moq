@@ -65,6 +65,11 @@ import (
 	{{- range .Methods}}
 		// {{.Name}} holds details about calls to the {{.Name}} method.
 		{{.Name}} []{{$mock.MockName}}{{.Name}}Calls
+		{{- if $mock.TypeParams -}}
+			[{{- range $index, $param := $mock.TypeParams}}
+				{{- if $index}}, {{end}}{{$param.Name | Exported}}
+			{{- end -}}]
+		{{- end }}
 	{{- end}}
 	}
 	{{- range .Methods}}
@@ -75,7 +80,12 @@ import (
 	{{/* Begin of calls type struct */}}
 	{{- range .Methods}}
 		// {{$mock.MockName}}{{.Name}}Calls holds details about calls to the {{.Name}} method.
-		type {{$mock.MockName}}{{.Name}}Calls struct {
+		type {{$mock.MockName}}{{.Name}}Calls
+		{{- if $mock.TypeParams -}}
+			[{{- range $index, $param := $mock.TypeParams}}
+				{{- if $index}}, {{end}}{{$param.Name | Exported}} {{$param.TypeString}}
+			{{- end -}}]
+		{{- end }} struct  {
 		{{- range .Params}}
 			// {{.Name | Exported}} is the {{.Name}} argument value.
 			{{.Name | Exported}} {{.TypeString}}
@@ -99,7 +109,12 @@ import (
 			panic("{{$mock.MockName}}.{{.Name}}Func: method is nil but {{$mock.InterfaceName}}.{{.Name}} was just called")
 			}
 		{{- end}}
-		callInfo := {{$mock.MockName}}{{.Name}}Calls {
+		callInfo := {{$mock.MockName}}{{.Name}}Calls
+		{{- if $mock.TypeParams -}}
+			[{{- range $index, $param := $mock.TypeParams}}
+				{{- if $index}}, {{end}}{{$param.Name | Exported}}
+			{{- end -}}]
+		{{- end }}  {
 		{{- range .Params}}
 			{{.Name | Exported}}: {{.Name}},
 		{{- end}}
@@ -139,8 +154,18 @@ import (
 				{{- if $index}}, {{end}}{{$param.Name | Exported}}
 			{{- end -}}]
 		{{- end -}}
-		) {{.Name}}Calls() []{{$mock.MockName}}{{.Name}}Calls {
+		) {{.Name}}Calls() []{{$mock.MockName}}{{.Name}}Calls
+		{{- if $mock.TypeParams -}}
+			[{{- range $index, $param := $mock.TypeParams}}
+				{{- if $index}}, {{end}}{{$param.Name | Exported}}
+			{{- end -}}]
+		{{- end }}  {
 		var calls []{{$mock.MockName}}{{.Name}}Calls
+		{{- if $mock.TypeParams -}}
+			[{{- range $index, $param := $mock.TypeParams}}
+				{{- if $index}}, {{end}}{{$param.Name | Exported}}
+			{{- end -}}]
+		{{- end }}
 		mock.lock{{.Name}}.RLock()
 		calls = mock.calls.{{.Name}}
 		mock.lock{{.Name}}.RUnlock()

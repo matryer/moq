@@ -3,6 +3,7 @@ package moq
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"go/token"
 	"go/types"
 	"io"
@@ -102,7 +103,9 @@ func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
 	if err := m.tmpl.Execute(&buf, data); err != nil {
 		return err
 	}
-
+	//
+	fmt.Println(buf.String())
+	//
 	formatted, err := m.format(buf.Bytes())
 	if err != nil {
 		return err
