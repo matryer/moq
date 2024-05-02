@@ -27,6 +27,7 @@ var _ Syncer = &SyncerMock{}
 //		// and then make assertions.
 //
 //	}
+
 type SyncerMock struct {
 	// BlahFunc mocks the Blah method.
 	BlahFunc func(s sync.Thing, wg *stdsync.WaitGroup)
@@ -34,14 +35,17 @@ type SyncerMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// Blah holds details about calls to the Blah method.
-		Blah []struct {
-			// S is the s argument value.
-			S sync.Thing
-			// Wg is the wg argument value.
-			Wg *stdsync.WaitGroup
-		}
+		Blah []SyncerMockBlahCalls
 	}
 	lockBlah stdsync.RWMutex
+}
+
+// SyncerMockBlahCalls holds details about calls to the Blah method.
+type SyncerMockBlahCalls struct {
+	// S is the s argument value.
+	S sync.Thing
+	// Wg is the wg argument value.
+	Wg *stdsync.WaitGroup
 }
 
 // Blah calls BlahFunc.
@@ -49,10 +53,7 @@ func (mock *SyncerMock) Blah(s sync.Thing, wg *stdsync.WaitGroup) {
 	if mock.BlahFunc == nil {
 		panic("SyncerMock.BlahFunc: method is nil but Syncer.Blah was just called")
 	}
-	callInfo := struct {
-		S  sync.Thing
-		Wg *stdsync.WaitGroup
-	}{
+	callInfo := SyncerMockBlahCalls{
 		S:  s,
 		Wg: wg,
 	}
@@ -66,14 +67,8 @@ func (mock *SyncerMock) Blah(s sync.Thing, wg *stdsync.WaitGroup) {
 // Check the length with:
 //
 //	len(mockedSyncer.BlahCalls())
-func (mock *SyncerMock) BlahCalls() []struct {
-	S  sync.Thing
-	Wg *stdsync.WaitGroup
-} {
-	var calls []struct {
-		S  sync.Thing
-		Wg *stdsync.WaitGroup
-	}
+func (mock *SyncerMock) BlahCalls() []SyncerMockBlahCalls {
+	var calls []SyncerMockBlahCalls
 	mock.lockBlah.RLock()
 	calls = mock.calls.Blah
 	mock.lockBlah.RUnlock()

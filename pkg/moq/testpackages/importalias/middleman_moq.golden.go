@@ -28,6 +28,7 @@ var _ MiddleMan = &MiddleManMock{}
 //		// and then make assertions.
 //
 //	}
+
 type MiddleManMock struct {
 	// ConnectFunc mocks the Connect method.
 	ConnectFunc func(src srcclient.Client, tgt tgtclient.Client)
@@ -35,14 +36,17 @@ type MiddleManMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// Connect holds details about calls to the Connect method.
-		Connect []struct {
-			// Src is the src argument value.
-			Src srcclient.Client
-			// Tgt is the tgt argument value.
-			Tgt tgtclient.Client
-		}
+		Connect []MiddleManMockConnectCalls
 	}
 	lockConnect sync.RWMutex
+}
+
+// MiddleManMockConnectCalls holds details about calls to the Connect method.
+type MiddleManMockConnectCalls struct {
+	// Src is the src argument value.
+	Src srcclient.Client
+	// Tgt is the tgt argument value.
+	Tgt tgtclient.Client
 }
 
 // Connect calls ConnectFunc.
@@ -50,10 +54,7 @@ func (mock *MiddleManMock) Connect(src srcclient.Client, tgt tgtclient.Client) {
 	if mock.ConnectFunc == nil {
 		panic("MiddleManMock.ConnectFunc: method is nil but MiddleMan.Connect was just called")
 	}
-	callInfo := struct {
-		Src srcclient.Client
-		Tgt tgtclient.Client
-	}{
+	callInfo := MiddleManMockConnectCalls{
 		Src: src,
 		Tgt: tgt,
 	}
@@ -67,14 +68,8 @@ func (mock *MiddleManMock) Connect(src srcclient.Client, tgt tgtclient.Client) {
 // Check the length with:
 //
 //	len(mockedMiddleMan.ConnectCalls())
-func (mock *MiddleManMock) ConnectCalls() []struct {
-	Src srcclient.Client
-	Tgt tgtclient.Client
-} {
-	var calls []struct {
-		Src srcclient.Client
-		Tgt tgtclient.Client
-	}
+func (mock *MiddleManMock) ConnectCalls() []MiddleManMockConnectCalls {
+	var calls []MiddleManMockConnectCalls
 	mock.lockConnect.RLock()
 	calls = mock.calls.Connect
 	mock.lockConnect.RUnlock()
