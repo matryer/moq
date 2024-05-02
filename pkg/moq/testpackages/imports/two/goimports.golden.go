@@ -31,6 +31,7 @@ var _ DoSomething = &goimportsMock{}
 //		// and then make assertions.
 //
 //	}
+
 type goimportsMock struct {
 	// AnotherFunc mocks the Another method.
 	AnotherFunc func(thing one.Thing) error
@@ -41,18 +42,24 @@ type goimportsMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// Another holds details about calls to the Another method.
-		Another []struct {
-			// Thing is the thing argument value.
-			Thing one.Thing
-		}
+		Another []goimportsMockAnotherCalls
 		// Do holds details about calls to the Do method.
-		Do []struct {
-			// Thing is the thing argument value.
-			Thing one.Thing
-		}
+		Do []goimportsMockDoCalls
 	}
 	lockAnother sync.RWMutex
 	lockDo      sync.RWMutex
+}
+
+// goimportsMockAnotherCalls holds details about calls to the Another method.
+type goimportsMockAnotherCalls struct {
+	// Thing is the thing argument value.
+	Thing one.Thing
+}
+
+// goimportsMockDoCalls holds details about calls to the Do method.
+type goimportsMockDoCalls struct {
+	// Thing is the thing argument value.
+	Thing one.Thing
 }
 
 // Another calls AnotherFunc.
@@ -60,9 +67,7 @@ func (mock *goimportsMock) Another(thing one.Thing) error {
 	if mock.AnotherFunc == nil {
 		panic("goimportsMock.AnotherFunc: method is nil but DoSomething.Another was just called")
 	}
-	callInfo := struct {
-		Thing one.Thing
-	}{
+	callInfo := goimportsMockAnotherCalls{
 		Thing: thing,
 	}
 	mock.lockAnother.Lock()
@@ -75,12 +80,8 @@ func (mock *goimportsMock) Another(thing one.Thing) error {
 // Check the length with:
 //
 //	len(mockedDoSomething.AnotherCalls())
-func (mock *goimportsMock) AnotherCalls() []struct {
-	Thing one.Thing
-} {
-	var calls []struct {
-		Thing one.Thing
-	}
+func (mock *goimportsMock) AnotherCalls() []goimportsMockAnotherCalls {
+	var calls []goimportsMockAnotherCalls
 	mock.lockAnother.RLock()
 	calls = mock.calls.Another
 	mock.lockAnother.RUnlock()
@@ -92,9 +93,7 @@ func (mock *goimportsMock) Do(thing one.Thing) error {
 	if mock.DoFunc == nil {
 		panic("goimportsMock.DoFunc: method is nil but DoSomething.Do was just called")
 	}
-	callInfo := struct {
-		Thing one.Thing
-	}{
+	callInfo := goimportsMockDoCalls{
 		Thing: thing,
 	}
 	mock.lockDo.Lock()
@@ -107,12 +106,8 @@ func (mock *goimportsMock) Do(thing one.Thing) error {
 // Check the length with:
 //
 //	len(mockedDoSomething.DoCalls())
-func (mock *goimportsMock) DoCalls() []struct {
-	Thing one.Thing
-} {
-	var calls []struct {
-		Thing one.Thing
-	}
+func (mock *goimportsMock) DoCalls() []goimportsMockDoCalls {
+	var calls []goimportsMockDoCalls
 	mock.lockDo.RLock()
 	calls = mock.calls.Do
 	mock.lockDo.RUnlock()

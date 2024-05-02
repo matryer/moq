@@ -424,15 +424,6 @@ func TestMockGolden(t *testing.T) {
 				t.Errorf("m.Mock: %s", err)
 				return
 			}
-			// todo: delete this line
-			fmt.Println(buf.String())
-			// write to golden file
-			err = os.WriteFile(tc.goldenFile, buf.Bytes(), 0644)
-			if err != nil {
-				t.Errorf("error writing: %s", err)
-				return
-			}
-			// todo
 			if err := matchGoldenFile(tc.goldenFile, buf.Bytes()); err != nil {
 				t.Errorf("check golden file: %s", err)
 			}

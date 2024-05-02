@@ -30,6 +30,7 @@ var _ DoSomething = &noopMock{}
 //		// and then make assertions.
 //
 //	}
+
 type noopMock struct {
 	// AnotherFunc mocks the Another method.
 	AnotherFunc func(thing one.Thing) error
@@ -40,18 +41,24 @@ type noopMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// Another holds details about calls to the Another method.
-		Another []struct {
-			// Thing is the thing argument value.
-			Thing one.Thing
-		}
+		Another []noopMockAnotherCalls
 		// Do holds details about calls to the Do method.
-		Do []struct {
-			// Thing is the thing argument value.
-			Thing one.Thing
-		}
+		Do []noopMockDoCalls
 	}
 	lockAnother sync.RWMutex
-	lockDo sync.RWMutex
+	lockDo      sync.RWMutex
+}
+
+// noopMockAnotherCalls holds details about calls to the Another method.
+type noopMockAnotherCalls struct {
+	// Thing is the thing argument value.
+	Thing one.Thing
+}
+
+// noopMockDoCalls holds details about calls to the Do method.
+type noopMockDoCalls struct {
+	// Thing is the thing argument value.
+	Thing one.Thing
 }
 
 // Another calls AnotherFunc.
@@ -59,9 +66,7 @@ func (mock *noopMock) Another(thing one.Thing) error {
 	if mock.AnotherFunc == nil {
 		panic("noopMock.AnotherFunc: method is nil but DoSomething.Another was just called")
 	}
-	callInfo := struct {
-		Thing one.Thing
-	}{
+	callInfo := noopMockAnotherCalls{
 		Thing: thing,
 	}
 	mock.lockAnother.Lock()
@@ -74,12 +79,8 @@ func (mock *noopMock) Another(thing one.Thing) error {
 // Check the length with:
 //
 //	len(mockedDoSomething.AnotherCalls())
-func (mock *noopMock) AnotherCalls() []struct {
-		Thing one.Thing
-	} {
-	var calls []struct {
-		Thing one.Thing
-	}
+func (mock *noopMock) AnotherCalls() []noopMockAnotherCalls {
+	var calls []noopMockAnotherCalls
 	mock.lockAnother.RLock()
 	calls = mock.calls.Another
 	mock.lockAnother.RUnlock()
@@ -91,9 +92,7 @@ func (mock *noopMock) Do(thing one.Thing) error {
 	if mock.DoFunc == nil {
 		panic("noopMock.DoFunc: method is nil but DoSomething.Do was just called")
 	}
-	callInfo := struct {
-		Thing one.Thing
-	}{
+	callInfo := noopMockDoCalls{
 		Thing: thing,
 	}
 	mock.lockDo.Lock()
@@ -106,12 +105,8 @@ func (mock *noopMock) Do(thing one.Thing) error {
 // Check the length with:
 //
 //	len(mockedDoSomething.DoCalls())
-func (mock *noopMock) DoCalls() []struct {
-		Thing one.Thing
-	} {
-	var calls []struct {
-		Thing one.Thing
-	}
+func (mock *noopMock) DoCalls() []noopMockDoCalls {
+	var calls []noopMockDoCalls
 	mock.lockDo.RLock()
 	calls = mock.calls.Do
 	mock.lockDo.RUnlock()
