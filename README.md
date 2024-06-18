@@ -121,7 +121,7 @@ The mocked structure implements the interface, where each method calls the assoc
 * Name arguments in the interface for a better experience
 * Use closured variables inside your test function to capture details about the calls to the methods
 * Use `.MethodCalls()` to track the calls
-* Use `.ResetCalls()` to reset calls within an invidual mock's context
+* Use `.ResetCalls()` to reset calls within an individual mock's context
 * Use `go:generate` to invoke the `moq` command
 * If Moq fails with a `go/format` error, it indicates the generated code was not valid.
   You can run the same command with `-fmt noop` to print the generated source code without attempting to format it.
