@@ -18,9 +18,9 @@ jobs:
         # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-expanding-configurations
         include:
           - os: windows-latest
-            go-version: 1.22.x
+            go-version: stable
           - os: macos-latest
-            go-version: 1.22.x
+            go-version: stable
 
     steps:
       - name: Checkout code
