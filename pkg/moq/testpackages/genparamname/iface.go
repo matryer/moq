@@ -12,10 +12,13 @@ import (
 )
 
 type (
-	Go     func()
+	// Go is a test function.
+	Go func()
+
 	myType struct{}
 )
 
+// Interface is a test interface.
 type Interface interface {
 	Method(
 		*myType,

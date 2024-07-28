@@ -1,5 +1,5 @@
 package anonimport
 
 import (
-	_ "context"
+	_ "context" // import for side effects
 )
