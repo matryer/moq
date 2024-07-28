@@ -8,6 +8,7 @@ import (
 	two "github.com/matryer/moq/pkg/moq/testpackages/transientimport/two/app/v1"
 )
 
+// Transient is a test interface.
 type Transient interface {
 	DoSomething(onev1.Zero, one.One, two.Two, three.Three, four.Four)
 }
