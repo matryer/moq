@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -464,14 +463,14 @@ func matchGoldenFile(goldenFile string, actual []byte) error {
 		if err := os.MkdirAll(filepath.Dir(goldenFile), 0o750); err != nil {
 			return fmt.Errorf("create dir: %s", err)
 		}
-		if err := ioutil.WriteFile(goldenFile, actual, 0o600); err != nil {
+		if err := os.WriteFile(goldenFile, actual, 0o600); err != nil {
 			return fmt.Errorf("write: %s", err)
 		}
 
 		return nil
 	}
 
-	expected, err := ioutil.ReadFile(goldenFile)
+	expected, err := os.ReadFile(goldenFile)
 	if err != nil {
 		return fmt.Errorf("read: %s: %s", goldenFile, err)
 	}
@@ -694,7 +693,7 @@ func TestMockError(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			err := m.Mock(ioutil.Discard, tc.namePair)
+			err := m.Mock(io.Discard, tc.namePair)
 			if err == nil {
 				t.Errorf("expected error but got nil")
 				return
