@@ -406,6 +406,12 @@ func TestMockGolden(t *testing.T) {
 			interfaces: []string{"ResetStore"},
 			goldenFile: filepath.Join("testpackages/withresets", "withresets_moq.golden.go"),
 		},
+		{
+			name:       "RangeNumber",
+			cfg:        Config{SrcDir: "testpackages/rangenum"},
+			interfaces: []string{"Magician"},
+			goldenFile: filepath.Join("testpackages/rangenum", "rangenum_moq.golden.go"),
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
