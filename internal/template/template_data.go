@@ -90,6 +90,7 @@ func (m MethodData) ReturnArgNameList() string {
 	return strings.Join(params, ", ")
 }
 
+// TypeParamData extends ParamData with a constraint.
 type TypeParamData struct {
 	ParamData
 	Constraint types.Type

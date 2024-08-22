@@ -8,6 +8,7 @@ type SomeType struct {
 	Truth bool
 }
 
+// SomeService is a test interface.
 type SomeService interface {
 	Get() SomeType
 }
