@@ -664,6 +664,22 @@ func TestImportedPackageWithSameName(t *testing.T) {
 	}
 }
 
+func TestImportedPackageWithTypeAlias(t *testing.T) {
+	m, err := New(Config{SrcDir: "testpackages/typealias"})
+	if err != nil {
+		t.Fatalf("moq.New: %s", err)
+	}
+	var buf bytes.Buffer
+	err = m.Mock(&buf, "Example")
+	if err != nil {
+		t.Errorf("mock error: %s", err)
+	}
+	s := buf.String()
+	if !strings.Contains(s, `a typealiastwo.AliasType`) {
+		t.Error("missing typealiastwo.AliasType")
+	}
+}
+
 func TestParseError(t *testing.T) {
 	_, err := New(Config{SrcDir: "testpackages/_parseerror/service"})
 	if err == nil {
