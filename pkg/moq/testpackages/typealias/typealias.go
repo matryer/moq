@@ -5,5 +5,5 @@ import (
 )
 
 type Example interface {
-	Do(a typealiastwo.AliasType) error
+	Do(a typealiastwo.AliasType, b typealiastwo.GenericAliasType) error
 }
