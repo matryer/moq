@@ -412,6 +412,12 @@ func TestMockGolden(t *testing.T) {
 			interfaces: []string{"Magician"},
 			goldenFile: filepath.Join("testpackages/rangenum", "rangenum_moq.golden.go"),
 		},
+		{
+			name:       "TypeAlias",
+			cfg:        Config{SrcDir: "testpackages/typealias"},
+			interfaces: []string{"Example"},
+			goldenFile: filepath.Join("testpackages/typealias", "typealias_moq.golden.go"),
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
