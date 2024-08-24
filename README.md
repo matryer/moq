@@ -17,7 +17,7 @@ You can read more in the [Meet Moq blog post](http://bit.ly/meetmoq).
 To start using latest released version of Moq, just run:
 
 ```
-$ go install github.com/matryer/moq@latest
+go install github.com/matryer/moq@latest
 ```
 
 Note that Go 1.18+ is needed for installing from source. For using Moq with
@@ -56,7 +56,7 @@ It needs to be a path to a directory and not the import statement for a Go packa
 In a command line:
 
 ```
-$ moq -out mocks_test.go . MyInterface
+moq -out mocks_test.go . MyInterface
 ```
 
 In code (for go generate):
