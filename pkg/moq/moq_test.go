@@ -412,6 +412,12 @@ func TestMockGolden(t *testing.T) {
 			interfaces: []string{"Magician"},
 			goldenFile: filepath.Join("testpackages/rangenum", "rangenum_moq.golden.go"),
 		},
+		{
+			name:       "TypeAlias",
+			cfg:        Config{SrcDir: "testpackages/typealias"},
+			interfaces: []string{"Example"},
+			goldenFile: filepath.Join("testpackages/typealias", "typealias_moq.golden.go"),
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -661,22 +667,6 @@ func TestImportedPackageWithSameName(t *testing.T) {
 	s := buf.String()
 	if !strings.Contains(s, `a samename.A`) {
 		t.Error("missing samename.A to address the struct A from the external package samename")
-	}
-}
-
-func TestImportedPackageWithTypeAlias(t *testing.T) {
-	m, err := New(Config{SrcDir: "testpackages/typealias"})
-	if err != nil {
-		t.Fatalf("moq.New: %s", err)
-	}
-	var buf bytes.Buffer
-	err = m.Mock(&buf, "Example")
-	if err != nil {
-		t.Errorf("mock error: %s", err)
-	}
-	s := buf.String()
-	if !strings.Contains(s, `a typealiastwo.AliasType`) {
-		t.Error("missing typealiastwo.AliasType")
 	}
 }
 
