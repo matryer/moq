@@ -89,6 +89,13 @@ type {{.MockName}}
 			{{- if $index}}, {{end}}{{$param.Name | Exported}} {{$param.TypeString}}
 	{{- end -}}]
 {{- end }} struct {
+{{- range .EmbeddedTypes}}
+	{{if .IsPointer}}*{{end -}}
+	{{$.SrcPkgQualifier -}}
+	{{- .Name -}}
+{{end}}
+{{- if .EmbeddedTypes}}
+{{end -}}
 {{- range .Methods}}
 	// {{.Name}}Func mocks the {{.Name}} method.
 	{{.Name}}Func func({{.ArgList}}) {{.ReturnArgTypeList}}
