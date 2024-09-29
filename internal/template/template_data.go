@@ -37,6 +37,7 @@ type MockData struct {
 	MockName      string
 	TypeParams    []TypeParamData
 	Methods       []MethodData
+	EmbeddedTypes []EmbeddedTypeData
 }
 
 // MethodData is the data which represents a method on some interface.
@@ -131,4 +132,11 @@ func (p ParamData) CallName() string {
 // parameter.
 func (p ParamData) TypeString() string {
 	return p.Var.TypeString()
+}
+
+// EmbeddedTypeData is the data which represents a type will be embedded
+// in the mock.
+type EmbeddedTypeData struct {
+	Name      string
+	IsPointer bool
 }
