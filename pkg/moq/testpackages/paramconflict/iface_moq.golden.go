@@ -27,6 +27,7 @@ var _ Interface = &InterfaceMock{}
 //		// and then make assertions.
 //
 //	}
+
 type InterfaceMock struct {
 	// MethodFunc mocks the Method method.
 	MethodFunc func(s1 string, b1 bool, s2 string, b2 bool, n1 int, n2 int32, n3 int64, f1 float32, f2 float64, timeMoqParam1 time.Time, timeMoqParam2 time.Time)
@@ -34,32 +35,35 @@ type InterfaceMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// Method holds details about calls to the Method method.
-		Method []struct {
-			// S1 is the s1 argument value.
-			S1 string
-			// B1 is the b1 argument value.
-			B1 bool
-			// S2 is the s2 argument value.
-			S2 string
-			// B2 is the b2 argument value.
-			B2 bool
-			// N1 is the n1 argument value.
-			N1 int
-			// N2 is the n2 argument value.
-			N2 int32
-			// N3 is the n3 argument value.
-			N3 int64
-			// F1 is the f1 argument value.
-			F1 float32
-			// F2 is the f2 argument value.
-			F2 float64
-			// TimeMoqParam1 is the timeMoqParam1 argument value.
-			TimeMoqParam1 time.Time
-			// TimeMoqParam2 is the timeMoqParam2 argument value.
-			TimeMoqParam2 time.Time
-		}
+		Method []InterfaceMockMethodCalls
 	}
 	lockMethod sync.RWMutex
+}
+
+// InterfaceMockMethodCalls holds details about calls to the Method method.
+type InterfaceMockMethodCalls struct {
+	// S1 is the s1 argument value.
+	S1 string
+	// B1 is the b1 argument value.
+	B1 bool
+	// S2 is the s2 argument value.
+	S2 string
+	// B2 is the b2 argument value.
+	B2 bool
+	// N1 is the n1 argument value.
+	N1 int
+	// N2 is the n2 argument value.
+	N2 int32
+	// N3 is the n3 argument value.
+	N3 int64
+	// F1 is the f1 argument value.
+	F1 float32
+	// F2 is the f2 argument value.
+	F2 float64
+	// TimeMoqParam1 is the timeMoqParam1 argument value.
+	TimeMoqParam1 time.Time
+	// TimeMoqParam2 is the timeMoqParam2 argument value.
+	TimeMoqParam2 time.Time
 }
 
 // Method calls MethodFunc.
@@ -67,19 +71,7 @@ func (mock *InterfaceMock) Method(s1 string, b1 bool, s2 string, b2 bool, n1 int
 	if mock.MethodFunc == nil {
 		panic("InterfaceMock.MethodFunc: method is nil but Interface.Method was just called")
 	}
-	callInfo := struct {
-		S1            string
-		B1            bool
-		S2            string
-		B2            bool
-		N1            int
-		N2            int32
-		N3            int64
-		F1            float32
-		F2            float64
-		TimeMoqParam1 time.Time
-		TimeMoqParam2 time.Time
-	}{
+	callInfo := InterfaceMockMethodCalls{
 		S1:            s1,
 		B1:            b1,
 		S2:            s2,
@@ -102,32 +94,8 @@ func (mock *InterfaceMock) Method(s1 string, b1 bool, s2 string, b2 bool, n1 int
 // Check the length with:
 //
 //	len(mockedInterface.MethodCalls())
-func (mock *InterfaceMock) MethodCalls() []struct {
-	S1            string
-	B1            bool
-	S2            string
-	B2            bool
-	N1            int
-	N2            int32
-	N3            int64
-	F1            float32
-	F2            float64
-	TimeMoqParam1 time.Time
-	TimeMoqParam2 time.Time
-} {
-	var calls []struct {
-		S1            string
-		B1            bool
-		S2            string
-		B2            bool
-		N1            int
-		N2            int32
-		N3            int64
-		F1            float32
-		F2            float64
-		TimeMoqParam1 time.Time
-		TimeMoqParam2 time.Time
-	}
+func (mock *InterfaceMock) MethodCalls() []InterfaceMockMethodCalls {
+	var calls []InterfaceMockMethodCalls
 	mock.lockMethod.RLock()
 	calls = mock.calls.Method
 	mock.lockMethod.RUnlock()

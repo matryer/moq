@@ -30,6 +30,7 @@ var _ DoSomething = &gofmtMock{}
 //		// and then make assertions.
 //
 //	}
+
 type gofmtMock struct {
 	// AnotherFunc mocks the Another method.
 	AnotherFunc func(thing one.Thing) error
@@ -40,18 +41,24 @@ type gofmtMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// Another holds details about calls to the Another method.
-		Another []struct {
-			// Thing is the thing argument value.
-			Thing one.Thing
-		}
+		Another []gofmtMockAnotherCalls
 		// Do holds details about calls to the Do method.
-		Do []struct {
-			// Thing is the thing argument value.
-			Thing one.Thing
-		}
+		Do []gofmtMockDoCalls
 	}
 	lockAnother sync.RWMutex
 	lockDo      sync.RWMutex
+}
+
+// gofmtMockAnotherCalls holds details about calls to the Another method.
+type gofmtMockAnotherCalls struct {
+	// Thing is the thing argument value.
+	Thing one.Thing
+}
+
+// gofmtMockDoCalls holds details about calls to the Do method.
+type gofmtMockDoCalls struct {
+	// Thing is the thing argument value.
+	Thing one.Thing
 }
 
 // Another calls AnotherFunc.
@@ -59,9 +66,7 @@ func (mock *gofmtMock) Another(thing one.Thing) error {
 	if mock.AnotherFunc == nil {
 		panic("gofmtMock.AnotherFunc: method is nil but DoSomething.Another was just called")
 	}
-	callInfo := struct {
-		Thing one.Thing
-	}{
+	callInfo := gofmtMockAnotherCalls{
 		Thing: thing,
 	}
 	mock.lockAnother.Lock()
@@ -74,12 +79,8 @@ func (mock *gofmtMock) Another(thing one.Thing) error {
 // Check the length with:
 //
 //	len(mockedDoSomething.AnotherCalls())
-func (mock *gofmtMock) AnotherCalls() []struct {
-	Thing one.Thing
-} {
-	var calls []struct {
-		Thing one.Thing
-	}
+func (mock *gofmtMock) AnotherCalls() []gofmtMockAnotherCalls {
+	var calls []gofmtMockAnotherCalls
 	mock.lockAnother.RLock()
 	calls = mock.calls.Another
 	mock.lockAnother.RUnlock()
@@ -91,9 +92,7 @@ func (mock *gofmtMock) Do(thing one.Thing) error {
 	if mock.DoFunc == nil {
 		panic("gofmtMock.DoFunc: method is nil but DoSomething.Do was just called")
 	}
-	callInfo := struct {
-		Thing one.Thing
-	}{
+	callInfo := gofmtMockDoCalls{
 		Thing: thing,
 	}
 	mock.lockDo.Lock()
@@ -106,12 +105,8 @@ func (mock *gofmtMock) Do(thing one.Thing) error {
 // Check the length with:
 //
 //	len(mockedDoSomething.DoCalls())
-func (mock *gofmtMock) DoCalls() []struct {
-	Thing one.Thing
-} {
-	var calls []struct {
-		Thing one.Thing
-	}
+func (mock *gofmtMock) DoCalls() []gofmtMockDoCalls {
+	var calls []gofmtMockDoCalls
 	mock.lockDo.RLock()
 	calls = mock.calls.Do
 	mock.lockDo.RUnlock()

@@ -127,6 +127,11 @@ The mocked structure implements the interface, where each method calls the assoc
   You can run the same command with `-fmt noop` to print the generated source code without attempting to format it.
   This can aid in debugging the root cause.
 
+## Development
+
+- This project uses
+  - https://pkg.go.dev/text/template
+
 ## License
 
 The Moq project (and all code) is licensed under the [MIT License](LICENSE).

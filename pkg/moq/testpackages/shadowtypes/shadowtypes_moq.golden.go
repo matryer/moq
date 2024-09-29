@@ -81,6 +81,7 @@ var _ ShadowTypes = &ShadowTypesMock{}
 //		// and then make assertions.
 //
 //	}
+
 type ShadowTypesMock struct {
 	// ShadowBoolFunc mocks the ShadowBool method.
 	ShadowBoolFunc func(b bool, boolMoqParam types.Bool)
@@ -142,138 +143,43 @@ type ShadowTypesMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// ShadowBool holds details about calls to the ShadowBool method.
-		ShadowBool []struct {
-			// B is the b argument value.
-			B bool
-			// BoolMoqParam is the boolMoqParam argument value.
-			BoolMoqParam types.Bool
-		}
+		ShadowBool []ShadowTypesMockShadowBoolCalls
 		// ShadowByte holds details about calls to the ShadowByte method.
-		ShadowByte []struct {
-			// V is the v argument value.
-			V byte
-			// ByteMoqParam is the byteMoqParam argument value.
-			ByteMoqParam types.Byte
-		}
+		ShadowByte []ShadowTypesMockShadowByteCalls
 		// ShadowComplex128 holds details about calls to the ShadowComplex128 method.
-		ShadowComplex128 []struct {
-			// V is the v argument value.
-			V complex128
-			// Complex128MoqParam is the complex128MoqParam argument value.
-			Complex128MoqParam types.Complex128
-		}
+		ShadowComplex128 []ShadowTypesMockShadowComplex128Calls
 		// ShadowComplex64 holds details about calls to the ShadowComplex64 method.
-		ShadowComplex64 []struct {
-			// V is the v argument value.
-			V complex64
-			// Complex64MoqParam is the complex64MoqParam argument value.
-			Complex64MoqParam types.Complex64
-		}
+		ShadowComplex64 []ShadowTypesMockShadowComplex64Calls
 		// ShadowFloat32 holds details about calls to the ShadowFloat32 method.
-		ShadowFloat32 []struct {
-			// F is the f argument value.
-			F float32
-			// Float32MoqParam is the float32MoqParam argument value.
-			Float32MoqParam types.Float32
-		}
+		ShadowFloat32 []ShadowTypesMockShadowFloat32Calls
 		// ShadowFloat64 holds details about calls to the ShadowFloat64 method.
-		ShadowFloat64 []struct {
-			// F is the f argument value.
-			F float64
-			// Float64MoqParam is the float64MoqParam argument value.
-			Float64MoqParam types.Float64
-		}
+		ShadowFloat64 []ShadowTypesMockShadowFloat64Calls
 		// ShadowInt holds details about calls to the ShadowInt method.
-		ShadowInt []struct {
-			// N is the n argument value.
-			N int
-			// IntMoqParam is the intMoqParam argument value.
-			IntMoqParam types.Int
-		}
+		ShadowInt []ShadowTypesMockShadowIntCalls
 		// ShadowInt16 holds details about calls to the ShadowInt16 method.
-		ShadowInt16 []struct {
-			// N is the n argument value.
-			N int16
-			// Int16MoqParam is the int16MoqParam argument value.
-			Int16MoqParam types.Int16
-		}
+		ShadowInt16 []ShadowTypesMockShadowInt16Calls
 		// ShadowInt32 holds details about calls to the ShadowInt32 method.
-		ShadowInt32 []struct {
-			// N is the n argument value.
-			N int32
-			// Int32MoqParam is the int32MoqParam argument value.
-			Int32MoqParam types.Int32
-		}
+		ShadowInt32 []ShadowTypesMockShadowInt32Calls
 		// ShadowInt64 holds details about calls to the ShadowInt64 method.
-		ShadowInt64 []struct {
-			// N is the n argument value.
-			N int64
-			// Int64MoqParam is the int64MoqParam argument value.
-			Int64MoqParam types.Int64
-		}
+		ShadowInt64 []ShadowTypesMockShadowInt64Calls
 		// ShadowInt8 holds details about calls to the ShadowInt8 method.
-		ShadowInt8 []struct {
-			// N is the n argument value.
-			N int8
-			// Int8MoqParam is the int8MoqParam argument value.
-			Int8MoqParam types.Int8
-		}
+		ShadowInt8 []ShadowTypesMockShadowInt8Calls
 		// ShadowRune holds details about calls to the ShadowRune method.
-		ShadowRune []struct {
-			// N is the n argument value.
-			N rune
-			// RuneMoqParam is the runeMoqParam argument value.
-			RuneMoqParam types.Rune
-		}
+		ShadowRune []ShadowTypesMockShadowRuneCalls
 		// ShadowString holds details about calls to the ShadowString method.
-		ShadowString []struct {
-			// S is the s argument value.
-			S string
-			// StringMoqParam is the stringMoqParam argument value.
-			StringMoqParam types.String
-		}
+		ShadowString []ShadowTypesMockShadowStringCalls
 		// ShadowUint holds details about calls to the ShadowUint method.
-		ShadowUint []struct {
-			// V is the v argument value.
-			V uint
-			// UintMoqParam is the uintMoqParam argument value.
-			UintMoqParam types.Uint
-		}
+		ShadowUint []ShadowTypesMockShadowUintCalls
 		// ShadowUint16 holds details about calls to the ShadowUint16 method.
-		ShadowUint16 []struct {
-			// V is the v argument value.
-			V uint16
-			// Uint16MoqParam is the uint16MoqParam argument value.
-			Uint16MoqParam types.Uint16
-		}
+		ShadowUint16 []ShadowTypesMockShadowUint16Calls
 		// ShadowUint32 holds details about calls to the ShadowUint32 method.
-		ShadowUint32 []struct {
-			// V is the v argument value.
-			V uint32
-			// Uint32MoqParam is the uint32MoqParam argument value.
-			Uint32MoqParam types.Uint32
-		}
+		ShadowUint32 []ShadowTypesMockShadowUint32Calls
 		// ShadowUint64 holds details about calls to the ShadowUint64 method.
-		ShadowUint64 []struct {
-			// V is the v argument value.
-			V uint64
-			// Uint64MoqParam is the uint64MoqParam argument value.
-			Uint64MoqParam types.Uint64
-		}
+		ShadowUint64 []ShadowTypesMockShadowUint64Calls
 		// ShadowUint8 holds details about calls to the ShadowUint8 method.
-		ShadowUint8 []struct {
-			// V is the v argument value.
-			V uint8
-			// Uint8MoqParam is the uint8MoqParam argument value.
-			Uint8MoqParam types.Uint8
-		}
+		ShadowUint8 []ShadowTypesMockShadowUint8Calls
 		// ShadowUintptr holds details about calls to the ShadowUintptr method.
-		ShadowUintptr []struct {
-			// V is the v argument value.
-			V uintptr
-			// UintptrMoqParam is the uintptrMoqParam argument value.
-			UintptrMoqParam types.Uintptr
-		}
+		ShadowUintptr []ShadowTypesMockShadowUintptrCalls
 	}
 	lockShadowBool       sync.RWMutex
 	lockShadowByte       sync.RWMutex
@@ -296,15 +202,164 @@ type ShadowTypesMock struct {
 	lockShadowUintptr    sync.RWMutex
 }
 
+// ShadowTypesMockShadowBoolCalls holds details about calls to the ShadowBool method.
+type ShadowTypesMockShadowBoolCalls struct {
+	// B is the b argument value.
+	B bool
+	// BoolMoqParam is the boolMoqParam argument value.
+	BoolMoqParam types.Bool
+}
+
+// ShadowTypesMockShadowByteCalls holds details about calls to the ShadowByte method.
+type ShadowTypesMockShadowByteCalls struct {
+	// V is the v argument value.
+	V byte
+	// ByteMoqParam is the byteMoqParam argument value.
+	ByteMoqParam types.Byte
+}
+
+// ShadowTypesMockShadowComplex128Calls holds details about calls to the ShadowComplex128 method.
+type ShadowTypesMockShadowComplex128Calls struct {
+	// V is the v argument value.
+	V complex128
+	// Complex128MoqParam is the complex128MoqParam argument value.
+	Complex128MoqParam types.Complex128
+}
+
+// ShadowTypesMockShadowComplex64Calls holds details about calls to the ShadowComplex64 method.
+type ShadowTypesMockShadowComplex64Calls struct {
+	// V is the v argument value.
+	V complex64
+	// Complex64MoqParam is the complex64MoqParam argument value.
+	Complex64MoqParam types.Complex64
+}
+
+// ShadowTypesMockShadowFloat32Calls holds details about calls to the ShadowFloat32 method.
+type ShadowTypesMockShadowFloat32Calls struct {
+	// F is the f argument value.
+	F float32
+	// Float32MoqParam is the float32MoqParam argument value.
+	Float32MoqParam types.Float32
+}
+
+// ShadowTypesMockShadowFloat64Calls holds details about calls to the ShadowFloat64 method.
+type ShadowTypesMockShadowFloat64Calls struct {
+	// F is the f argument value.
+	F float64
+	// Float64MoqParam is the float64MoqParam argument value.
+	Float64MoqParam types.Float64
+}
+
+// ShadowTypesMockShadowIntCalls holds details about calls to the ShadowInt method.
+type ShadowTypesMockShadowIntCalls struct {
+	// N is the n argument value.
+	N int
+	// IntMoqParam is the intMoqParam argument value.
+	IntMoqParam types.Int
+}
+
+// ShadowTypesMockShadowInt16Calls holds details about calls to the ShadowInt16 method.
+type ShadowTypesMockShadowInt16Calls struct {
+	// N is the n argument value.
+	N int16
+	// Int16MoqParam is the int16MoqParam argument value.
+	Int16MoqParam types.Int16
+}
+
+// ShadowTypesMockShadowInt32Calls holds details about calls to the ShadowInt32 method.
+type ShadowTypesMockShadowInt32Calls struct {
+	// N is the n argument value.
+	N int32
+	// Int32MoqParam is the int32MoqParam argument value.
+	Int32MoqParam types.Int32
+}
+
+// ShadowTypesMockShadowInt64Calls holds details about calls to the ShadowInt64 method.
+type ShadowTypesMockShadowInt64Calls struct {
+	// N is the n argument value.
+	N int64
+	// Int64MoqParam is the int64MoqParam argument value.
+	Int64MoqParam types.Int64
+}
+
+// ShadowTypesMockShadowInt8Calls holds details about calls to the ShadowInt8 method.
+type ShadowTypesMockShadowInt8Calls struct {
+	// N is the n argument value.
+	N int8
+	// Int8MoqParam is the int8MoqParam argument value.
+	Int8MoqParam types.Int8
+}
+
+// ShadowTypesMockShadowRuneCalls holds details about calls to the ShadowRune method.
+type ShadowTypesMockShadowRuneCalls struct {
+	// N is the n argument value.
+	N rune
+	// RuneMoqParam is the runeMoqParam argument value.
+	RuneMoqParam types.Rune
+}
+
+// ShadowTypesMockShadowStringCalls holds details about calls to the ShadowString method.
+type ShadowTypesMockShadowStringCalls struct {
+	// S is the s argument value.
+	S string
+	// StringMoqParam is the stringMoqParam argument value.
+	StringMoqParam types.String
+}
+
+// ShadowTypesMockShadowUintCalls holds details about calls to the ShadowUint method.
+type ShadowTypesMockShadowUintCalls struct {
+	// V is the v argument value.
+	V uint
+	// UintMoqParam is the uintMoqParam argument value.
+	UintMoqParam types.Uint
+}
+
+// ShadowTypesMockShadowUint16Calls holds details about calls to the ShadowUint16 method.
+type ShadowTypesMockShadowUint16Calls struct {
+	// V is the v argument value.
+	V uint16
+	// Uint16MoqParam is the uint16MoqParam argument value.
+	Uint16MoqParam types.Uint16
+}
+
+// ShadowTypesMockShadowUint32Calls holds details about calls to the ShadowUint32 method.
+type ShadowTypesMockShadowUint32Calls struct {
+	// V is the v argument value.
+	V uint32
+	// Uint32MoqParam is the uint32MoqParam argument value.
+	Uint32MoqParam types.Uint32
+}
+
+// ShadowTypesMockShadowUint64Calls holds details about calls to the ShadowUint64 method.
+type ShadowTypesMockShadowUint64Calls struct {
+	// V is the v argument value.
+	V uint64
+	// Uint64MoqParam is the uint64MoqParam argument value.
+	Uint64MoqParam types.Uint64
+}
+
+// ShadowTypesMockShadowUint8Calls holds details about calls to the ShadowUint8 method.
+type ShadowTypesMockShadowUint8Calls struct {
+	// V is the v argument value.
+	V uint8
+	// Uint8MoqParam is the uint8MoqParam argument value.
+	Uint8MoqParam types.Uint8
+}
+
+// ShadowTypesMockShadowUintptrCalls holds details about calls to the ShadowUintptr method.
+type ShadowTypesMockShadowUintptrCalls struct {
+	// V is the v argument value.
+	V uintptr
+	// UintptrMoqParam is the uintptrMoqParam argument value.
+	UintptrMoqParam types.Uintptr
+}
+
 // ShadowBool calls ShadowBoolFunc.
 func (mock *ShadowTypesMock) ShadowBool(b bool, boolMoqParam types.Bool) {
 	if mock.ShadowBoolFunc == nil {
 		panic("ShadowTypesMock.ShadowBoolFunc: method is nil but ShadowTypes.ShadowBool was just called")
 	}
-	callInfo := struct {
-		B            bool
-		BoolMoqParam types.Bool
-	}{
+	callInfo := ShadowTypesMockShadowBoolCalls{
 		B:            b,
 		BoolMoqParam: boolMoqParam,
 	}
@@ -318,14 +373,8 @@ func (mock *ShadowTypesMock) ShadowBool(b bool, boolMoqParam types.Bool) {
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowBoolCalls())
-func (mock *ShadowTypesMock) ShadowBoolCalls() []struct {
-	B            bool
-	BoolMoqParam types.Bool
-} {
-	var calls []struct {
-		B            bool
-		BoolMoqParam types.Bool
-	}
+func (mock *ShadowTypesMock) ShadowBoolCalls() []ShadowTypesMockShadowBoolCalls {
+	var calls []ShadowTypesMockShadowBoolCalls
 	mock.lockShadowBool.RLock()
 	calls = mock.calls.ShadowBool
 	mock.lockShadowBool.RUnlock()
@@ -337,10 +386,7 @@ func (mock *ShadowTypesMock) ShadowByte(v byte, byteMoqParam types.Byte) {
 	if mock.ShadowByteFunc == nil {
 		panic("ShadowTypesMock.ShadowByteFunc: method is nil but ShadowTypes.ShadowByte was just called")
 	}
-	callInfo := struct {
-		V            byte
-		ByteMoqParam types.Byte
-	}{
+	callInfo := ShadowTypesMockShadowByteCalls{
 		V:            v,
 		ByteMoqParam: byteMoqParam,
 	}
@@ -354,14 +400,8 @@ func (mock *ShadowTypesMock) ShadowByte(v byte, byteMoqParam types.Byte) {
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowByteCalls())
-func (mock *ShadowTypesMock) ShadowByteCalls() []struct {
-	V            byte
-	ByteMoqParam types.Byte
-} {
-	var calls []struct {
-		V            byte
-		ByteMoqParam types.Byte
-	}
+func (mock *ShadowTypesMock) ShadowByteCalls() []ShadowTypesMockShadowByteCalls {
+	var calls []ShadowTypesMockShadowByteCalls
 	mock.lockShadowByte.RLock()
 	calls = mock.calls.ShadowByte
 	mock.lockShadowByte.RUnlock()
@@ -373,10 +413,7 @@ func (mock *ShadowTypesMock) ShadowComplex128(v complex128, complex128MoqParam t
 	if mock.ShadowComplex128Func == nil {
 		panic("ShadowTypesMock.ShadowComplex128Func: method is nil but ShadowTypes.ShadowComplex128 was just called")
 	}
-	callInfo := struct {
-		V                  complex128
-		Complex128MoqParam types.Complex128
-	}{
+	callInfo := ShadowTypesMockShadowComplex128Calls{
 		V:                  v,
 		Complex128MoqParam: complex128MoqParam,
 	}
@@ -390,14 +427,8 @@ func (mock *ShadowTypesMock) ShadowComplex128(v complex128, complex128MoqParam t
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowComplex128Calls())
-func (mock *ShadowTypesMock) ShadowComplex128Calls() []struct {
-	V                  complex128
-	Complex128MoqParam types.Complex128
-} {
-	var calls []struct {
-		V                  complex128
-		Complex128MoqParam types.Complex128
-	}
+func (mock *ShadowTypesMock) ShadowComplex128Calls() []ShadowTypesMockShadowComplex128Calls {
+	var calls []ShadowTypesMockShadowComplex128Calls
 	mock.lockShadowComplex128.RLock()
 	calls = mock.calls.ShadowComplex128
 	mock.lockShadowComplex128.RUnlock()
@@ -409,10 +440,7 @@ func (mock *ShadowTypesMock) ShadowComplex64(v complex64, complex64MoqParam type
 	if mock.ShadowComplex64Func == nil {
 		panic("ShadowTypesMock.ShadowComplex64Func: method is nil but ShadowTypes.ShadowComplex64 was just called")
 	}
-	callInfo := struct {
-		V                 complex64
-		Complex64MoqParam types.Complex64
-	}{
+	callInfo := ShadowTypesMockShadowComplex64Calls{
 		V:                 v,
 		Complex64MoqParam: complex64MoqParam,
 	}
@@ -426,14 +454,8 @@ func (mock *ShadowTypesMock) ShadowComplex64(v complex64, complex64MoqParam type
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowComplex64Calls())
-func (mock *ShadowTypesMock) ShadowComplex64Calls() []struct {
-	V                 complex64
-	Complex64MoqParam types.Complex64
-} {
-	var calls []struct {
-		V                 complex64
-		Complex64MoqParam types.Complex64
-	}
+func (mock *ShadowTypesMock) ShadowComplex64Calls() []ShadowTypesMockShadowComplex64Calls {
+	var calls []ShadowTypesMockShadowComplex64Calls
 	mock.lockShadowComplex64.RLock()
 	calls = mock.calls.ShadowComplex64
 	mock.lockShadowComplex64.RUnlock()
@@ -445,10 +467,7 @@ func (mock *ShadowTypesMock) ShadowFloat32(f float32, float32MoqParam types.Floa
 	if mock.ShadowFloat32Func == nil {
 		panic("ShadowTypesMock.ShadowFloat32Func: method is nil but ShadowTypes.ShadowFloat32 was just called")
 	}
-	callInfo := struct {
-		F               float32
-		Float32MoqParam types.Float32
-	}{
+	callInfo := ShadowTypesMockShadowFloat32Calls{
 		F:               f,
 		Float32MoqParam: float32MoqParam,
 	}
@@ -462,14 +481,8 @@ func (mock *ShadowTypesMock) ShadowFloat32(f float32, float32MoqParam types.Floa
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowFloat32Calls())
-func (mock *ShadowTypesMock) ShadowFloat32Calls() []struct {
-	F               float32
-	Float32MoqParam types.Float32
-} {
-	var calls []struct {
-		F               float32
-		Float32MoqParam types.Float32
-	}
+func (mock *ShadowTypesMock) ShadowFloat32Calls() []ShadowTypesMockShadowFloat32Calls {
+	var calls []ShadowTypesMockShadowFloat32Calls
 	mock.lockShadowFloat32.RLock()
 	calls = mock.calls.ShadowFloat32
 	mock.lockShadowFloat32.RUnlock()
@@ -481,10 +494,7 @@ func (mock *ShadowTypesMock) ShadowFloat64(f float64, float64MoqParam types.Floa
 	if mock.ShadowFloat64Func == nil {
 		panic("ShadowTypesMock.ShadowFloat64Func: method is nil but ShadowTypes.ShadowFloat64 was just called")
 	}
-	callInfo := struct {
-		F               float64
-		Float64MoqParam types.Float64
-	}{
+	callInfo := ShadowTypesMockShadowFloat64Calls{
 		F:               f,
 		Float64MoqParam: float64MoqParam,
 	}
@@ -498,14 +508,8 @@ func (mock *ShadowTypesMock) ShadowFloat64(f float64, float64MoqParam types.Floa
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowFloat64Calls())
-func (mock *ShadowTypesMock) ShadowFloat64Calls() []struct {
-	F               float64
-	Float64MoqParam types.Float64
-} {
-	var calls []struct {
-		F               float64
-		Float64MoqParam types.Float64
-	}
+func (mock *ShadowTypesMock) ShadowFloat64Calls() []ShadowTypesMockShadowFloat64Calls {
+	var calls []ShadowTypesMockShadowFloat64Calls
 	mock.lockShadowFloat64.RLock()
 	calls = mock.calls.ShadowFloat64
 	mock.lockShadowFloat64.RUnlock()
@@ -517,10 +521,7 @@ func (mock *ShadowTypesMock) ShadowInt(n int, intMoqParam types.Int) {
 	if mock.ShadowIntFunc == nil {
 		panic("ShadowTypesMock.ShadowIntFunc: method is nil but ShadowTypes.ShadowInt was just called")
 	}
-	callInfo := struct {
-		N           int
-		IntMoqParam types.Int
-	}{
+	callInfo := ShadowTypesMockShadowIntCalls{
 		N:           n,
 		IntMoqParam: intMoqParam,
 	}
@@ -534,14 +535,8 @@ func (mock *ShadowTypesMock) ShadowInt(n int, intMoqParam types.Int) {
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowIntCalls())
-func (mock *ShadowTypesMock) ShadowIntCalls() []struct {
-	N           int
-	IntMoqParam types.Int
-} {
-	var calls []struct {
-		N           int
-		IntMoqParam types.Int
-	}
+func (mock *ShadowTypesMock) ShadowIntCalls() []ShadowTypesMockShadowIntCalls {
+	var calls []ShadowTypesMockShadowIntCalls
 	mock.lockShadowInt.RLock()
 	calls = mock.calls.ShadowInt
 	mock.lockShadowInt.RUnlock()
@@ -553,10 +548,7 @@ func (mock *ShadowTypesMock) ShadowInt16(n int16, int16MoqParam types.Int16) {
 	if mock.ShadowInt16Func == nil {
 		panic("ShadowTypesMock.ShadowInt16Func: method is nil but ShadowTypes.ShadowInt16 was just called")
 	}
-	callInfo := struct {
-		N             int16
-		Int16MoqParam types.Int16
-	}{
+	callInfo := ShadowTypesMockShadowInt16Calls{
 		N:             n,
 		Int16MoqParam: int16MoqParam,
 	}
@@ -570,14 +562,8 @@ func (mock *ShadowTypesMock) ShadowInt16(n int16, int16MoqParam types.Int16) {
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowInt16Calls())
-func (mock *ShadowTypesMock) ShadowInt16Calls() []struct {
-	N             int16
-	Int16MoqParam types.Int16
-} {
-	var calls []struct {
-		N             int16
-		Int16MoqParam types.Int16
-	}
+func (mock *ShadowTypesMock) ShadowInt16Calls() []ShadowTypesMockShadowInt16Calls {
+	var calls []ShadowTypesMockShadowInt16Calls
 	mock.lockShadowInt16.RLock()
 	calls = mock.calls.ShadowInt16
 	mock.lockShadowInt16.RUnlock()
@@ -589,10 +575,7 @@ func (mock *ShadowTypesMock) ShadowInt32(n int32, int32MoqParam types.Int32) {
 	if mock.ShadowInt32Func == nil {
 		panic("ShadowTypesMock.ShadowInt32Func: method is nil but ShadowTypes.ShadowInt32 was just called")
 	}
-	callInfo := struct {
-		N             int32
-		Int32MoqParam types.Int32
-	}{
+	callInfo := ShadowTypesMockShadowInt32Calls{
 		N:             n,
 		Int32MoqParam: int32MoqParam,
 	}
@@ -606,14 +589,8 @@ func (mock *ShadowTypesMock) ShadowInt32(n int32, int32MoqParam types.Int32) {
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowInt32Calls())
-func (mock *ShadowTypesMock) ShadowInt32Calls() []struct {
-	N             int32
-	Int32MoqParam types.Int32
-} {
-	var calls []struct {
-		N             int32
-		Int32MoqParam types.Int32
-	}
+func (mock *ShadowTypesMock) ShadowInt32Calls() []ShadowTypesMockShadowInt32Calls {
+	var calls []ShadowTypesMockShadowInt32Calls
 	mock.lockShadowInt32.RLock()
 	calls = mock.calls.ShadowInt32
 	mock.lockShadowInt32.RUnlock()
@@ -625,10 +602,7 @@ func (mock *ShadowTypesMock) ShadowInt64(n int64, int64MoqParam types.Int64) {
 	if mock.ShadowInt64Func == nil {
 		panic("ShadowTypesMock.ShadowInt64Func: method is nil but ShadowTypes.ShadowInt64 was just called")
 	}
-	callInfo := struct {
-		N             int64
-		Int64MoqParam types.Int64
-	}{
+	callInfo := ShadowTypesMockShadowInt64Calls{
 		N:             n,
 		Int64MoqParam: int64MoqParam,
 	}
@@ -642,14 +616,8 @@ func (mock *ShadowTypesMock) ShadowInt64(n int64, int64MoqParam types.Int64) {
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowInt64Calls())
-func (mock *ShadowTypesMock) ShadowInt64Calls() []struct {
-	N             int64
-	Int64MoqParam types.Int64
-} {
-	var calls []struct {
-		N             int64
-		Int64MoqParam types.Int64
-	}
+func (mock *ShadowTypesMock) ShadowInt64Calls() []ShadowTypesMockShadowInt64Calls {
+	var calls []ShadowTypesMockShadowInt64Calls
 	mock.lockShadowInt64.RLock()
 	calls = mock.calls.ShadowInt64
 	mock.lockShadowInt64.RUnlock()
@@ -661,10 +629,7 @@ func (mock *ShadowTypesMock) ShadowInt8(n int8, int8MoqParam types.Int8) {
 	if mock.ShadowInt8Func == nil {
 		panic("ShadowTypesMock.ShadowInt8Func: method is nil but ShadowTypes.ShadowInt8 was just called")
 	}
-	callInfo := struct {
-		N            int8
-		Int8MoqParam types.Int8
-	}{
+	callInfo := ShadowTypesMockShadowInt8Calls{
 		N:            n,
 		Int8MoqParam: int8MoqParam,
 	}
@@ -678,14 +643,8 @@ func (mock *ShadowTypesMock) ShadowInt8(n int8, int8MoqParam types.Int8) {
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowInt8Calls())
-func (mock *ShadowTypesMock) ShadowInt8Calls() []struct {
-	N            int8
-	Int8MoqParam types.Int8
-} {
-	var calls []struct {
-		N            int8
-		Int8MoqParam types.Int8
-	}
+func (mock *ShadowTypesMock) ShadowInt8Calls() []ShadowTypesMockShadowInt8Calls {
+	var calls []ShadowTypesMockShadowInt8Calls
 	mock.lockShadowInt8.RLock()
 	calls = mock.calls.ShadowInt8
 	mock.lockShadowInt8.RUnlock()
@@ -697,10 +656,7 @@ func (mock *ShadowTypesMock) ShadowRune(n rune, runeMoqParam types.Rune) {
 	if mock.ShadowRuneFunc == nil {
 		panic("ShadowTypesMock.ShadowRuneFunc: method is nil but ShadowTypes.ShadowRune was just called")
 	}
-	callInfo := struct {
-		N            rune
-		RuneMoqParam types.Rune
-	}{
+	callInfo := ShadowTypesMockShadowRuneCalls{
 		N:            n,
 		RuneMoqParam: runeMoqParam,
 	}
@@ -714,14 +670,8 @@ func (mock *ShadowTypesMock) ShadowRune(n rune, runeMoqParam types.Rune) {
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowRuneCalls())
-func (mock *ShadowTypesMock) ShadowRuneCalls() []struct {
-	N            rune
-	RuneMoqParam types.Rune
-} {
-	var calls []struct {
-		N            rune
-		RuneMoqParam types.Rune
-	}
+func (mock *ShadowTypesMock) ShadowRuneCalls() []ShadowTypesMockShadowRuneCalls {
+	var calls []ShadowTypesMockShadowRuneCalls
 	mock.lockShadowRune.RLock()
 	calls = mock.calls.ShadowRune
 	mock.lockShadowRune.RUnlock()
@@ -733,10 +683,7 @@ func (mock *ShadowTypesMock) ShadowString(s string, stringMoqParam types.String)
 	if mock.ShadowStringFunc == nil {
 		panic("ShadowTypesMock.ShadowStringFunc: method is nil but ShadowTypes.ShadowString was just called")
 	}
-	callInfo := struct {
-		S              string
-		StringMoqParam types.String
-	}{
+	callInfo := ShadowTypesMockShadowStringCalls{
 		S:              s,
 		StringMoqParam: stringMoqParam,
 	}
@@ -750,14 +697,8 @@ func (mock *ShadowTypesMock) ShadowString(s string, stringMoqParam types.String)
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowStringCalls())
-func (mock *ShadowTypesMock) ShadowStringCalls() []struct {
-	S              string
-	StringMoqParam types.String
-} {
-	var calls []struct {
-		S              string
-		StringMoqParam types.String
-	}
+func (mock *ShadowTypesMock) ShadowStringCalls() []ShadowTypesMockShadowStringCalls {
+	var calls []ShadowTypesMockShadowStringCalls
 	mock.lockShadowString.RLock()
 	calls = mock.calls.ShadowString
 	mock.lockShadowString.RUnlock()
@@ -769,10 +710,7 @@ func (mock *ShadowTypesMock) ShadowUint(v uint, uintMoqParam types.Uint) {
 	if mock.ShadowUintFunc == nil {
 		panic("ShadowTypesMock.ShadowUintFunc: method is nil but ShadowTypes.ShadowUint was just called")
 	}
-	callInfo := struct {
-		V            uint
-		UintMoqParam types.Uint
-	}{
+	callInfo := ShadowTypesMockShadowUintCalls{
 		V:            v,
 		UintMoqParam: uintMoqParam,
 	}
@@ -786,14 +724,8 @@ func (mock *ShadowTypesMock) ShadowUint(v uint, uintMoqParam types.Uint) {
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowUintCalls())
-func (mock *ShadowTypesMock) ShadowUintCalls() []struct {
-	V            uint
-	UintMoqParam types.Uint
-} {
-	var calls []struct {
-		V            uint
-		UintMoqParam types.Uint
-	}
+func (mock *ShadowTypesMock) ShadowUintCalls() []ShadowTypesMockShadowUintCalls {
+	var calls []ShadowTypesMockShadowUintCalls
 	mock.lockShadowUint.RLock()
 	calls = mock.calls.ShadowUint
 	mock.lockShadowUint.RUnlock()
@@ -805,10 +737,7 @@ func (mock *ShadowTypesMock) ShadowUint16(v uint16, uint16MoqParam types.Uint16)
 	if mock.ShadowUint16Func == nil {
 		panic("ShadowTypesMock.ShadowUint16Func: method is nil but ShadowTypes.ShadowUint16 was just called")
 	}
-	callInfo := struct {
-		V              uint16
-		Uint16MoqParam types.Uint16
-	}{
+	callInfo := ShadowTypesMockShadowUint16Calls{
 		V:              v,
 		Uint16MoqParam: uint16MoqParam,
 	}
@@ -822,14 +751,8 @@ func (mock *ShadowTypesMock) ShadowUint16(v uint16, uint16MoqParam types.Uint16)
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowUint16Calls())
-func (mock *ShadowTypesMock) ShadowUint16Calls() []struct {
-	V              uint16
-	Uint16MoqParam types.Uint16
-} {
-	var calls []struct {
-		V              uint16
-		Uint16MoqParam types.Uint16
-	}
+func (mock *ShadowTypesMock) ShadowUint16Calls() []ShadowTypesMockShadowUint16Calls {
+	var calls []ShadowTypesMockShadowUint16Calls
 	mock.lockShadowUint16.RLock()
 	calls = mock.calls.ShadowUint16
 	mock.lockShadowUint16.RUnlock()
@@ -841,10 +764,7 @@ func (mock *ShadowTypesMock) ShadowUint32(v uint32, uint32MoqParam types.Uint32)
 	if mock.ShadowUint32Func == nil {
 		panic("ShadowTypesMock.ShadowUint32Func: method is nil but ShadowTypes.ShadowUint32 was just called")
 	}
-	callInfo := struct {
-		V              uint32
-		Uint32MoqParam types.Uint32
-	}{
+	callInfo := ShadowTypesMockShadowUint32Calls{
 		V:              v,
 		Uint32MoqParam: uint32MoqParam,
 	}
@@ -858,14 +778,8 @@ func (mock *ShadowTypesMock) ShadowUint32(v uint32, uint32MoqParam types.Uint32)
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowUint32Calls())
-func (mock *ShadowTypesMock) ShadowUint32Calls() []struct {
-	V              uint32
-	Uint32MoqParam types.Uint32
-} {
-	var calls []struct {
-		V              uint32
-		Uint32MoqParam types.Uint32
-	}
+func (mock *ShadowTypesMock) ShadowUint32Calls() []ShadowTypesMockShadowUint32Calls {
+	var calls []ShadowTypesMockShadowUint32Calls
 	mock.lockShadowUint32.RLock()
 	calls = mock.calls.ShadowUint32
 	mock.lockShadowUint32.RUnlock()
@@ -877,10 +791,7 @@ func (mock *ShadowTypesMock) ShadowUint64(v uint64, uint64MoqParam types.Uint64)
 	if mock.ShadowUint64Func == nil {
 		panic("ShadowTypesMock.ShadowUint64Func: method is nil but ShadowTypes.ShadowUint64 was just called")
 	}
-	callInfo := struct {
-		V              uint64
-		Uint64MoqParam types.Uint64
-	}{
+	callInfo := ShadowTypesMockShadowUint64Calls{
 		V:              v,
 		Uint64MoqParam: uint64MoqParam,
 	}
@@ -894,14 +805,8 @@ func (mock *ShadowTypesMock) ShadowUint64(v uint64, uint64MoqParam types.Uint64)
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowUint64Calls())
-func (mock *ShadowTypesMock) ShadowUint64Calls() []struct {
-	V              uint64
-	Uint64MoqParam types.Uint64
-} {
-	var calls []struct {
-		V              uint64
-		Uint64MoqParam types.Uint64
-	}
+func (mock *ShadowTypesMock) ShadowUint64Calls() []ShadowTypesMockShadowUint64Calls {
+	var calls []ShadowTypesMockShadowUint64Calls
 	mock.lockShadowUint64.RLock()
 	calls = mock.calls.ShadowUint64
 	mock.lockShadowUint64.RUnlock()
@@ -913,10 +818,7 @@ func (mock *ShadowTypesMock) ShadowUint8(v uint8, uint8MoqParam types.Uint8) {
 	if mock.ShadowUint8Func == nil {
 		panic("ShadowTypesMock.ShadowUint8Func: method is nil but ShadowTypes.ShadowUint8 was just called")
 	}
-	callInfo := struct {
-		V             uint8
-		Uint8MoqParam types.Uint8
-	}{
+	callInfo := ShadowTypesMockShadowUint8Calls{
 		V:             v,
 		Uint8MoqParam: uint8MoqParam,
 	}
@@ -930,14 +832,8 @@ func (mock *ShadowTypesMock) ShadowUint8(v uint8, uint8MoqParam types.Uint8) {
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowUint8Calls())
-func (mock *ShadowTypesMock) ShadowUint8Calls() []struct {
-	V             uint8
-	Uint8MoqParam types.Uint8
-} {
-	var calls []struct {
-		V             uint8
-		Uint8MoqParam types.Uint8
-	}
+func (mock *ShadowTypesMock) ShadowUint8Calls() []ShadowTypesMockShadowUint8Calls {
+	var calls []ShadowTypesMockShadowUint8Calls
 	mock.lockShadowUint8.RLock()
 	calls = mock.calls.ShadowUint8
 	mock.lockShadowUint8.RUnlock()
@@ -949,10 +845,7 @@ func (mock *ShadowTypesMock) ShadowUintptr(v uintptr, uintptrMoqParam types.Uint
 	if mock.ShadowUintptrFunc == nil {
 		panic("ShadowTypesMock.ShadowUintptrFunc: method is nil but ShadowTypes.ShadowUintptr was just called")
 	}
-	callInfo := struct {
-		V               uintptr
-		UintptrMoqParam types.Uintptr
-	}{
+	callInfo := ShadowTypesMockShadowUintptrCalls{
 		V:               v,
 		UintptrMoqParam: uintptrMoqParam,
 	}
@@ -966,14 +859,8 @@ func (mock *ShadowTypesMock) ShadowUintptr(v uintptr, uintptrMoqParam types.Uint
 // Check the length with:
 //
 //	len(mockedShadowTypes.ShadowUintptrCalls())
-func (mock *ShadowTypesMock) ShadowUintptrCalls() []struct {
-	V               uintptr
-	UintptrMoqParam types.Uintptr
-} {
-	var calls []struct {
-		V               uintptr
-		UintptrMoqParam types.Uintptr
-	}
+func (mock *ShadowTypesMock) ShadowUintptrCalls() []ShadowTypesMockShadowUintptrCalls {
+	var calls []ShadowTypesMockShadowUintptrCalls
 	mock.lockShadowUintptr.RLock()
 	calls = mock.calls.ShadowUintptr
 	mock.lockShadowUintptr.RUnlock()

@@ -34,6 +34,7 @@ var _ Interface = &InterfaceMock{}
 //		// and then make assertions.
 //
 //	}
+
 type InterfaceMock struct {
 	// MethodFunc mocks the Method method.
 	MethodFunc func(myTypeMoqParam *myType, numbers [3]json.Number, bytes []byte, nullStringToReader map[sql.NullString]io.Reader, fn func(conn net.Conn), goMoqParam Go, bufferPoolCh chan *httputil.BufferPool, val struct{ URL *url.URL }, ifaceVal interface {
@@ -44,31 +45,34 @@ type InterfaceMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// Method holds details about calls to the Method method.
-		Method []struct {
-			// MyTypeMoqParam is the myTypeMoqParam argument value.
-			MyTypeMoqParam *myType
-			// Numbers is the numbers argument value.
-			Numbers [3]json.Number
-			// Bytes is the bytes argument value.
-			Bytes []byte
-			// NullStringToReader is the nullStringToReader argument value.
-			NullStringToReader map[sql.NullString]io.Reader
-			// Fn is the fn argument value.
-			Fn func(conn net.Conn)
-			// GoMoqParam is the goMoqParam argument value.
-			GoMoqParam Go
-			// BufferPoolCh is the bufferPoolCh argument value.
-			BufferPoolCh chan *httputil.BufferPool
-			// Val is the val argument value.
-			Val struct{ URL *url.URL }
-			// IfaceVal is the ifaceVal argument value.
-			IfaceVal interface {
-				CookieJar() http.CookieJar
-				fmt.Stringer
-			}
-		}
+		Method []InterfaceMockMethodCalls
 	}
 	lockMethod sync.RWMutex
+}
+
+// InterfaceMockMethodCalls holds details about calls to the Method method.
+type InterfaceMockMethodCalls struct {
+	// MyTypeMoqParam is the myTypeMoqParam argument value.
+	MyTypeMoqParam *myType
+	// Numbers is the numbers argument value.
+	Numbers [3]json.Number
+	// Bytes is the bytes argument value.
+	Bytes []byte
+	// NullStringToReader is the nullStringToReader argument value.
+	NullStringToReader map[sql.NullString]io.Reader
+	// Fn is the fn argument value.
+	Fn func(conn net.Conn)
+	// GoMoqParam is the goMoqParam argument value.
+	GoMoqParam Go
+	// BufferPoolCh is the bufferPoolCh argument value.
+	BufferPoolCh chan *httputil.BufferPool
+	// Val is the val argument value.
+	Val struct{ URL *url.URL }
+	// IfaceVal is the ifaceVal argument value.
+	IfaceVal interface {
+		CookieJar() http.CookieJar
+		fmt.Stringer
+	}
 }
 
 // Method calls MethodFunc.
@@ -79,20 +83,7 @@ func (mock *InterfaceMock) Method(myTypeMoqParam *myType, numbers [3]json.Number
 	if mock.MethodFunc == nil {
 		panic("InterfaceMock.MethodFunc: method is nil but Interface.Method was just called")
 	}
-	callInfo := struct {
-		MyTypeMoqParam     *myType
-		Numbers            [3]json.Number
-		Bytes              []byte
-		NullStringToReader map[sql.NullString]io.Reader
-		Fn                 func(conn net.Conn)
-		GoMoqParam         Go
-		BufferPoolCh       chan *httputil.BufferPool
-		Val                struct{ URL *url.URL }
-		IfaceVal           interface {
-			CookieJar() http.CookieJar
-			fmt.Stringer
-		}
-	}{
+	callInfo := InterfaceMockMethodCalls{
 		MyTypeMoqParam:     myTypeMoqParam,
 		Numbers:            numbers,
 		Bytes:              bytes,
@@ -113,34 +104,8 @@ func (mock *InterfaceMock) Method(myTypeMoqParam *myType, numbers [3]json.Number
 // Check the length with:
 //
 //	len(mockedInterface.MethodCalls())
-func (mock *InterfaceMock) MethodCalls() []struct {
-	MyTypeMoqParam     *myType
-	Numbers            [3]json.Number
-	Bytes              []byte
-	NullStringToReader map[sql.NullString]io.Reader
-	Fn                 func(conn net.Conn)
-	GoMoqParam         Go
-	BufferPoolCh       chan *httputil.BufferPool
-	Val                struct{ URL *url.URL }
-	IfaceVal           interface {
-		CookieJar() http.CookieJar
-		fmt.Stringer
-	}
-} {
-	var calls []struct {
-		MyTypeMoqParam     *myType
-		Numbers            [3]json.Number
-		Bytes              []byte
-		NullStringToReader map[sql.NullString]io.Reader
-		Fn                 func(conn net.Conn)
-		GoMoqParam         Go
-		BufferPoolCh       chan *httputil.BufferPool
-		Val                struct{ URL *url.URL }
-		IfaceVal           interface {
-			CookieJar() http.CookieJar
-			fmt.Stringer
-		}
-	}
+func (mock *InterfaceMock) MethodCalls() []InterfaceMockMethodCalls {
+	var calls []InterfaceMockMethodCalls
 	mock.lockMethod.RLock()
 	calls = mock.calls.Method
 	mock.lockMethod.RUnlock()
