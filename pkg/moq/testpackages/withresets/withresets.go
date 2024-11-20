@@ -16,3 +16,8 @@ type ResetStore interface {
 	Create(ctx context.Context, person *Reset, confirm bool) error
 	ClearCache(id string)
 }
+
+type ResetStoreGeneric[T, S any] interface {
+	Get(ctx context.Context, id T) (string, error)
+	Create(ctx context.Context, id T, value S) error
+}

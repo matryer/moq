@@ -403,7 +403,7 @@ func TestMockGolden(t *testing.T) {
 		{
 			name:       "WithResets",
 			cfg:        Config{SrcDir: "testpackages/withresets", WithResets: true},
-			interfaces: []string{"ResetStore"},
+			interfaces: []string{"ResetStore", "ResetStoreGeneric"},
 			goldenFile: filepath.Join("testpackages/withresets", "withresets_moq.golden.go"),
 		},
 		{

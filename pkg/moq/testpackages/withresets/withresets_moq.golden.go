@@ -215,3 +215,156 @@ func (mock *ResetStoreMock) ResetCalls() {
 	mock.calls.Get = nil
 	mock.lockGet.Unlock()
 }
+
+// Ensure, that ResetStoreGenericMock does implement ResetStoreGeneric.
+// If this is not the case, regenerate this file with moq.
+var _ ResetStoreGeneric[any, any] = &ResetStoreGenericMock[any, any]{}
+
+// ResetStoreGenericMock is a mock implementation of ResetStoreGeneric.
+//
+//	func TestSomethingThatUsesResetStoreGeneric(t *testing.T) {
+//
+//		// make and configure a mocked ResetStoreGeneric
+//		mockedResetStoreGeneric := &ResetStoreGenericMock{
+//			CreateFunc: func(ctx context.Context, id T, value S) error {
+//				panic("mock out the Create method")
+//			},
+//			GetFunc: func(ctx context.Context, id T) (string, error) {
+//				panic("mock out the Get method")
+//			},
+//		}
+//
+//		// use mockedResetStoreGeneric in code that requires ResetStoreGeneric
+//		// and then make assertions.
+//
+//	}
+type ResetStoreGenericMock[T any, S any] struct {
+	// CreateFunc mocks the Create method.
+	CreateFunc func(ctx context.Context, id T, value S) error
+
+	// GetFunc mocks the Get method.
+	GetFunc func(ctx context.Context, id T) (string, error)
+
+	// calls tracks calls to the methods.
+	calls struct {
+		// Create holds details about calls to the Create method.
+		Create []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// ID is the id argument value.
+			ID T
+			// Value is the value argument value.
+			Value S
+		}
+		// Get holds details about calls to the Get method.
+		Get []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// ID is the id argument value.
+			ID T
+		}
+	}
+	lockCreate sync.RWMutex
+	lockGet    sync.RWMutex
+}
+
+// Create calls CreateFunc.
+func (mock *ResetStoreGenericMock[T, S]) Create(ctx context.Context, id T, value S) error {
+	if mock.CreateFunc == nil {
+		panic("ResetStoreGenericMock.CreateFunc: method is nil but ResetStoreGeneric.Create was just called")
+	}
+	callInfo := struct {
+		Ctx   context.Context
+		ID    T
+		Value S
+	}{
+		Ctx:   ctx,
+		ID:    id,
+		Value: value,
+	}
+	mock.lockCreate.Lock()
+	mock.calls.Create = append(mock.calls.Create, callInfo)
+	mock.lockCreate.Unlock()
+	return mock.CreateFunc(ctx, id, value)
+}
+
+// CreateCalls gets all the calls that were made to Create.
+// Check the length with:
+//
+//	len(mockedResetStoreGeneric.CreateCalls())
+func (mock *ResetStoreGenericMock[T, S]) CreateCalls() []struct {
+	Ctx   context.Context
+	ID    T
+	Value S
+} {
+	var calls []struct {
+		Ctx   context.Context
+		ID    T
+		Value S
+	}
+	mock.lockCreate.RLock()
+	calls = mock.calls.Create
+	mock.lockCreate.RUnlock()
+	return calls
+}
+
+// ResetCreateCalls reset all the calls that were made to Create.
+func (mock *ResetStoreGenericMock[T, S]) ResetCreateCalls() {
+	mock.lockCreate.Lock()
+	mock.calls.Create = nil
+	mock.lockCreate.Unlock()
+}
+
+// Get calls GetFunc.
+func (mock *ResetStoreGenericMock[T, S]) Get(ctx context.Context, id T) (string, error) {
+	if mock.GetFunc == nil {
+		panic("ResetStoreGenericMock.GetFunc: method is nil but ResetStoreGeneric.Get was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		ID  T
+	}{
+		Ctx: ctx,
+		ID:  id,
+	}
+	mock.lockGet.Lock()
+	mock.calls.Get = append(mock.calls.Get, callInfo)
+	mock.lockGet.Unlock()
+	return mock.GetFunc(ctx, id)
+}
+
+// GetCalls gets all the calls that were made to Get.
+// Check the length with:
+//
+//	len(mockedResetStoreGeneric.GetCalls())
+func (mock *ResetStoreGenericMock[T, S]) GetCalls() []struct {
+	Ctx context.Context
+	ID  T
+} {
+	var calls []struct {
+		Ctx context.Context
+		ID  T
+	}
+	mock.lockGet.RLock()
+	calls = mock.calls.Get
+	mock.lockGet.RUnlock()
+	return calls
+}
+
+// ResetGetCalls reset all the calls that were made to Get.
+func (mock *ResetStoreGenericMock[T, S]) ResetGetCalls() {
+	mock.lockGet.Lock()
+	mock.calls.Get = nil
+	mock.lockGet.Unlock()
+}
+
+// ResetCalls reset all the calls that were made to all mocked methods.
+func (mock *ResetStoreGenericMock[T, S]) ResetCalls() {
+	mock.lockCreate.Lock()
+	mock.calls.Create = nil
+	mock.lockCreate.Unlock()
+
+	mock.lockGet.Lock()
+	mock.calls.Get = nil
+	mock.lockGet.Unlock()
+}
