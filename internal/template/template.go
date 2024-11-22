@@ -48,7 +48,7 @@ import (
 {{- if not $.SkipEnsure -}}
 // Ensure, that {{.MockName}} does implement {{$.SrcPkgQualifier}}{{.InterfaceName}}.
 // If this is not the case, regenerate this file with moq.
-var _ {{$.SrcPkgQualifier}}{{.InterfaceName -}} 
+var _ {{$.SrcPkgQualifier}}{{.InterfaceName -}}
 	{{- if .TypeParams }}[
 		{{- range $index, $param := .TypeParams}}
 			{{- if $index}}, {{end -}}
@@ -83,7 +83,7 @@ var _ {{$.SrcPkgQualifier}}{{.InterfaceName -}}
 //		// and then make assertions.
 //
 //	}
-type {{.MockName}} 
+type {{.MockName}}
 {{- if .TypeParams -}}
 	[{{- range $index, $param := .TypeParams}}
 			{{- if $index}}, {{end}}{{$param.Name | Exported}} {{$param.TypeString}}
@@ -116,7 +116,7 @@ func (mock *{{$mock.MockName}}
 	[{{- range $index, $param := $mock.TypeParams}}
 		{{- if $index}}, {{end}}{{$param.Name | Exported}}
 	{{- end -}}]
-{{- end -}}	
+{{- end -}}
 ) {{.Name}}({{.ArgList}}) {{.ReturnArgTypeList}} {
 {{- if not $.StubImpl}}
 	if mock.{{.Name}}Func == nil {
@@ -166,7 +166,7 @@ func (mock *{{$mock.MockName}}
 	[{{- range $index, $param := $mock.TypeParams}}
 		{{- if $index}}, {{end}}{{$param.Name | Exported}}
 	{{- end -}}]
-{{- end -}}	
+{{- end -}}
 ) {{.Name}}Calls() []struct {
 		{{- range .Params}}
 		{{.Name | Exported}} {{.TypeString}}
@@ -184,7 +184,13 @@ func (mock *{{$mock.MockName}}
 }
 {{- if $.WithResets}}
 // Reset{{.Name}}Calls reset all the calls that were made to {{.Name}}.
-func (mock *{{$mock.MockName}}) Reset{{.Name}}Calls() {
+func (mock *{{$mock.MockName}}
+{{- if $mock.TypeParams -}}
+	[{{- range $index, $param := $mock.TypeParams}}
+		{{- if $index}}, {{end}}{{$param.Name | Exported}}
+	{{- end -}}]
+{{- end -}}
+) Reset{{.Name}}Calls() {
 	mock.lock{{.Name}}.Lock()
 	mock.calls.{{.Name}} = nil
 	mock.lock{{.Name}}.Unlock()
@@ -193,7 +199,13 @@ func (mock *{{$mock.MockName}}) Reset{{.Name}}Calls() {
 {{end -}}
 {{- if $.WithResets}}
 // ResetCalls reset all the calls that were made to all mocked methods.
-func (mock *{{$mock.MockName}}) ResetCalls() {
+func (mock *{{$mock.MockName}}
+{{- if $mock.TypeParams -}}
+	[{{- range $index, $param := $mock.TypeParams}}
+		{{- if $index}}, {{end}}{{$param.Name | Exported}}
+	{{- end -}}]
+{{- end -}}
+) ResetCalls() {
 	{{- range .Methods}}
 	mock.lock{{.Name}}.Lock()
 	mock.calls.{{.Name}} = nil
