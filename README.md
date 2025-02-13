@@ -44,6 +44,8 @@ moq [flags] source-dir interface [interface2 [interface3 [...]]]
     	show the version for moq
   -with-resets
     	generate functions to facilitate resetting calls made to a mock
+  -build-tag
+    	specify and optional go:build tag for the generated files, e.g. `-build-tag test`.
 
 Specifying an alias for the mock is also supported with the format 'interface:alias'
 
