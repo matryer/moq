@@ -1,3 +1,4 @@
+// Package moq provides the ability to generate mocks for interfaces.
 package moq
 
 import (
