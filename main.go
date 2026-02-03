@@ -24,6 +24,7 @@ type userFlags struct {
 	withResets bool
 	remove     bool
 	args       []string
+	buildTag   string
 }
 
 func main() {
@@ -39,6 +40,8 @@ func main() {
 	flag.BoolVar(&flags.remove, "rm", false, "first remove output file, if it exists")
 	flag.BoolVar(&flags.withResets, "with-resets", false,
 		"generate functions to facilitate resetting calls made to a mock")
+	flag.StringVar(&flags.buildTag, "tags", "",
+		"build tags string to add to the generated files. For more information about build tags, see 'go help buildconstraint'")
 
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
@@ -89,6 +92,7 @@ func run(flags userFlags) error {
 		StubImpl:   flags.stubImpl,
 		SkipEnsure: flags.skipEnsure,
 		WithResets: flags.withResets,
+		BuildTag:   flags.buildTag,
 	})
 	if err != nil {
 		return err
