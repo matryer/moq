@@ -1,3 +1,5 @@
+version: 2
+
 # This is an example goreleaser.yaml file with some sane defaults.
 # Make sure to check the documentation at http://goreleaser.com
 builds:
@@ -11,6 +13,11 @@ builds:
   - amd64
   - arm
   - arm64
+  ignore:
+  - goos: darwin
+    goarch: arm
+  - goos: windows
+    goarch: arm
   ldflags:
   - -X main.Version={{.Version}}
 archives:
@@ -29,7 +36,7 @@ universal_binaries:
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ .Tag }}"
+  version_template: "{{ .Tag }}"
 changelog:
   sort: asc
   filters:
