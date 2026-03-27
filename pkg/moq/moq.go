@@ -6,6 +6,7 @@ import (
 	"go/token"
 	"go/types"
 	"io"
+	"regexp"
 	"strings"
 
 	"github.com/matryer/moq/internal/registry"
@@ -51,29 +52,39 @@ func New(cfg Config) (*Mocker, error) {
 }
 
 // Mock generates a mock for the specified interface name.
-func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
-	if len(namePairs) == 0 {
+func (m *Mocker) Mock(w io.Writer, targets ...string) error {
+	if len(targets) == 0 {
 		return errors.New("must specify one interface")
 	}
 
-	mocks := make([]template.MockData, len(namePairs))
-	for i, np := range namePairs {
-		name, mockName := parseInterfaceName(np)
+	differentPkg := m.registry.SrcPkgName() != m.mockPkgName()
+
+	mocks := make([]template.MockData, len(targets))
+	for i, target := range targets {
+		namePair, embeddedTypeList := parseTarget(target)
+
+		name, mockName := parseInterfaceName(namePair)
 		iface, tparams, err := m.registry.LookupInterface(name)
 		if err != nil {
 			return err
 		}
 
-		methods := make([]template.MethodData, iface.NumMethods())
+		methods := make([]template.MethodData, 0, iface.NumMethods())
 		for j := 0; j < iface.NumMethods(); j++ {
-			methods[j] = m.methodData(iface.Method(j))
+			fn := iface.Method(j)
+			if !differentPkg || fn.Exported() {
+				methods = append(methods, m.methodData(fn))
+			}
 		}
+
+		embeddedTypes := parseEmbeddedTypes(embeddedTypeList)
 
 		mocks[i] = template.MockData{
 			InterfaceName: name,
 			MockName:      mockName,
 			Methods:       methods,
 			TypeParams:    m.typeParams(tparams),
+			EmbeddedTypes: embeddedTypes,
 		}
 	}
 
@@ -88,7 +99,7 @@ func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
 	if data.MocksSomeMethod() {
 		m.registry.AddImport(types.NewPackage("sync", "sync"))
 	}
-	if m.registry.SrcPkgName() != m.mockPkgName() {
+	if differentPkg {
 		data.SrcPkgQualifier = m.registry.SrcPkgName() + "."
 		if !m.cfg.SkipEnsure {
 			imprt := m.registry.AddImport(m.registry.SrcPkg())
@@ -201,6 +212,18 @@ func (m *Mocker) format(src []byte) ([]byte, error) {
 	return gofmt(src)
 }
 
+var targetRegexp = regexp.MustCompile(`^(.+){(.+)}$`)
+
+func parseTarget(target string) (namePair, embeddedTypeList string) {
+	matched := targetRegexp.FindStringSubmatch(target)
+
+	if len(matched) != 3 {
+		return target, ""
+	}
+
+	return matched[1], matched[2]
+}
+
 func parseInterfaceName(namePair string) (ifaceName, mockName string) {
 	parts := strings.SplitN(namePair, ":", 2)
 	if len(parts) == 2 {
@@ -209,4 +232,24 @@ func parseInterfaceName(namePair string) (ifaceName, mockName string) {
 
 	ifaceName = parts[0]
 	return ifaceName, ifaceName + "Mock"
+}
+
+func parseEmbeddedTypes(list string) []template.EmbeddedTypeData {
+	if list == "" {
+		return nil
+	}
+
+	parts := strings.Split(list, ",")
+
+	embeddedTypes := make([]template.EmbeddedTypeData, len(parts))
+	for i, p := range parts {
+		isPointer := strings.HasPrefix(p, "*")
+		name := strings.TrimPrefix(p, "*")
+		embeddedTypes[i] = template.EmbeddedTypeData{
+			Name:      name,
+			IsPointer: isPointer,
+		}
+	}
+
+	return embeddedTypes
 }

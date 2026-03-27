@@ -418,6 +418,30 @@ func TestMockGolden(t *testing.T) {
 			interfaces: []string{"Example"},
 			goldenFile: filepath.Join("testpackages/typealias", "typealias_moq.golden.go"),
 		},
+		{
+			name:       "EmbedType",
+			cfg:        Config{SrcDir: "testpackages/embedtypes", PkgName: "mock"},
+			interfaces: []string{"Interface1{Embedded1}"},
+			goldenFile: filepath.Join("testpackages/embedtypes/mock", "embed_type.golden.go"),
+		},
+		{
+			name:       "EmbedPointerType",
+			cfg:        Config{SrcDir: "testpackages/embedtypes", PkgName: "mock"},
+			interfaces: []string{"Interface2{*Embedded2}"},
+			goldenFile: filepath.Join("testpackages/embedtypes/mock", "embed_pointer_type.golden.go"),
+		},
+		{
+			name:       "EmbedMultipleTypes",
+			cfg:        Config{SrcDir: "testpackages/embedtypes", PkgName: "mock"},
+			interfaces: []string{"Interface3{Embedded1,*Embedded2}"},
+			goldenFile: filepath.Join("testpackages/embedtypes/mock", "embed_multiple_types.golden.go"),
+		},
+		{
+			name:       "EmbedTypesWithAlias",
+			cfg:        Config{SrcDir: "testpackages/embedtypes", PkgName: "mock"},
+			interfaces: []string{"Interface3:Alias{Embedded1,*Embedded2}"},
+			goldenFile: filepath.Join("testpackages/embedtypes/mock", "embed_types_with_alias.golden.go"),
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
