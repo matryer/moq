@@ -1,3 +1,4 @@
+// Package generate demonstrates how to use moq with the go:generate directive.
 package generate
 
 // In a terminal, run `go generate` in this directory to have
