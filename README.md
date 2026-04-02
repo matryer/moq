@@ -42,6 +42,8 @@ moq [flags] source-dir interface [interface2 [interface3 [...]]]
     	return zero values when no mock implementation is provided, do not panic
   -version
     	show the version for moq
+  -with-require-calls
+    	generate functions to check that all non-nil mock methods were called
   -with-resets
     	generate functions to facilitate resetting calls made to a mock
 
@@ -134,4 +136,3 @@ The Moq project (and all code) is licensed under the [MIT License](LICENSE).
 Moq was created by [Mat Ryer](https://twitter.com/matryer) and [David Hernandez](https://github.com/dahernan), with ideas lovingly stolen from [Ernesto Jimenez](https://github.com/ernesto-jimenez). Featuring a major refactor by @sudo-suhas, as well as lots of other contributors.
 
 The Moq logo was created by [Chris Ryer](http://chrisryer.co.uk) and is licensed under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/).
-

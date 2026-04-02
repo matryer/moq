@@ -10,13 +10,14 @@ import (
 
 // Data is the template data used to render the Moq template.
 type Data struct {
-	PkgName         string
-	SrcPkgQualifier string
-	Imports         []*registry.Package
-	Mocks           []MockData
-	StubImpl        bool
-	SkipEnsure      bool
-	WithResets      bool
+	PkgName          string
+	SrcPkgQualifier  string
+	Imports          []*registry.Package
+	Mocks            []MockData
+	StubImpl         bool
+	SkipEnsure       bool
+	WithResets       bool
+	WithRequireCalls bool
 }
 
 // MocksSomeMethod returns true of any one of the Mocks has at least 1

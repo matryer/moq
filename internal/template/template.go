@@ -213,6 +213,32 @@ func (mock *{{$mock.MockName}}
 	{{end -}}
 }
 {{end -}}
+
+{{- if $.WithRequireCalls }}
+// RequireCalls returns an error if any non-nil methods were not called.
+// This is the inverse of "panic on nil method".
+// It can be used to require that unused mocks are removed from tests.
+//
+// m := ExampleMock{ ExampleFunc: func(){}, OtherFunc: nil }
+// someOtherFunction(m) // Doesn't call m.Example()
+//
+// if err := m.RequireCalls(); err != nil{
+//     t.Errorf("All non-nil methods must be called: %s", err)
+// }
+func (mock *{{$mock.MockName}}) RequireCalls() error {
+	{{- range .Methods}}
+	if mock.{{.Name}}Func != nil {
+		mock.lock{{.Name}}.Lock()
+		defer mock.lock{{.Name}}.Unlock()
+		if len(mock.calls.{{.Name}}) == 0 {
+			return errors.New("{{$mock.MockName}}.{{.Name}} is non-nil but was never called")
+		}
+	}
+	{{end -}}
+
+	return nil
+}
+{{end -}}
 {{end -}}
 `
 
