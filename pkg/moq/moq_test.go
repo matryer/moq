@@ -407,6 +407,12 @@ func TestMockGolden(t *testing.T) {
 			goldenFile: filepath.Join("testpackages/withresets", "withresets_moq.golden.go"),
 		},
 		{
+			name:       "WithRequireCalls",
+			cfg:        Config{SrcDir: "testpackages/withrequirecalls", WithRequireCalls: true},
+			interfaces: []string{"RequireCalls"},
+			goldenFile: filepath.Join("testpackages/withrequirecalls", "withrequirecalls_moq.golden.go"),
+		},
+		{
 			name:       "RangeNumber",
 			cfg:        Config{SrcDir: "testpackages/rangenum"},
 			interfaces: []string{"Magician"},
