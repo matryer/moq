@@ -17,6 +17,7 @@ type Data struct {
 	StubImpl        bool
 	SkipEnsure      bool
 	WithResets      bool
+	BuildTag        string
 }
 
 // MocksSomeMethod returns true of any one of the Mocks has at least 1
