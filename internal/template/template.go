@@ -1,3 +1,4 @@
+// Package template defines the template for the Moq generated code.
 package template
 
 import (
