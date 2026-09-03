@@ -43,8 +43,17 @@ func main() {
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
 		flag.PrintDefaults()
+		fmt.Println()
 		fmt.Println(`Specifying an alias for the mock is also supported with the format 'interface:alias'`)
 		fmt.Println(`Ex: moq -pkg different . MyInterface:MyMock`)
+		fmt.Println()
+		fmt.Println(`To embed types into the mock, use the format 'interface{type1,type2...}' or 'interface:alias{type1,type2...}'`)
+		fmt.Println(`- The types must be declared in source package`)
+		fmt.Println(`- You can embed a pointer type by using the '*' prefix`)
+		fmt.Println(`Ex1: moq -pkg different src MyInterface{Type1}`)
+		fmt.Println(`Ex2: moq -pkg different src MyInterface{*Type1}`)
+		fmt.Println(`Ex3: moq -pkg different src MyInterface{Type1,Type2}`)
+		fmt.Println(`Ex4: moq -pkg different src MyInterface:MyMock{Type1}`)
 	}
 
 	flag.Parse()
