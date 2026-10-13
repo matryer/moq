@@ -32,6 +32,11 @@ func (m *MethodScope) AddVar(vr *types.Var, suffix string) *Var {
 	if _, ok := m.registry.searchImport(name); ok {
 		name += "MoqParam"
 	}
+	// Generated call records refer to local types inside the method body.
+	// A parameter must not shadow those type names.
+	for m.isLocalType(name) {
+		name += "MoqParam"
+	}
 	if _, ok := m.searchVar(name); ok || m.conflicted[name] {
 		name = m.resolveVarNameConflict(name)
 	}
@@ -49,7 +54,7 @@ func (m *MethodScope) AddVar(vr *types.Var, suffix string) *Var {
 func (m *MethodScope) resolveVarNameConflict(suggested string) string {
 	for n := 1; ; n++ {
 		_, ok := m.searchVar(suggested + strconv.Itoa(n))
-		if ok {
+		if ok || m.isLocalType(suggested+strconv.Itoa(n)) {
 			continue
 		}
 
@@ -61,6 +66,14 @@ func (m *MethodScope) resolveVarNameConflict(suggested string) string {
 		}
 		return suggested + strconv.Itoa(n)
 	}
+}
+
+func (m MethodScope) isLocalType(name string) bool {
+	if m.moqPkgPath != m.registry.SrcPkg().Path() {
+		return false
+	}
+	_, ok := m.registry.SrcPkg().Scope().Lookup(name).(*types.TypeName)
+	return ok
 }
 
 func (m MethodScope) searchVar(name string) (*Var, bool) {
