@@ -27,14 +27,7 @@ func (m *MethodScope) AddVar(vr *types.Var, suffix string) *Var {
 	m.populateImports(vr.Type(), imports)
 	m.resolveImportVarConflicts(imports)
 
-	name := varName(vr, suffix)
-	// Ensure that the var name does not conflict with a package import.
-	if _, ok := m.registry.searchImport(name); ok {
-		name += "MoqParam"
-	}
-	if _, ok := m.searchVar(name); ok || m.conflicted[name] {
-		name = m.resolveVarNameConflict(name)
-	}
+	name := m.resolveVarName(varName(vr, suffix))
 
 	v := Var{
 		vr:         vr,
@@ -46,21 +39,50 @@ func (m *MethodScope) AddVar(vr *types.Var, suffix string) *Var {
 	return &v
 }
 
+func (m *MethodScope) resolveVarName(name string) string {
+	// Generated call records refer to types inside the method body. Neither
+	// initial allocation nor later import conflicts may shadow those names.
+	for m.isTypeOrImportName(name) {
+		name += "MoqParam"
+	}
+	if _, ok := m.searchVar(name); ok || m.conflicted[name] {
+		name = m.resolveVarNameConflict(name)
+	}
+	return name
+}
+
 func (m *MethodScope) resolveVarNameConflict(suggested string) string {
 	for n := 1; ; n++ {
-		_, ok := m.searchVar(suggested + strconv.Itoa(n))
-		if ok {
+		name := suggested + strconv.Itoa(n)
+		_, ok := m.searchVar(name)
+		if ok || m.isTypeOrImportName(name) || m.conflicted[name] {
 			continue
 		}
 
 		if n == 1 {
-			conflict, _ := m.searchVar(suggested)
-			conflict.Name += "1"
-			m.conflicted[suggested] = true
-			n++
+			if conflict, ok := m.searchVar(suggested); ok {
+				conflict.Name = name
+				m.conflicted[suggested] = true
+				continue
+			}
 		}
-		return suggested + strconv.Itoa(n)
+		return name
 	}
+}
+
+func (m MethodScope) isTypeOrImportName(name string) bool {
+	if _, ok := m.registry.searchImport(name); ok {
+		return true
+	}
+	return m.isLocalType(name)
+}
+
+func (m MethodScope) isLocalType(name string) bool {
+	if m.moqPkgPath != m.registry.SrcPkg().Path() {
+		return false
+	}
+	_, ok := m.registry.SrcPkg().Scope().Lookup(name).(*types.TypeName)
+	return ok
 }
 
 func (m MethodScope) searchVar(name string) (*Var, bool) {
@@ -143,12 +165,12 @@ func (m MethodScope) populateImports(t types.Type, imports map[string]*Package) 
 
 // resolveImportVarConflicts ensures that all the newly added imports do not
 // conflict with any of the existing vars.
-func (m MethodScope) resolveImportVarConflicts(imports map[string]*Package) {
+func (m *MethodScope) resolveImportVarConflicts(imports map[string]*Package) {
 	// Ensure that all the newly added imports do not conflict with any of the
 	// existing vars.
 	for _, imprt := range imports {
 		if v, ok := m.searchVar(imprt.Qualifier()); ok {
-			v.Name += "MoqParam"
+			v.Name = m.resolveVarName(v.Name + "MoqParam")
 		}
 	}
 }
