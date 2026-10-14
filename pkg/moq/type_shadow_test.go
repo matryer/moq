@@ -9,17 +9,29 @@ import (
 )
 
 func TestLocalTypeShadowing(t *testing.T) {
-	for name, method := range map[string]string{
-		"named":            "Method(s s)",
-		"pointer":          "Method(s *s)",
-		"slice":            "Method(s []s)",
-		"other_parameter":  "Method(s int, value s)",
-		"alias":            "Method(alias alias)",
-		"suffix_collision": "Method(s s, sMoqParam sMoqParam)",
+	for name, test := range map[string]struct{ method, imports string }{
+		"named":                    {method: "Method(s s)"},
+		"pointer":                  {method: "Method(s *s)"},
+		"slice":                    {method: "Method(s []s)"},
+		"other_parameter":          {method: "Method(s int, value s)"},
+		"alias":                    {method: "Method(alias alias)"},
+		"suffix_collision":         {method: "Method(s s, sMoqParam sMoqParam)"},
+		"numeric_suffix_collision": {method: "Method(_ s, _ s, value sMoqParamMoqParam2)"},
+		"late_import": {
+			method:  "Method(time int, value time.Duration, output timeMoqParam)",
+			imports: "import \"time\"\n",
+		},
+		"late_import_with_suffix_collision": {
+			method:  "Method(time int, timeMoqParamMoqParam int, value time.Duration, output timeMoqParam, last timeMoqParamMoqParam2)",
+			imports: "import \"time\"\n",
+		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			dir := t.TempDir()
-			source := "package shadow\ntype s struct{}\ntype alias = s\ntype sMoqParam struct{}\ntype I interface { " + method + " }\n"
+			source := "package shadow\n" + test.imports +
+				"type s struct{}\ntype alias = s\ntype sMoqParam struct{}\ntype sMoqParamMoqParam2 struct{}\n" +
+				"type timeMoqParam struct{}\ntype timeMoqParamMoqParam2 struct{}\n" +
+				"type I interface { " + test.method + " }\n"
 			for filename, content := range map[string]string{
 				"go.mod":    "module example/shadow\n\ngo 1.26\n",
 				"source.go": source,
