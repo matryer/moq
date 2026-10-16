@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/types"
+	"path"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -37,7 +38,7 @@ func New(srcDir, moqPkg string) (*Registry, error) {
 	return &Registry{
 		srcPkgName:  srcPkg.Name,
 		srcPkgTypes: srcPkg.Types,
-		moqPkgPath:  findPkgPath(moqPkg, srcPkg.PkgPath),
+		moqPkgPath:  findPkgPath(moqPkg, srcPkg.PkgPath, srcDir),
 		aliases:     parseImportsAliases(srcPkg.Syntax),
 		imports:     make(map[string]*Package),
 	}, nil
@@ -176,16 +177,16 @@ func pkgInfoFromPath(srcDir string, mode packages.LoadMode) (*packages.Package, 
 	return pkgs[0], nil
 }
 
-func findPkgPath(pkgInputVal string, srcPkgPath string) string {
+func findPkgPath(pkgInputVal string, srcPkgPath string, srcDir string) string {
 	if pkgInputVal == "" {
 		return srcPkgPath
 	}
-	if pkgInDir(srcPkgPath, pkgInputVal) {
+	if pkgInDir(pkgInputVal, srcDir) {
 		return srcPkgPath
 	}
-	subdirectoryPath := filepath.Join(srcPkgPath, pkgInputVal)
-	if pkgInDir(subdirectoryPath, pkgInputVal) {
-		return subdirectoryPath
+	subdirectoryPath := filepath.Join(srcDir, pkgInputVal)
+	if pkgInDir(pkgInputVal, subdirectoryPath) {
+		return path.Join(srcPkgPath, pkgInputVal)
 	}
 	return ""
 }
@@ -195,7 +196,7 @@ func pkgInDir(pkgName, dir string) bool {
 	if err != nil {
 		return false
 	}
-	return currentPkg.Name == pkgName || currentPkg.Name+"_test" == pkgName
+	return currentPkg.Name == pkgName
 }
 
 func parseImportsAliases(syntaxTree []*ast.File) map[string]string {
