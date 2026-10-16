@@ -16,6 +16,52 @@ import (
 
 var update = flag.Bool("update", false, "Update golden files.")
 
+func TestExplicitDestinationPackageCompiles(t *testing.T) {
+	for _, pkgName := range []string{"source", "source_test", "mocks"} {
+		t.Run(pkgName, func(t *testing.T) {
+			srcDir := t.TempDir()
+			source := "package source\ntype Item struct{}\ntype Service interface { Get() Item }\n"
+			output := "service_mock.go"
+			files := map[string]string{
+				"go.mod": "module example.com/source\n\ngo 1.26\n",
+			}
+			if pkgName == "source_test" {
+				output = "service_mock_test.go"
+			} else if pkgName == "mocks" {
+				files["mocks/types.go"] = "package mocks\ntype Item struct{}\n"
+				source = "package source\nimport \"example.com/source/mocks\"\ntype Service interface { Get() mocks.Item }\n"
+				output = "mocks/service_mock.go"
+			}
+			files["source.go"] = source
+			for name, contents := range files {
+				filename := filepath.Join(srcDir, name)
+				if err := os.MkdirAll(filepath.Dir(filename), 0755); err != nil {
+					t.Fatal(err)
+				}
+				if err := os.WriteFile(filename, []byte(contents), 0644); err != nil {
+					t.Fatal(err)
+				}
+			}
+			m, err := New(Config{SrcDir: srcDir, PkgName: pkgName, SkipEnsure: pkgName == "mocks"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			var buf bytes.Buffer
+			if err := m.Mock(&buf, "Service"); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(filepath.Join(srcDir, output), buf.Bytes(), 0644); err != nil {
+				t.Fatal(err)
+			}
+			cmd := exec.Command("go", "test", "./...")
+			cmd.Dir = srcDir
+			if output, err := cmd.CombinedOutput(); err != nil {
+				t.Fatalf("generated mock does not compile: %v\n%s", err, output)
+			}
+		})
+	}
+}
+
 func TestMoq(t *testing.T) {
 	m, err := New(Config{SrcDir: "testpackages/example"})
 	if err != nil {
