@@ -40,13 +40,13 @@ moq [flags] source-dir interface [interface2 [interface3 [...]]]
     	suppress mock implementation check, avoid import cycle if mocks generated outside of the tested package
   -stub
     	return zero values when no mock implementation is provided, do not panic
+  -tags string
+    	build tags string to add to the generated files. For more information about build tags, see 'go help buildconstraint'
   -version
     	show the version for moq
   -with-resets
     	generate functions to facilitate resetting calls made to a mock
-
 Specifying an alias for the mock is also supported with the format 'interface:alias'
-
 Ex: moq -pkg different . MyInterface:MyMock
 ```
 
@@ -134,4 +134,3 @@ The Moq project (and all code) is licensed under the [MIT License](LICENSE).
 Moq was created by [Mat Ryer](https://twitter.com/matryer) and [David Hernandez](https://github.com/dahernan), with ideas lovingly stolen from [Ernesto Jimenez](https://github.com/ernesto-jimenez). Featuring a major refactor by @sudo-suhas, as well as lots of other contributors.
 
 The Moq logo was created by [Chris Ryer](http://chrisryer.co.uk) and is licensed under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/).
-
