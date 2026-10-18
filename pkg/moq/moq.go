@@ -114,41 +114,22 @@ func (m *Mocker) Mock(w io.Writer, namePairs ...string) error {
 	return nil
 }
 
-func (m *Mocker) typeParams(tparams *types.TypeParamList) []template.TypeParamData {
-	var tpd []template.TypeParamData
+func (m *Mocker) typeParams(tparams *types.TypeParamList) []template.ParamData {
+	var tpd []template.ParamData
 	if tparams == nil {
 		return tpd
 	}
 
-	tpd = make([]template.TypeParamData, tparams.Len())
+	tpd = make([]template.ParamData, tparams.Len())
 
 	scope := m.registry.MethodScope()
 	for i := 0; i < len(tpd); i++ {
 		tp := tparams.At(i)
 		typeParam := types.NewParam(token.Pos(i), tp.Obj().Pkg(), tp.Obj().Name(), tp.Constraint())
-		tpd[i] = template.TypeParamData{
-			ParamData:  template.ParamData{Var: scope.AddVar(typeParam, "")},
-			Constraint: explicitConstraintType(typeParam),
-		}
+		tpd[i] = template.ParamData{Var: scope.AddVar(typeParam, "")}
 	}
 
 	return tpd
-}
-
-func explicitConstraintType(typeParam *types.Var) (t types.Type) {
-	underlying := typeParam.Type().Underlying().(*types.Interface)
-	// check if any of the embedded types is either a basic type or a union,
-	// because the generic type has to be an alias for one of those types then
-	for j := 0; j < underlying.NumEmbeddeds(); j++ {
-		t := underlying.EmbeddedType(j)
-		switch t := t.(type) {
-		case *types.Basic:
-			return t
-		case *types.Union: // only unions of basic types are allowed, so just take the first one as a valid type constraint
-			return t.Term(0).Type()
-		}
-	}
-	return nil
 }
 
 func (m *Mocker) methodData(f *types.Func) template.MethodData {

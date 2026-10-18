@@ -10,7 +10,9 @@ import (
 
 // Ensure, that GenericStore1Mock does implement GenericStore1.
 // If this is not the case, regenerate this file with moq.
-var _ GenericStore1[Key1, any] = &GenericStore1Mock[Key1, any]{}
+func _[T Key1, S any]() {
+	var _ GenericStore1[T, S] = &GenericStore1Mock[T, S]{}
+}
 
 // GenericStore1Mock is a mock implementation of GenericStore1.
 //
@@ -138,7 +140,9 @@ func (mock *GenericStore1Mock[T, S]) GetCalls() []struct {
 
 // Ensure, that GenericStore2Mock does implement GenericStore2.
 // If this is not the case, regenerate this file with moq.
-var _ GenericStore2[[]byte, any] = &GenericStore2Mock[[]byte, any]{}
+func _[T Key2, S any]() {
+	var _ GenericStore2[T, S] = &GenericStore2Mock[T, S]{}
+}
 
 // GenericStore2Mock is a mock implementation of GenericStore2.
 //

@@ -218,7 +218,9 @@ func (mock *ResetStoreMock) ResetCalls() {
 
 // Ensure, that ResetStoreGenericMock does implement ResetStoreGeneric.
 // If this is not the case, regenerate this file with moq.
-var _ ResetStoreGeneric[any, any] = &ResetStoreGenericMock[any, any]{}
+func _[T any, S any]() {
+	var _ ResetStoreGeneric[T, S] = &ResetStoreGenericMock[T, S]{}
+}
 
 // ResetStoreGenericMock is a mock implementation of ResetStoreGeneric.
 //

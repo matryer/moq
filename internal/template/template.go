@@ -48,22 +48,15 @@ import (
 {{- if not $.SkipEnsure -}}
 // Ensure, that {{.MockName}} does implement {{$.SrcPkgQualifier}}{{.InterfaceName}}.
 // If this is not the case, regenerate this file with moq.
+{{if .TypeParams -}}
+func _[{{range $index, $param := .TypeParams}}{{if $index}}, {{end}}{{$param.Name | Exported}} {{$param.TypeString}}{{end}}]() {
+{{end -}}
 var _ {{$.SrcPkgQualifier}}{{.InterfaceName -}}
-	{{- if .TypeParams }}[
-		{{- range $index, $param := .TypeParams}}
-			{{- if $index}}, {{end -}}
-			{{if $param.Constraint}}{{$param.Constraint.String}}{{else}}{{$param.TypeString}}{{end}}
-		{{- end -}}
-		]
-	{{- end }} = &{{.MockName}}
-	 {{- if .TypeParams }}[
-		{{- range $index, $param := .TypeParams}}
-			{{- if $index}}, {{end -}}
-			{{if $param.Constraint}}{{$param.Constraint.String}}{{else}}{{$param.TypeString}}{{end}}
-		{{- end -}}
-		]
-	{{- end -}}
-{}
+ {{- if .TypeParams }}[{{range $index, $param := .TypeParams}}{{if $index}}, {{end}}{{$param.Name | Exported}}{{end}}]{{end}} = &{{.MockName -}}
+ {{- if .TypeParams }}[{{range $index, $param := .TypeParams}}{{if $index}}, {{end}}{{$param.Name | Exported}}{{end}}]{{end}}{}
+{{- if .TypeParams}}
+}
+{{- end}}
 {{- end}}
 
 // {{.MockName}} is a mock implementation of {{$.SrcPkgQualifier}}{{.InterfaceName}}.
