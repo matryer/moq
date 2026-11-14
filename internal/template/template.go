@@ -27,7 +27,7 @@ func New() (Template, error) {
 // Execute generates and writes the Moq implementation for the given
 // data.
 func (t Template) Execute(w io.Writer, data Data) error {
-	return t.tmpl.Execute(w, data)
+	return t.tmpl.Execute(w, data.resolved())
 }
 
 // moqTemplate is the template for mocked code.
@@ -73,7 +73,7 @@ var _ {{$.SrcPkgQualifier}}{{.InterfaceName -}}
 //		// make and configure a mocked {{$.SrcPkgQualifier}}{{.InterfaceName}}
 //		mocked{{.InterfaceName}} := &{{.MockName}}{
 			{{- range .Methods}}
-//			{{.Name}}Func: func({{.ArgList}}) {{.ReturnArgTypeList}} {
+//			{{.FuncFieldName}}: func({{.ArgList}}) {{.ReturnArgTypeList}} {
 //				panic("mock out the {{.Name}} method")
 //			},
 			{{- end}}
@@ -90,11 +90,11 @@ type {{.MockName}}
 	{{- end -}}]
 {{- end }} struct {
 {{- range .Methods}}
-	// {{.Name}}Func mocks the {{.Name}} method.
-	{{.Name}}Func func({{.ArgList}}) {{.ReturnArgTypeList}}
+	// {{.FuncFieldName}} mocks the {{.Name}} method.
+	{{.FuncFieldName}} func({{.ArgList}}) {{.ReturnArgTypeList}}
 {{end}}
-	// calls tracks calls to the methods.
-	calls struct {
+	// {{.CallsFieldName}} tracks calls to the methods.
+	{{.CallsFieldName}} struct {
 {{- range .Methods}}
 		// {{.Name}} holds details about calls to the {{.Name}} method.
 		{{.Name}} []struct {
@@ -106,11 +106,11 @@ type {{.MockName}}
 {{- end}}
 	}
 {{- range .Methods}}
-	lock{{.Name}} {{$.Imports | SyncPkgQualifier}}.RWMutex
+	{{.LockFieldName}} {{$.Imports | SyncPkgQualifier}}.RWMutex
 {{- end}}
 }
 {{range .Methods}}
-// {{.Name}} calls {{.Name}}Func.
+// {{.Name}} calls {{.FuncFieldName}}.
 func (mock *{{$mock.MockName}}
 {{- if $mock.TypeParams -}}
 	[{{- range $index, $param := $mock.TypeParams}}
@@ -119,8 +119,8 @@ func (mock *{{$mock.MockName}}
 {{- end -}}
 ) {{.Name}}({{.ArgList}}) {{.ReturnArgTypeList}} {
 {{- if not $.StubImpl}}
-	if mock.{{.Name}}Func == nil {
-		panic("{{$mock.MockName}}.{{.Name}}Func: method is nil but {{$mock.InterfaceName}}.{{.Name}} was just called")
+	if mock.{{.FuncFieldName}} == nil {
+		panic("{{$mock.MockName}}.{{.FuncFieldName}}: method is nil but {{$mock.InterfaceName}}.{{.Name}} was just called")
 	}
 {{- end}}
 	callInfo := struct {
@@ -132,12 +132,12 @@ func (mock *{{$mock.MockName}}
 		{{.Name | Exported}}: {{.Name}},
 		{{- end}}
 	}
-	mock.lock{{.Name}}.Lock()
-	mock.calls.{{.Name}} = append(mock.calls.{{.Name}}, callInfo)
-	mock.lock{{.Name}}.Unlock()
+	mock.{{.LockFieldName}}.Lock()
+	mock.{{$mock.CallsFieldName}}.{{.Name}} = append(mock.{{$mock.CallsFieldName}}.{{.Name}}, callInfo)
+	mock.{{.LockFieldName}}.Unlock()
 {{- if .Returns}}
 	{{- if $.StubImpl}}
-	if mock.{{.Name}}Func == nil {
+	if mock.{{.FuncFieldName}} == nil {
 		var (
 		{{- range .Returns}}
 			{{.Name}} {{.TypeString}}
@@ -146,28 +146,28 @@ func (mock *{{$mock.MockName}}
 		return {{.ReturnArgNameList}}
 	}
 	{{- end}}
-	return mock.{{.Name}}Func({{.ArgCallList}})
+	return mock.{{.FuncFieldName}}({{.ArgCallList}})
 {{- else}}
 	{{- if $.StubImpl}}
-	if mock.{{.Name}}Func == nil {
+	if mock.{{.FuncFieldName}} == nil {
 		return
 	}
 	{{- end}}
-	mock.{{.Name}}Func({{.ArgCallList}})
+	mock.{{.FuncFieldName}}({{.ArgCallList}})
 {{- end}}
 }
 
-// {{.Name}}Calls gets all the calls that were made to {{.Name}}.
+// {{.CallsMethodName}} gets all the calls that were made to {{.Name}}.
 // Check the length with:
 //
-//	len(mocked{{$mock.InterfaceName}}.{{.Name}}Calls())
+//	len(mocked{{$mock.InterfaceName}}.{{.CallsMethodName}}())
 func (mock *{{$mock.MockName}}
 {{- if $mock.TypeParams -}}
 	[{{- range $index, $param := $mock.TypeParams}}
 		{{- if $index}}, {{end}}{{$param.Name | Exported}}
 	{{- end -}}]
 {{- end -}}
-) {{.Name}}Calls() []struct {
+) {{.CallsMethodName}}() []struct {
 		{{- range .Params}}
 		{{.Name | Exported}} {{.TypeString}}
 		{{- end}}
@@ -177,39 +177,39 @@ func (mock *{{$mock.MockName}}
 		{{.Name | Exported}} {{.TypeString}}
 		{{- end}}
 	}
-	mock.lock{{.Name}}.RLock()
-	calls = mock.calls.{{.Name}}
-	mock.lock{{.Name}}.RUnlock()
+	mock.{{.LockFieldName}}.RLock()
+	calls = mock.{{$mock.CallsFieldName}}.{{.Name}}
+	mock.{{.LockFieldName}}.RUnlock()
 	return calls
 }
 {{- if $.WithResets}}
-// Reset{{.Name}}Calls reset all the calls that were made to {{.Name}}.
+// {{.ResetCallsMethodName}} reset all the calls that were made to {{.Name}}.
 func (mock *{{$mock.MockName}}
 {{- if $mock.TypeParams -}}
 	[{{- range $index, $param := $mock.TypeParams}}
 		{{- if $index}}, {{end}}{{$param.Name | Exported}}
 	{{- end -}}]
 {{- end -}}
-) Reset{{.Name}}Calls() {
-	mock.lock{{.Name}}.Lock()
-	mock.calls.{{.Name}} = nil
-	mock.lock{{.Name}}.Unlock()
+) {{.ResetCallsMethodName}}() {
+	mock.{{.LockFieldName}}.Lock()
+	mock.{{$mock.CallsFieldName}}.{{.Name}} = nil
+	mock.{{.LockFieldName}}.Unlock()
 }
 {{end}}
 {{end -}}
 {{- if $.WithResets}}
-// ResetCalls reset all the calls that were made to all mocked methods.
+// {{.ResetCallsMethodName}} reset all the calls that were made to all mocked methods.
 func (mock *{{$mock.MockName}}
 {{- if $mock.TypeParams -}}
 	[{{- range $index, $param := $mock.TypeParams}}
 		{{- if $index}}, {{end}}{{$param.Name | Exported}}
 	{{- end -}}]
 {{- end -}}
-) ResetCalls() {
+) {{.ResetCallsMethodName}}() {
 	{{- range .Methods}}
-	mock.lock{{.Name}}.Lock()
-	mock.calls.{{.Name}} = nil
-	mock.lock{{.Name}}.Unlock()
+	mock.{{.LockFieldName}}.Lock()
+	mock.{{$mock.CallsFieldName}}.{{.Name}} = nil
+	mock.{{.LockFieldName}}.Unlock()
 	{{end -}}
 }
 {{end -}}
