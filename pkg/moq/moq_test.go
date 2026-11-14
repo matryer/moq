@@ -4,6 +4,11 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"go/ast"
+	"go/importer"
+	"go/parser"
+	"go/token"
+	"go/types"
 	"io"
 	"os"
 	"os/exec"
@@ -418,6 +423,15 @@ func TestMockGolden(t *testing.T) {
 			interfaces: []string{"Example"},
 			goldenFile: filepath.Join("testpackages/typealias", "typealias_moq.golden.go"),
 		},
+		{
+			// Tests conflict resolution when generated field or helper method
+			// names collide with interface method names.
+			// See https://github.com/matryer/moq/issues/170
+			name:       "MethodNameConflict",
+			cfg:        Config{SrcDir: "testpackages/methodconflict"},
+			interfaces: []string{"Service"},
+			goldenFile: filepath.Join("testpackages/methodconflict", "iface_moq.golden.go"),
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -712,6 +726,102 @@ func TestMockError(t *testing.T) {
 			}
 			if !strings.Contains(err.Error(), tc.wantErr) {
 				t.Errorf("unexpected error: %s", err.Error())
+			}
+		})
+	}
+}
+
+// TestMethodFieldConflictCompiles verifies that generated mocks compile cleanly
+// when interface method names collide with generated struct fields or helpers.
+// See https://github.com/matryer/moq/issues/170
+func TestMethodFieldConflictCompiles(t *testing.T) {
+	cases := []struct {
+		name       string
+		ifaceSrc   string
+		stubImpl   bool
+		withResets bool
+	}{
+		{
+			name: "Issue170BeginAndBeginFunc",
+			ifaceSrc: `package sample
+
+type SomeIface interface {
+	Begin()
+	BeginFunc()
+}
+`,
+		},
+		{
+			name:     "StubImplWithCollisions",
+			stubImpl: true,
+			ifaceSrc: `package sample
+
+type SomeIface interface {
+	Begin() error
+	BeginFunc() error
+}
+`,
+		},
+		{
+			name:       "ChainedAndHelperCollisionsWithResets",
+			withResets: true,
+			ifaceSrc: `package sample
+
+type SomeIface interface {
+	Begin() error
+	BeginFunc() error
+	BeginFuncFunc() error
+	BeginMoq() error
+	BeginMoqFunc() error
+	Query() int
+	QueryCalls() int
+	Reset()
+	ResetQueryCalls()
+	ResetCalls()
+	calls()
+	lockQuery()
+}
+`,
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/sample\n\ngo 1.21\n"), 0o600); err != nil {
+				t.Fatalf("write go.mod: %v", err)
+			}
+			if err := os.WriteFile(filepath.Join(dir, "iface.go"), []byte(tc.ifaceSrc), 0o600); err != nil {
+				t.Fatalf("write iface.go: %v", err)
+			}
+
+			m, err := New(Config{
+				SrcDir:     dir,
+				StubImpl:   tc.stubImpl,
+				WithResets: tc.withResets,
+			})
+			if err != nil {
+				t.Fatalf("moq.New: %v", err)
+			}
+
+			var buf bytes.Buffer
+			if err := m.Mock(&buf, "SomeIface"); err != nil {
+				t.Fatalf("m.Mock: %v", err)
+			}
+
+			fset := token.NewFileSet()
+			ifaceFile, err := parser.ParseFile(fset, "iface.go", tc.ifaceSrc, 0)
+			if err != nil {
+				t.Fatalf("parse iface.go: %v", err)
+			}
+			mockFile, err := parser.ParseFile(fset, "mock.go", buf.Bytes(), 0)
+			if err != nil {
+				t.Fatalf("parse mock.go: %v", err)
+			}
+
+			typeCfg := types.Config{Importer: importer.Default()}
+			if _, err := typeCfg.Check("sample", fset, []*ast.File{ifaceFile, mockFile}, nil); err != nil {
+				t.Fatalf("generated mock failed to type-check: %v\n\n%s", err, buf.String())
 			}
 		})
 	}
