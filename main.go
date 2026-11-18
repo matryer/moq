@@ -16,14 +16,15 @@ import (
 var Version string = "dev"
 
 type userFlags struct {
-	outFile    string
-	pkgName    string
-	formatter  string
-	stubImpl   bool
-	skipEnsure bool
-	withResets bool
-	remove     bool
-	args       []string
+	outFile          string
+	pkgName          string
+	formatter        string
+	stubImpl         bool
+	skipEnsure       bool
+	withResets       bool
+	withRequireCalls bool
+	remove           bool
+	args             []string
 }
 
 func main() {
@@ -39,6 +40,8 @@ func main() {
 	flag.BoolVar(&flags.remove, "rm", false, "first remove output file, if it exists")
 	flag.BoolVar(&flags.withResets, "with-resets", false,
 		"generate functions to facilitate resetting calls made to a mock")
+	flag.BoolVar(&flags.withRequireCalls, "with-require-calls", false,
+		"generate functions to check that all non-nil mock methods were called")
 
 	flag.Usage = func() {
 		fmt.Println(`moq [flags] source-dir interface [interface2 [interface3 [...]]]`)
@@ -83,12 +86,13 @@ func run(flags userFlags) error {
 
 	srcDir, args := flags.args[0], flags.args[1:]
 	m, err := moq.New(moq.Config{
-		SrcDir:     srcDir,
-		PkgName:    flags.pkgName,
-		Formatter:  flags.formatter,
-		StubImpl:   flags.stubImpl,
-		SkipEnsure: flags.skipEnsure,
-		WithResets: flags.withResets,
+		SrcDir:           srcDir,
+		PkgName:          flags.pkgName,
+		Formatter:        flags.formatter,
+		StubImpl:         flags.stubImpl,
+		SkipEnsure:       flags.skipEnsure,
+		WithResets:       flags.withResets,
+		WithRequireCalls: flags.withRequireCalls,
 	})
 	if err != nil {
 		return err
