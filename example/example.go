@@ -1,3 +1,4 @@
+// Package example demonstrates how to use moq with the go:generate directive.
 package example
 
 import "context"

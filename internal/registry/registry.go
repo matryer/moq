@@ -1,3 +1,5 @@
+// Package registry provides the ability to encapsulate type information for the
+// source and mock destination package.
 package registry
 
 import (
